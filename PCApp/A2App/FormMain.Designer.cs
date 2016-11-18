@@ -172,6 +172,10 @@
             this.radioButtonHopeRF = new System.Windows.Forms.RadioButton();
             this.radioButtonWifi = new System.Windows.Forms.RadioButton();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.label108 = new System.Windows.Forms.Label();
+            this.textBoxSystemBatteryTotalCharge_mAH = new System.Windows.Forms.TextBox();
+            this.label107 = new System.Windows.Forms.Label();
+            this.textBoxSystemBatteryCurrentA = new System.Windows.Forms.TextBox();
             this.textBoxSystemT4 = new System.Windows.Forms.TextBox();
             this.label45 = new System.Windows.Forms.Label();
             this.textBoxSystemT3 = new System.Windows.Forms.TextBox();
@@ -334,10 +338,6 @@
             this.label47 = new System.Windows.Forms.Label();
             this.textBoxAddressGateway = new System.Windows.Forms.TextBox();
             this.buttonConnectGateway = new System.Windows.Forms.Button();
-            this.label107 = new System.Windows.Forms.Label();
-            this.textBoxSystemBatteryCurrentA = new System.Windows.Forms.TextBox();
-            this.label108 = new System.Windows.Forms.Label();
-            this.textBoxSystemBatteryTotalCharge_mAH = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -1694,7 +1694,7 @@
             this.groupBox10.Controls.Add(this.textBoxWpnStatus1);
             this.groupBox10.Controls.Add(this.label69);
             this.groupBox10.Controls.Add(this.buttonWpnArm1);
-            this.groupBox10.Location = new System.Drawing.Point(684, 774);
+            this.groupBox10.Location = new System.Drawing.Point(734, 774);
             this.groupBox10.Name = "groupBox10";
             this.groupBox10.Size = new System.Drawing.Size(382, 176);
             this.groupBox10.TabIndex = 40;
@@ -1859,6 +1859,46 @@
             this.groupBox5.TabIndex = 37;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "System";
+            // 
+            // label108
+            // 
+            this.label108.AutoSize = true;
+            this.label108.Location = new System.Drawing.Point(16, 370);
+            this.label108.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label108.Name = "label108";
+            this.label108.Size = new System.Drawing.Size(110, 20);
+            this.label108.TabIndex = 31;
+            this.label108.Text = "Charge [mAh]:";
+            // 
+            // textBoxSystemBatteryTotalCharge_mAH
+            // 
+            this.textBoxSystemBatteryTotalCharge_mAH.Location = new System.Drawing.Point(129, 366);
+            this.textBoxSystemBatteryTotalCharge_mAH.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxSystemBatteryTotalCharge_mAH.Name = "textBoxSystemBatteryTotalCharge_mAH";
+            this.textBoxSystemBatteryTotalCharge_mAH.ReadOnly = true;
+            this.textBoxSystemBatteryTotalCharge_mAH.Size = new System.Drawing.Size(102, 26);
+            this.textBoxSystemBatteryTotalCharge_mAH.TabIndex = 30;
+            this.textBoxSystemBatteryTotalCharge_mAH.Text = "0";
+            // 
+            // label107
+            // 
+            this.label107.AutoSize = true;
+            this.label107.Location = new System.Drawing.Point(16, 336);
+            this.label107.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label107.Name = "label107";
+            this.label107.Size = new System.Drawing.Size(89, 20);
+            this.label107.TabIndex = 29;
+            this.label107.Text = "Current [A]:";
+            // 
+            // textBoxSystemBatteryCurrentA
+            // 
+            this.textBoxSystemBatteryCurrentA.Location = new System.Drawing.Point(129, 332);
+            this.textBoxSystemBatteryCurrentA.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxSystemBatteryCurrentA.Name = "textBoxSystemBatteryCurrentA";
+            this.textBoxSystemBatteryCurrentA.ReadOnly = true;
+            this.textBoxSystemBatteryCurrentA.Size = new System.Drawing.Size(102, 26);
+            this.textBoxSystemBatteryCurrentA.TabIndex = 28;
+            this.textBoxSystemBatteryCurrentA.Text = "0";
             // 
             // textBoxSystemT4
             // 
@@ -3576,51 +3616,11 @@
             this.buttonConnectGateway.UseVisualStyleBackColor = true;
             this.buttonConnectGateway.Click += new System.EventHandler(this.buttonConnectGateway_Click);
             // 
-            // label107
-            // 
-            this.label107.AutoSize = true;
-            this.label107.Location = new System.Drawing.Point(16, 336);
-            this.label107.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label107.Name = "label107";
-            this.label107.Size = new System.Drawing.Size(89, 20);
-            this.label107.TabIndex = 29;
-            this.label107.Text = "Current [A]:";
-            // 
-            // textBoxSystemBatteryCurrentA
-            // 
-            this.textBoxSystemBatteryCurrentA.Location = new System.Drawing.Point(129, 332);
-            this.textBoxSystemBatteryCurrentA.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxSystemBatteryCurrentA.Name = "textBoxSystemBatteryCurrentA";
-            this.textBoxSystemBatteryCurrentA.ReadOnly = true;
-            this.textBoxSystemBatteryCurrentA.Size = new System.Drawing.Size(102, 26);
-            this.textBoxSystemBatteryCurrentA.TabIndex = 28;
-            this.textBoxSystemBatteryCurrentA.Text = "0";
-            // 
-            // label108
-            // 
-            this.label108.AutoSize = true;
-            this.label108.Location = new System.Drawing.Point(16, 370);
-            this.label108.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label108.Name = "label108";
-            this.label108.Size = new System.Drawing.Size(110, 20);
-            this.label108.TabIndex = 31;
-            this.label108.Text = "Charge [mAh]:";
-            // 
-            // textBoxSystemBatteryTotalCharge_mAH
-            // 
-            this.textBoxSystemBatteryTotalCharge_mAH.Location = new System.Drawing.Point(129, 366);
-            this.textBoxSystemBatteryTotalCharge_mAH.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxSystemBatteryTotalCharge_mAH.Name = "textBoxSystemBatteryTotalCharge_mAH";
-            this.textBoxSystemBatteryTotalCharge_mAH.ReadOnly = true;
-            this.textBoxSystemBatteryTotalCharge_mAH.Size = new System.Drawing.Size(102, 26);
-            this.textBoxSystemBatteryTotalCharge_mAH.TabIndex = 30;
-            this.textBoxSystemBatteryTotalCharge_mAH.Text = "0";
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1588, 1053);
+            this.ClientSize = new System.Drawing.Size(1588, 1038);
             this.Controls.Add(this.tabControlMain);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FormMain";
