@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>A2Code</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.genmakebuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.cdt.managedbuilder.core.ScannerConfigBuilder</name>
+			<triggers>full,incremental,</triggers>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.ti.ccstudio.core.ccsNature</nature>
+		<nature>org.eclipse.cdt.core.cnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
+		<nature>org.eclipse.cdt.core.ccnature</nature>
+		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>Ethernet/locator.c</name>
+			<type>1</type>
+			<location>C:/ti/TivaWare_C_Series-2.1.2.111/utils/locator.c</location>
+		</link>
+		<link>
+			<name>Ethernet/lwiplib.c</name>
+			<type>1</type>
+			<location>C:/ti/TivaWare_C_Series-2.1.2.111/utils/lwiplib.c</location>
+		</link>
+		<link>
+			<name>Ethernet/lwiplib.h</name>
+			<type>1</type>
+			<location>C:/ti/TivaWare_C_Series-2.1.2.111/utils/lwiplib.h</location>
+		</link>
+	</linkedResources>
+</projectDescription>
