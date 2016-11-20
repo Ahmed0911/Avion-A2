@@ -1,5 +1,8 @@
 Debug
 Release
 Map
+ipch
 *.suo
 *.sdf
+*.opensdf
+*.log
