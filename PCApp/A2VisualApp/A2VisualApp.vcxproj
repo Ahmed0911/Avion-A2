@@ -157,6 +157,7 @@
     <ClInclude Include="CamGrabber.h" />
     <ClInclude Include="CommData.h" />
     <ClInclude Include="Dir2D.h" />
+    <ClInclude Include="EthernetComm.h" />
     <ClInclude Include="Fifo.h" />
     <ClInclude Include="LLConverter.h" />
     <ClInclude Include="MapManager.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="AvgFilter.cpp" />
     <ClCompile Include="CamGrabber.cpp" />
     <ClCompile Include="Dir2D.cpp" />
+    <ClCompile Include="EthernetComm.cpp" />
     <ClCompile Include="Fifo.cpp" />
     <ClCompile Include="A2App.cpp" />
     <ClCompile Include="LLConverter.cpp" />
