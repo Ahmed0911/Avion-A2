@@ -688,7 +688,7 @@ void CDir2D::DrawHUD(SUserData &data)
 	if (data.ActualMode >= 0 && data.ActualMode <= 5)
 	{
 		std::wstring modes[] = { L"Off", L"Manual", L"Rate", L"RollPitch", L"Attitude", L"Auto" };
-		swprintf_s(buf, 100, L"Mode: %s [%d/%d]", modes[data.ActualMode].c_str(), data.ActualMode, (char)data.ModeRequest);
+		swprintf_s(buf, 100, L"Mode: %s [%d]", modes[data.ActualMode].c_str(), data.ActualMode);
 		m_Map.m_ActiveWaypoint = -1;
 	}
 	else

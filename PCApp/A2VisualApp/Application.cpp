@@ -127,14 +127,12 @@ void CApplication::OnTimer()
 	// fill data and draw
 	SUserData drawData;
 	memset(&drawData, 0, sizeof(drawData));
+	drawData.LoopCounter = m_RXHopeRFData.LoopCounter;
+	drawData.ActualMode = m_RXHopeRFData.ActualMode;
+	drawData.Roll = m_RXHopeRFData.Roll;
+	drawData.Pitch = m_RXHopeRFData.Pitch;
+	drawData.Yaw = m_RXHopeRFData.Yaw;
 	/*
-	drawData.LoopCounter = m_RXData.LoopCounter;
-	drawData.ActualMode = m_RXData.ActualMode;
-	drawData.ModeRequest = m_ModeRequest;
-	drawData.Roll = m_RXData.Roll;
-	drawData.Pitch = m_RXData.Pitch;
-	drawData.Yaw = m_RXData.Yaw;
-
 	drawData.dRoll = m_RXData.dRoll;
 	drawData.dPitch = m_RXData.dPitch;
 	drawData.dYaw = m_RXData.dYaw;

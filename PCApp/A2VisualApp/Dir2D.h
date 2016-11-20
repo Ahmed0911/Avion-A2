@@ -62,7 +62,6 @@ struct SUserData
 	int RXControlStationRSSI;
 
 	double LocalTime;
-	unsigned char ModeRequest;
 };
 
 #define DNSTYLE_SMALL 0
