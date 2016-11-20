@@ -172,21 +172,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
-		case VK_F1:
-			app.RequestModeChange(1);
-			break;
-		case VK_F2:
-			app.RequestModeChange(2);
-			break;
-		case VK_F3:
-			app.RequestModeChange(3);
-			break;
-		case VK_F4:
-			app.RequestModeChange(4);
-			break;
-		case VK_F12:
-			app.CheckRFSpectrum();
-			break;
 		case 0x4D: // KEY 'M'
 			app.m_dir2D.m_ActiveDisplay = CDir2D::EActiveDisplay::MAP;
 			break;

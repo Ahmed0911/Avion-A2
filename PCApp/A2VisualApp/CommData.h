@@ -9,7 +9,7 @@
 #ifndef COMMDATA_H_
 #define COMMDATA_H_
 
-struct SCommData
+struct SCommEthData
 {
 	unsigned int LoopCounter;
 
@@ -20,9 +20,17 @@ struct SCommData
 	float dRoll;	// [deg/s]
 	float dPitch;	// [deg/s]
 	float dYaw;		// [deg/s]
-	
+
+	float AccX; // [m/s^2]
+	float AccY; // [m/s^2]
+	float AccZ; // [m/s^2]
+	float MagX; // [uT]
+	float MagY; // [uT]
+	float MagZ; // [uT]
+
 	// alt/speed
 	float Pressure; // [Pa]
+	float Temperature;// [°C]
 	float Altitude; // [m]
 	float Vertspeed;// [m/s]
 
@@ -30,12 +38,15 @@ struct SCommData
 	unsigned char MotorThrusts[4]; // [0...100%]
 
 	float FuelLevel; // [0...100%]
-	
+	float BatteryVoltage; // [V]
+	float BatteryCurrentA; // [A]
+	float BatteryTotalCharge_mAh; // [mAh]
+
 	// GPS
 	unsigned int GPSTime;
+	unsigned char NumSV;
 	unsigned char FixType;
 	unsigned char FixFlags; // FIX Flags
-	unsigned char NumSV;
 	unsigned char ActualMode; // Non GPS, but used for 32bit alignment
 	int Longitude; // 1e-7 [deg]
 	int Latitude; // 1e-7 [deg]
@@ -47,36 +58,81 @@ struct SCommData
 	int VelD; // Speed Down [mm/s]
 	unsigned int SpeedAcc; // Speed accuracy [mm/s]
 
-	// Comm
-	unsigned int RXFrameCount;
-	unsigned int RSSI;
+	// Comm Eth
+	unsigned int EthSentCount;
+	unsigned int EthReceivedCount;
+	// Comm HopeRF
+	unsigned int HopeRXFrameCount;
+	int HopeRXRSSI;
+	int HopeRSSI;
+
+	// Perf Stuff
+	float PerfLoopTimeMS;
+	float PerfCpuTimeMS;
+	float PerfCpuTimeMSMAX;
+
+	// AssistNow Data
+	int AssistNextChunkToSend;
+
+	// Tuning Data
+	float TuningData[10];
+
+	// SAT cnos
+	BYTE SatCNOs[32]; // 32 sattelites cno [dB]
+
+	// Waypoints
+	int WaypointCnt;
+	int WaypointDownloadCounter;
+
+	int HomeLongitude; // 1e-7 [deg]
+	int HomeLatitude; // 1e-7 [deg]
+
+	// Launch
+	unsigned short LaunchStatus1;
+	unsigned short LaunchStatus2;
 };
 
-struct SCommDataSensorDiag
+struct SCommHopeRFDataA2Avion
 {
 	unsigned int LoopCounter;
 
 	// IMU
-	float AccelX;	// [m/s^2]
-	float AccelY;	// [m/s^2]
-	float AccelZ;	// [m/s^2]
-	float GyroX;	// [deg/s]
-	float GyroY;	// [deg/s]
-	float GyroZ;	// [deg/s]
-	float MagX;		// ???
-	float MagY;		// ???
-	float MagZ;		// ???
 	float Roll;		// [deg]
 	float Pitch;	// [deg]
 	float Yaw;		// [deg]
-};
+	float dRoll;	// [deg/s]
+	float dPitch;	// [deg/s]
+	float dYaw;		// [deg/s]
 
-struct STXCommModeSet
-{
-	unsigned char Mode;
-	unsigned char dummy1;
-	unsigned char dummy2;
-	unsigned char dummy3;
+	// alt/speed
+	float Altitude; // [m]
+	float Vertspeed;// [m/s]
+
+	// engines
+	unsigned char MotorThrusts[4]; // [0...100%]
+
+	// Fuel
+	float BatteryVoltage; // [V]
+	float BatteryCurrentA; // [A]
+	float BatteryTotalCharge_mAh; // [mAh]
+
+	// GPS
+	unsigned char NumSV;
+	unsigned char FixType;
+	unsigned char ParamsCommandAckCnt; // Sync for params R/W
+	unsigned char ActualMode; // Non GPS, but used for 32bit alignment
+	int Longitude; // 1e-7 [deg]
+	int Latitude; // 1e-7 [deg]
+	int VelN; // Speed North [mm/s]
+	int VelE; // Speed East [mm/s]
+
+	// Comm HopeRF
+	unsigned int HopeRXFrameCount;
+	int HopeRXRSSI; // Received RSSI at A2 Plane (on received command)
+	int HopeTXRSSI; // dummy, filled in GCS App
+
+	// CRC
+	unsigned int CRC32;
 };
 
 struct SWpt

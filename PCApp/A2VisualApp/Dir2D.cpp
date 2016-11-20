@@ -10,7 +10,7 @@
 //#define VFOV 35
 #define VFOV 41.7
 
-#define DRAWHORIZON 0
+#define DRAWHORIZON 1
 #define NOVIDEO 0
 
 CDir2D::CDir2D(void)

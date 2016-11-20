@@ -167,7 +167,6 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TrajectoryMgr.h" />
     <ClInclude Include="UBloxGPS.h" />
-    <ClInclude Include="XBeeComm.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -188,7 +187,6 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TrajectoryMgr.cpp" />
     <ClCompile Include="UBloxGPS.cpp" />
-    <ClCompile Include="XBeeComm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="A2VisualApp.rc" />

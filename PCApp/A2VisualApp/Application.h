@@ -1,7 +1,6 @@
 #pragma once
 #include <fstream>
 #include "Serial.h"
-#include "XBeeComm.h"
 #include "Dir2D.h"
 #include "CommData.h"
 #include "AvgFilter.h"
@@ -20,8 +19,6 @@ public:
 	void GenerateLogFile(std::wstring logFilename, std::wstring destination);
 	
 	// commands
-	void RequestModeChange(unsigned char newMode);
-	void CheckRFSpectrum();
 	void DownloadWaypoints(SWaypoint* wps, int cnt);
 	void ExecuteTrajectory(float velocity);
 	void ExecuteTarget(SWaypoint target);
@@ -32,11 +29,10 @@ private:
 	static CApplication* instance;
 
 private:
-	CSerial m_Serial;
 	CSerial m_SerialGPS;
-	CXBeeComm m_XBee;
 	
-	SCommData m_RXData;
+	SCommEthData m_RXEthData;
+	SCommHopeRFDataA2Avion m_RXHopeRFData;
 	int m_RXRSSI;
 	int m_RXPacketCounter;
 

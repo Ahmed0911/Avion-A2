@@ -41,12 +41,6 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	return;
 #endif
 
-	// open COM port
-	if (!m_Serial.Init(SERIAL_PORT, 57600))
-	{
-		MessageBox(hWnd, L"Can't open COM Port", SERIAL_PORT, MB_ICONWARNING);
-		//m_NoTelemetry = true; // do not draw telemetry/HUD!
-	}
 
 #if 0
 	// open GPS port
@@ -83,10 +77,6 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	}
 #endif
 
-	// setup xbee comm
-    BYTE destAddr[8] = { 0x00, 0x13, 0xA2, 0x00, 0x40, 0x01, 0x0D, 0xEB };
-    m_XBee.Init(destAddr, NewPacketRxWrapper);	
-
 	// init filters
 	m_FilterControlStationRSSI.Init(100);
 	m_FilterKikiRSSI.Init(100);
@@ -105,14 +95,13 @@ void CApplication::Shutdown()
 	// close log file
 	m_LogFile.close();
 
-	m_Serial.Close();
 	m_dir2D.Shutdown();
 }
 
 void CApplication::OnTimer()
 {
 	m_TimerCounter++;
-
+	/*
 	// send ping (range/ check)
 	if ((m_TimerCounter % 10) == 0)
 	{
@@ -126,6 +115,10 @@ void CApplication::OnTimer()
 	BYTE buffer[5000];
 	int rd = m_Serial.Read(buffer);
 	if( rd > 0) m_XBee.NewRXPacket(buffer, rd);
+	*/
+	// Receive data from network!!!
+	// TODO!!!
+
 
 	// process GPS
 	//rd = m_SerialGPS.Read(buffer);
@@ -133,6 +126,8 @@ void CApplication::OnTimer()
 
 	// fill data and draw
 	SUserData drawData;
+	memset(&drawData, 0, sizeof(drawData));
+	/*
 	drawData.LoopCounter = m_RXData.LoopCounter;
 	drawData.ActualMode = m_RXData.ActualMode;
 	drawData.ModeRequest = m_ModeRequest;
@@ -175,7 +170,7 @@ void CApplication::OnTimer()
 	drawData.RXControlStationRSSI = (int)m_FilterControlStationRSSI.Add(-(float)m_RXRSSI); // filter RSSI
 
 	drawData.LocalTime = CPerformanceTimer::GetCurrentTimestamp();
-	
+	*/
 	m_dir2D.Draw(drawData, m_NoTelemetry);
 
 	// Save Data To File
@@ -252,31 +247,13 @@ void CApplication::NewPacketReceived(BYTE* data, int len, int rssi, int frametyp
 		// DATA
 		m_RXRSSI = rssi;
 		
-		if (len == sizeof(m_RXData))
+		if (len == sizeof(m_RXEthData))
 		{
 			// fill data
-			memcpy(&m_RXData, data, len);
+			memcpy(&m_RXEthData, data, len);
 			m_RXPacketCounter++;
 		}
 		
-
-		// DEBUG
-		if (len == sizeof(SCommDataSensorDiag))
-		{
-			SCommDataSensorDiag diagData;
-			memcpy(&diagData, data, len);
-			m_RXPacketCounter++;
-
-			// dump to file
-			std::ofstream file;
-			file.open("Log.txt", std::ios::app);
-			CHAR buf[100];
-			//sprintf_s(buf, 100, "%0.8f %0.8f %0.8f\n", diagData.MagX, diagData.MagY, diagData.MagZ);
-			sprintf_s(buf, 100, "%0.5f %0.5f %0.5f\n", diagData.GyroX, diagData.GyroY, diagData.GyroZ);
-			file << buf;
-			file.close();
-
-		}
 	}
 	else if (frametype == 0x88)
 	{
@@ -294,27 +271,6 @@ void CApplication::NewPacketReceived(BYTE* data, int len, int rssi, int frametyp
 	}
 }
 
-void CApplication::RequestModeChange(unsigned char newMode)
-{
-	m_ModeRequest = newMode;
-
-	// send data
-	STXCommModeSet data;
-	data.Mode = newMode;
-	int len = sizeof(STXCommModeSet);
-	BYTE packet[120]; // max size is 120!
-	int toSend = m_XBee.GenerateTXPacket((BYTE*)&data, len, packet);
-	m_Serial.Write(packet, toSend);
-}
-
-void CApplication::CheckRFSpectrum(void)
-{
-	BYTE packet[100];
-	int toSend = m_XBee.GenerateATPacket((BYTE*)"ED", 0x06, packet);
-	m_Serial.Write(packet, toSend);
-
-}
-
 void CApplication::DownloadWaypoints(SWaypoint* wps, int cnt)
 {
 	STXWaypoints data;
@@ -326,10 +282,10 @@ void CApplication::DownloadWaypoints(SWaypoint* wps, int cnt)
 		data.waypoints[i].Longitude = (int)(wps[i].Longitude * 1e7);
 	}
 	int len = sizeof(STXWaypoints);
-	BYTE packet[120]; // max size is 120!
-	int toSend = m_XBee.GenerateTXPacket((BYTE*)&data, len, packet);
-	m_Serial.Write(packet, toSend);
-	m_Serial.Write(packet, toSend);
+	//BYTE packet[120]; // max size is 120!
+	//int toSend = m_XBee.GenerateTXPacket((BYTE*)&data, len, packet);
+	//m_Serial.Write(packet, toSend);
+	//m_Serial.Write(packet, toSend);
 }
 
 void CApplication::ExecuteTrajectory(float velocity)
@@ -338,10 +294,10 @@ void CApplication::ExecuteTrajectory(float velocity)
 	data.Command = 0x02; // execute trajectory
 	data.Velocity = velocity;
 	int len = sizeof(STXGotoExecute);
-	BYTE packet[120]; // max size is 120!
-	int toSend = m_XBee.GenerateTXPacket((BYTE*)&data, len, packet);
-	m_Serial.Write(packet, toSend);
-	m_Serial.Write(packet, toSend);
+	//BYTE packet[120]; // max size is 120!
+	//int toSend = m_XBee.GenerateTXPacket((BYTE*)&data, len, packet);
+	//m_Serial.Write(packet, toSend);
+	//m_Serial.Write(packet, toSend);
 }
 
 void CApplication::ExecuteTarget(SWaypoint target)
@@ -352,10 +308,10 @@ void CApplication::ExecuteTarget(SWaypoint target)
 	data.TargetWaypoint.Latitude = (int)(target.Latitude * 1e7);
 	data.TargetWaypoint.Longitude = (int)(target.Longitude * 1e7);
 	int len = sizeof(STXGotoExecute);
-	BYTE packet[120]; // max size is 120!
-	int toSend = m_XBee.GenerateTXPacket((BYTE*)&data, len, packet);
-	m_Serial.Write(packet, toSend);
-	m_Serial.Write(packet, toSend);
+	//BYTE packet[120]; // max size is 120!
+	//int toSend = m_XBee.GenerateTXPacket((BYTE*)&data, len, packet);
+	//m_Serial.Write(packet, toSend);
+	//m_Serial.Write(packet, toSend);
 }
 
 void CApplication::ExecuteOrbit(SWaypoint target, float velocity)
@@ -367,8 +323,8 @@ void CApplication::ExecuteOrbit(SWaypoint target, float velocity)
 	data.TargetWaypoint.Longitude = (int)(target.Longitude * 1e7);
 	data.Velocity = velocity;
 	int len = sizeof(STXGotoExecute);
-	BYTE packet[120]; // max size is 120!
-	int toSend = m_XBee.GenerateTXPacket((BYTE*)&data, len, packet);
-	m_Serial.Write(packet, toSend);
-	m_Serial.Write(packet, toSend);
+	//BYTE packet[120]; // max size is 120!
+	//int toSend = m_XBee.GenerateTXPacket((BYTE*)&data, len, packet);
+	//m_Serial.Write(packet, toSend);
+	//m_Serial.Write(packet, toSend);
 }
