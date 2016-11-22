@@ -1,6 +1,7 @@
 #pragma once
 #include <fstream>
 #include "Serial.h"
+#include "EthernetComm.h"
 #include "Dir2D.h"
 #include "CommData.h"
 #include "AvgFilter.h"
@@ -13,7 +14,7 @@ public:
 	void Init(HWND hWnd, TCHAR* cmdLine);
 	void Shutdown();
 	void OnTimer();
-	void NewPacketReceived(BYTE* data, int len, int rssi, int frameType);
+	void NewPacketReceived(char type, BYTE* data, int len);
 
 	void GenerateLogBitmaps(std::wstring logFilename, std::wstring destination);
 	void GenerateLogFile(std::wstring logFilename, std::wstring destination);
@@ -29,8 +30,11 @@ private:
 	static CApplication* instance;
 
 private:
+	// Communication
+	CEthernetComm m_ethernetComm;
 	CSerial m_SerialGPS;
 	
+	SCommEthData m_RXGatewayData;
 	SCommEthData m_RXEthData;
 	SCommHopeRFDataA2Avion m_RXHopeRFData;
 	int m_RXRSSI;

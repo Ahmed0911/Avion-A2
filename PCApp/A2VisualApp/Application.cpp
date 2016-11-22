@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "Application.h"
 
-#define SERIAL_PORT L"\\\\.\\COM4"
-#define SERIAL_PORT_GPS L"\\\\.\\COM6"
 #include "CommData.h"
 #include "Timer.h"
 #include <fstream>
 
+#define ETHERNET_PORT_GATEWAY "10.0.1.101"
+
 // Callback wrapper
-void NewPacketRxWrapper(BYTE* data, int len, int rssi, int frameType)
+void NewPacketRxWrapper(char type, BYTE* data, int len)
 {
-	CApplication::getInstance()->NewPacketReceived(data, len, rssi, frameType);
+	CApplication::getInstance()->NewPacketReceived(type, data, len);
 }
 
 CApplication* CApplication::instance;
@@ -41,41 +41,9 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	return;
 #endif
 
-
-#if 0
-	// open GPS port
-	if (!m_SerialGPS.Init(SERIAL_PORT_GPS, 9600))
-	{
-		MessageBox(hWnd, L"Can't open GPS Port", SERIAL_PORT_GPS, MB_ICONWARNING);
-	}
-	else
-	{		
-		m_GPS.Init();
-
-		// send GPS init commands
-		BYTE packet[5000];
-		
-		int toSend = m_GPS.GenerateMsgCFGPrt(packet, 115200); // set to 115200
-		m_SerialGPS.Write(packet, toSend);
-		
-		Sleep(100); // flush?
-		m_SerialGPS.Close();
-		m_SerialGPS.Init(SERIAL_PORT_GPS, 115200);
-		
-		toSend = m_GPS.GenerateMsgCFGRate(packet, 100);
-		m_SerialGPS.Write(packet, toSend);
-		toSend = m_GPS.GenerateMsgCFGMsg(packet, 0x01, 0x07, 1);
-		m_SerialGPS.Write(packet, toSend);
-		toSend = m_GPS.GenerateMsgNAV5Msg(packet, 6, 2); // airborne <1g, 3D mode only
-		//toSend = m_GPS.GenerateMsgNAV5Msg(packet, 7, 3); // airborne <2g, 2D/3D mode
-		m_SerialGPS.Write(packet, toSend);
-
-		// check response
-		Sleep(100); // flush?
-		int rd = m_SerialGPS.Read(packet);
-		m_GPS.NewRXPacket(packet, rd);
-	}
-#endif
+	// Open ethernet port
+	m_ethernetComm.Init();
+	m_ethernetComm.ConnectTo(ETHERNET_PORT_GATEWAY, NewPacketRxWrapper);
 
 	// init filters
 	m_FilterControlStationRSSI.Init(100);
@@ -117,7 +85,7 @@ void CApplication::OnTimer()
 	if( rd > 0) m_XBee.NewRXPacket(buffer, rd);
 	*/
 	// Receive data from network!!!
-	// TODO!!!
+	m_ethernetComm.Update();
 
 
 	// process GPS
@@ -127,7 +95,8 @@ void CApplication::OnTimer()
 	// fill data and draw
 	SUserData drawData;
 	memset(&drawData, 0, sizeof(drawData));
-	drawData.LoopCounter = m_RXHopeRFData.LoopCounter;
+	//drawData.LoopCounter = m_RXHopeRFData.LoopCounter;
+	drawData.LoopCounter = m_RXGatewayData.LoopCounter;
 	drawData.ActualMode = m_RXHopeRFData.ActualMode;
 	drawData.Roll = m_RXHopeRFData.Roll;
 	drawData.Pitch = m_RXHopeRFData.Pitch;
@@ -237,10 +206,23 @@ void CApplication::GenerateLogFile(std::wstring logFilename, std::wstring destin
 	logFile.close();
 }
 
-// RX callback (from m_XBee.NewRXPacket() )
-void CApplication::NewPacketReceived(BYTE* data, int len, int rssi, int frametype)
+// RX callback (from Ethernet.NewRXPacket() )
+void CApplication::NewPacketReceived(char type, BYTE* data, int len)
 {
-	if (frametype == 0x80)
+	switch (type)
+	{
+		case 0x20:
+		{
+			// data     
+			if (len == sizeof(m_RXGatewayData))
+			{
+				memcpy(&m_RXGatewayData, data, sizeof(m_RXGatewayData));
+			}
+			break;
+		}
+	}
+
+	/*if (frametype == 0x80)
 	{
 		// DATA
 		m_RXRSSI = rssi;
@@ -266,7 +248,7 @@ void CApplication::NewPacketReceived(BYTE* data, int len, int rssi, int frametyp
 			channelsTxt += std::wstring(buf);
 		}
 		MessageBox(NULL, channelsTxt.c_str(), L"Noise Levels", MB_ICONASTERISK);
-	}
+	}*/
 }
 
 void CApplication::DownloadWaypoints(SWaypoint* wps, int cnt)
