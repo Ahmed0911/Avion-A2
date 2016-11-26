@@ -31,7 +31,8 @@ private:
 
 private:
 	// Communication
-	CEthernetComm m_ethernetComm;
+	CEthernetComm m_ethernetCommGW;
+	CEthernetComm m_ethernetCommA2;
 	CSerial m_SerialGPS;
 	
 	SCommEthData m_RXGatewayData;
@@ -51,7 +52,7 @@ private:
 
 	// filters
 	CAvgFilter m_FilterControlStationRSSI;
-	CAvgFilter m_FilterKikiRSSI;
+	CAvgFilter m_FilterA2RSSI;
 	CAvgFilter m_FilterVertSpeed;
 	CAvgFilter m_FilterSpeed;
 	CAvgFilter m_FilterFuelPercent;

@@ -3,9 +3,11 @@
 
 #include "CommData.h"
 #include "Timer.h"
+#include "CRC32.h"
 #include <fstream>
 
 #define ETHERNET_PORT_GATEWAY "10.0.1.101"
+#define ETHERNET_PORT_A2 "10.0.1.121"
 
 // Callback wrapper
 void NewPacketRxWrapper(char type, BYTE* data, int len)
@@ -42,12 +44,14 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 #endif
 
 	// Open ethernet port
-	m_ethernetComm.Init();
-	m_ethernetComm.ConnectTo(ETHERNET_PORT_GATEWAY, NewPacketRxWrapper);
+	m_ethernetCommGW.Init(8000);
+	m_ethernetCommA2.Init(8100);
+	m_ethernetCommGW.ConnectTo(ETHERNET_PORT_GATEWAY, NewPacketRxWrapper);
+	m_ethernetCommA2.ConnectTo(ETHERNET_PORT_A2, NewPacketRxWrapper);
 
 	// init filters
 	m_FilterControlStationRSSI.Init(100);
-	m_FilterKikiRSSI.Init(100);
+	m_FilterA2RSSI.Init(100);
 	m_FilterFuelPercent.Init(100);
 	m_FilterVertSpeed.Init(30);
 	m_FilterSpeed.Init(30);
@@ -69,28 +73,11 @@ void CApplication::Shutdown()
 void CApplication::OnTimer()
 {
 	m_TimerCounter++;
-	/*
-	// send ping (range/ check)
-	if ((m_TimerCounter % 10) == 0)
-	{
-		BYTE datatoSend[] = { 0x10 }; // PING
-		BYTE packet[120]; // max size is 120!
-		int toSend = m_XBee.GenerateTXPacket(datatoSend, 1, packet);
-		m_Serial.Write(packet, toSend);
-	}
-
-	//  receive new data
-	BYTE buffer[5000];
-	int rd = m_Serial.Read(buffer);
-	if( rd > 0) m_XBee.NewRXPacket(buffer, rd);
-	*/
+	
 	// Receive data from network!!!
-	m_ethernetComm.Update();
+	m_ethernetCommGW.Update();
+	//m_ethernetCommA2.Update();
 
-
-	// process GPS
-	//rd = m_SerialGPS.Read(buffer);
-	//if (rd > 0) m_GPS.NewRXPacket(buffer, rd);
 
 	// fill data and draw
 	SUserData drawData;
@@ -101,43 +88,43 @@ void CApplication::OnTimer()
 	drawData.Roll = m_RXHopeRFData.Roll;
 	drawData.Pitch = m_RXHopeRFData.Pitch;
 	drawData.Yaw = m_RXHopeRFData.Yaw;
-	/*
-	drawData.dRoll = m_RXData.dRoll;
-	drawData.dPitch = m_RXData.dPitch;
-	drawData.dYaw = m_RXData.dYaw;
 
-	drawData.Pressure = m_RXData.Pressure;	
-	drawData.Altitude = m_RXData.Altitude;
+	drawData.dRoll = m_RXHopeRFData.dRoll;
+	drawData.dPitch = m_RXHopeRFData.dPitch;
+	drawData.dYaw = m_RXHopeRFData.dYaw;
+
+	//drawData.Pressure = m_RXHopeRFData.Pressure;
+	drawData.Altitude = m_RXHopeRFData.Altitude;
 	//drawData.Vertspeed = m_RXData.Vertspeed;
-	drawData.Vertspeed = m_FilterVertSpeed.Add(m_RXData.Vertspeed);
+	drawData.Vertspeed = m_FilterVertSpeed.Add(m_RXHopeRFData.Vertspeed);
 	//drawData.FuelLevel = m_RXData.FuelLevel;
-	drawData.FuelLevel = m_FilterFuelPercent.Add(m_RXData.FuelLevel);
-	memcpy(drawData.MotorThrusts, m_RXData.MotorThrusts, 4);
+	drawData.FuelLevel = m_FilterFuelPercent.Add(m_RXHopeRFData.BatteryVoltage);
+	//memcpy(drawData.MotorThrusts, m_RXData.MotorThrusts, 4);
 
 	// gps
-	drawData.GPSTime = m_RXData.GPSTime;
-	drawData.FixType = m_RXData.FixType;
-	drawData.FixFlags = m_RXData.FixFlags;
-	drawData.NumSV = m_RXData.NumSV;
-	drawData.Longitude = m_RXData.Longitude;
-	drawData.Latitude = m_RXData.Latitude;
-	drawData.HeightMSL = m_RXData.HeightMSL;
-	drawData.HorizontalAccuracy = m_RXData.HorizontalAccuracy;
-	drawData.VerticalAccuracy = m_RXData.VerticalAccuracy;
-	drawData.VelN = m_RXData.VelN;
-	drawData.VelE = m_RXData.VelE;
-	drawData.VelD = m_RXData.VelD;
-	drawData.SpeedAcc = m_RXData.SpeedAcc;
+	//drawData.GPSTime = m_RXHopeRFData.GPSTime;
+	drawData.FixType = m_RXHopeRFData.FixType;
+	//drawData.FixFlags = m_RXHopeRFData.FixFlags;
+	drawData.NumSV = m_RXHopeRFData.NumSV;
+	drawData.Longitude = m_RXHopeRFData.Longitude;
+	drawData.Latitude = m_RXHopeRFData.Latitude;
+	//drawData.HeightMSL = m_RXHopeRFData.HeightMSL;
+	//drawData.HorizontalAccuracy = m_RXHopeRFData.HorizontalAccuracy;
+	//drawData.VerticalAccuracy = m_RXHopeRFData.VerticalAccuracy;
+	drawData.VelN = m_RXHopeRFData.VelN;
+	drawData.VelE = m_RXHopeRFData.VelE;
+	//drawData.VelD = m_RXHopeRFData.VelD;
+	//drawData.SpeedAcc = m_RXHopeRFData.SpeedAcc;
 	//drawData.Speed = (float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f; // [km/h!!!]
 	drawData.Speed = m_FilterSpeed.Add((float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f); // [km/h!!!]
 
-	drawData.RXKikiFrameCount = m_RXData.RXFrameCount;
+	//drawData.RXKikiFrameCount = m_RXHopeRFData.RXFrameCount;
 	drawData.RXControlStationFrameCount = m_RXPacketCounter;
-	drawData.RXKikiRSSI = (int)m_FilterKikiRSSI.Add(-(float)m_RXData.RSSI); // filter RSSI
-	drawData.RXControlStationRSSI = (int)m_FilterControlStationRSSI.Add(-(float)m_RXRSSI); // filter RSSI
+	drawData.RXA2RSSI = (int)m_FilterA2RSSI.Add(-(float)m_RXHopeRFData.HopeRXRSSI); // filter RSSI
+	drawData.RXControlStationRSSI = (int)m_FilterControlStationRSSI.Add(-(float)m_RXHopeRFData.HopeTXRSSI); // filter RSSI
 
 	drawData.LocalTime = CPerformanceTimer::GetCurrentTimestamp();
-	*/
+
 	m_dir2D.Draw(drawData, m_NoTelemetry);
 
 	// Save Data To File
@@ -213,13 +200,54 @@ void CApplication::NewPacketReceived(char type, BYTE* data, int len)
 	{
 		case 0x20:
 		{
-			// data     
+			// GW Data(from gateway)  
 			if (len == sizeof(m_RXGatewayData))
 			{
 				memcpy(&m_RXGatewayData, data, sizeof(m_RXGatewayData));
 			}
 			break;
 		}
+
+		case 0x41:
+		{
+			// relayed data (HopeRF from A2)
+			if (len == sizeof(m_RXHopeRFData))
+			{
+				SCommHopeRFDataA2Avion commDataHopeRF;
+				memcpy(&commDataHopeRF, data, sizeof(commDataHopeRF));
+				//ReceivedHopeRFCounter++;
+				
+
+				// check checksum
+				unsigned int crcSum = CRC32::CalculateCrc32((BYTE*)&commDataHopeRF, sizeof(commDataHopeRF)-sizeof(commDataHopeRF.CRC32));
+				if (crcSum == commDataHopeRF.CRC32) // CRC OK?
+				{
+					memcpy(&m_RXHopeRFData, &commDataHopeRF, sizeof(commDataHopeRF)); // data valid, copy to internal structure
+					m_RXHopeRFData.HopeTXRSSI = m_RXGatewayData.HopeRXRSSI; // fill with received/gatewayed Hope RSSI 
+
+					// save to file
+					//byte[] arrayToWrite = Comm.GetBytes(commDataHopeRF);
+					//logStream.Write(arrayToWrite, 0, arrayToWrite.Length);
+				}
+				//else ReceivedHopeRFCounterCrcErrors++;
+			}
+					 
+			break;
+		}
+			/*			
+			else if (withoutHeader.Length == Marshal.SizeOf(new SParameters())) // check size
+			{
+				// Parameters structure
+				SParameters parametersDataHopeRF = (SParameters)Comm.FromBytes(withoutHeader, new SParameters());
+
+				// check checksum
+				uint crcSum = Crc32.CalculateCrc32(withoutHeader, withoutHeader.Length - sizeof(uint));
+				if (crcSum == parametersDataHopeRF.CRC32) // CRC OK?
+				{
+					// Display
+					formMain.DisplayParams(parametersDataHopeRF);
+				}
+			}*/
 	}
 
 	/*if (frametype == 0x80)

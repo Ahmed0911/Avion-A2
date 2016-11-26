@@ -349,7 +349,7 @@ void CDir2D::DrawHUD(SUserData &data)
 	{
 		motorthrusts[i] = data.MotorThrusts[i];
 	}
-	int txRSSI = data.RXKikiRSSI;
+	int txRSSI = data.RXA2RSSI;
 	int rxRSSI = data.RXControlStationRSSI;
 	float fuelLevel = data.FuelLevel;
 
@@ -607,10 +607,10 @@ void CDir2D::DrawHUD(SUserData &data)
 	// draw battery indicator
 	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.80F, SCREENY * 0.92F));
 	fuelLevel = fuelLevel / 4; // XXX: single cell voltage
-	if (fuelLevel < 2.8) fuelLevel = 2.8;
-	if (fuelLevel > 4.2) fuelLevel = 4.2;
+	if (fuelLevel < 2.8) fuelLevel = 2.8f;
+	if (fuelLevel > 4.2) fuelLevel = 4.2f;
 	//m_d2dContext->FillRectangle(D2D1::RectF(0, 0, fuelLevel/100 * 300, 40), m_pLinearGradientRYGBrush.Get());
-	m_d2dContext->FillRectangle(D2D1::RectF(0, 0, (fuelLevel-2.8)/1.4 * 300, 40), m_pLinearGradientRYGBrush.Get());
+	m_d2dContext->FillRectangle(D2D1::RectF(0, 0, (fuelLevel-2.8f)/1.4f * 300, 40), m_pLinearGradientRYGBrush.Get());
 	m_d2dContext->DrawRectangle(D2D1::RectF(0, 0, 300, 40), m_GreenBrush.Get(), 2);
 	//swprintf_s(buf, 20, L"%d%%", (int)fuelLevel);
 	swprintf_s(buf, 20, L"%0.1f", fuelLevel);
@@ -678,7 +678,7 @@ void CDir2D::DrawHUD(SUserData &data)
 	DrawNumber(DNSTYLE_SMALL, 0, 0, 200, 20, 0, 0, buf);
 	swprintf_s(buf, 20, L"CS Frm: %d", data.RXControlStationFrameCount);
 	DrawNumber(DNSTYLE_SMALL, 200, 0, 200, 20, 0, 0, buf);
-	swprintf_s(buf, 20, L"Kiki Frm: %d", data.RXKikiFrameCount);
+	swprintf_s(buf, 20, L"A2 Frm: %d", data.RXA2RSSIFrameCount);
 	DrawNumber(DNSTYLE_SMALL, 400, 0, 200, 20, 0, 0, buf);	
 	swprintf_s(buf, 20, L"%0.3lf s", data.LocalTime);
 	DrawNumber(DNSTYLE_SMALL, 600, 0, 200, 20, 0, 0, buf);

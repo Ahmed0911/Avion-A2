@@ -56,9 +56,9 @@ struct SUserData
 	unsigned int SpeedAcc; // Speed accuracy [mm/s]
 
 	// Comm
-	unsigned int RXKikiFrameCount;
+	unsigned int RXA2RSSIFrameCount;
 	unsigned int RXControlStationFrameCount;
-	int RXKikiRSSI;
+	int RXA2RSSI;
 	int RXControlStationRSSI;
 
 	double LocalTime;

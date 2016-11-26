@@ -8,7 +8,7 @@ class CEthernetComm
 {
 public:
 	CEthernetComm();
-	bool Init();
+	bool Init(int localPort);
 	void Close();
 	void ConnectTo(char* targetAddress, NewPacketCallbackType callback);
 	
@@ -20,13 +20,15 @@ public:
 
 private:
 	bool PacketIsValid(char* bytes);
-	int PingCounter;
-	NewPacketCallbackType NewPacketCallback; // callback
+	
 
 private:
 	WSADATA wsa;
 	struct sockaddr_in m_siLocal;
 	struct sockaddr_in m_siTarget;
 	int m_socket;
+
+	int PingCounter;
+	NewPacketCallbackType NewPacketCallback; // callback 
 };
 

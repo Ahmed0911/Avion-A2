@@ -8,7 +8,6 @@
 #define BUFLEN 2048
 
 /* The ports */
-#define LOCAL_PORT 8888
 #define TARGET_PORT 12000
 
 CEthernetComm::CEthernetComm()
@@ -18,7 +17,7 @@ CEthernetComm::CEthernetComm()
 	PingCounter = 0;
 }
 
-bool CEthernetComm::Init()
+bool CEthernetComm::Init(int localPort)
 {	
 	//Initialise winsock
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) return false;
@@ -29,7 +28,7 @@ bool CEthernetComm::Init()
 	// setup and bind local
 	memset((char *)&m_siLocal, 0, sizeof(m_siLocal));
 	m_siLocal.sin_family = AF_INET;
-	m_siLocal.sin_port = htons(LOCAL_PORT);
+	m_siLocal.sin_port = htons(localPort);
 	m_siLocal.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
 	if (bind(m_socket, (SOCKADDR *)&m_siLocal, sizeof (m_siLocal)) != S_OK) return false;
 
@@ -81,62 +80,6 @@ void CEthernetComm::Update()
 
 			// OK
 			NewPacketCallback(buffer[2], (BYTE*)withoutHeader, sizeWithoutHeader);
-
-			switch (buffer[2])
-			{
-			case 0x20:
-			{
-				// data     
-				SCommEthData commData;
-				if (sizeWithoutHeader == sizeof(commData))
-				{
-					memcpy(&commData, withoutHeader, sizeof(commData));
-				}
-				//SCommEthData commData = (SCommEthData)Comm.FromBytes(withoutHeader, new SCommEthData());
-				//GatewayData = commData;
-				break;
-			}			
-
-			case 0x41:
-				// relayed from RF
-#if 0
-				if (withoutHeader.Length == Marshal.SizeOf(new SCommHopeRFDataA2Avion())) // check size
-				{
-					// DataA2 structure
-					ReceivedHopeRFCounter++;
-
-					SCommHopeRFDataA2Avion commDataHopeRF = (SCommHopeRFDataA2Avion)Comm.FromBytes(withoutHeader, new SCommHopeRFDataA2Avion());
-					commDataHopeRF.HopeTXRSSI = GatewayData.HopeRXRSSI; // fill with received/gatewayed Hope RSSI
-
-					// check checksum
-					uint crcSum = Crc32.CalculateCrc32(withoutHeader, withoutHeader.Length - sizeof(uint));
-					if (crcSum == commDataHopeRF.CRC32) // CRC OK?
-					{
-						RelayedData = commDataHopeRF;
-
-						// save to file
-						byte[] arrayToWrite = Comm.GetBytes(commDataHopeRF);
-						logStream.Write(arrayToWrite, 0, arrayToWrite.Length);
-					}
-					else ReceivedHopeRFCounterCrcErrors++;
-				}
-				else if (withoutHeader.Length == Marshal.SizeOf(new SParameters())) // check size
-				{
-					// Parameters structure
-					SParameters parametersDataHopeRF = (SParameters)Comm.FromBytes(withoutHeader, new SParameters());
-
-					// check checksum
-					uint crcSum = Crc32.CalculateCrc32(withoutHeader, withoutHeader.Length - sizeof(uint));
-					if (crcSum == parametersDataHopeRF.CRC32) // CRC OK?
-					{
-						// Display
-						formMain.DisplayParams(parametersDataHopeRF);
-					}
-
-				}
-#endif
-				break;
-			}
 		}
 
 		// get next?
@@ -147,15 +90,11 @@ void CEthernetComm::Update()
 	if (++PingCounter > 20)
 	{
 		PingCounter = 0;
-		int port = LOCAL_PORT;
+		int port = ntohs(m_siLocal.sin_port);
 		unsigned char data[4];
 		memcpy(data, &port, 4);
 		SendData(0x10, data, 4);
 	}
-
-	// GUI update
-	//formMain.DisplayGatewayData(ReceivedHopeRFCounter, ReceivedHopeRFCounterCrcErrors, ReceivedPacketsCounter, GatewayData);
-	//formMain.DisplayRelayedData(RelayedData);
 }
 
 void CEthernetComm::SendData(char type, BYTE* buffer, int length)
