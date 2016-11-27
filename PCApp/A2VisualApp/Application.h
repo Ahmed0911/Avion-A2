@@ -15,9 +15,6 @@ public:
 	void Shutdown();
 	void OnTimer();
 	void NewPacketReceived(char type, BYTE* data, int len);
-
-	void GenerateLogBitmaps(std::wstring logFilename, std::wstring destination);
-	void GenerateLogFile(std::wstring logFilename, std::wstring destination);
 	
 	// commands
 	void DownloadWaypoints(SWaypoint* wps, int cnt);
@@ -25,6 +22,13 @@ public:
 	void ExecuteTarget(SWaypoint target);
 	void ExecuteOrbit(SWaypoint target, float velocity);
 	CDir2D m_dir2D;
+
+private:
+	void FillHopeRFData(SUserData& drawData);
+	void FillEthernetData(SUserData& drawData);
+	void GenerateLogBitmaps(std::wstring logFilename, std::wstring destination);
+	void GenerateLogBitmapsHopeRF(std::wstring logFilename, std::wstring destination);
+	void GenerateLogFile(std::wstring logFilename, std::wstring destination);
 
 private:
 	static CApplication* instance;
@@ -48,7 +52,8 @@ private:
 
 	// perf + log
 	int m_TimerCounter;
-	std::ofstream m_LogFile;
+	std::ofstream m_LogFileDraw;
+	std::ofstream m_LogFileHopeRF;
 
 	// filters
 	CAvgFilter m_FilterControlStationRSSI;

@@ -36,9 +36,17 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	}
 	m_dir2D.Init(hWnd, (TCHAR*)mapName.c_str());
 
-#if 0
-	GenerateLogBitmaps(L"LogFile-4118.log", L"Bitmaps");
-	//GenerateLogFile(L"LogFile-233.log", L"mat1.txt");
+	// init filters
+	m_FilterControlStationRSSI.Init(100);
+	m_FilterA2RSSI.Init(100);
+	m_FilterFuelPercent.Init(100);
+	m_FilterVertSpeed.Init(30);
+	m_FilterSpeed.Init(30);
+
+#if 1
+	GenerateLogBitmapsHopeRF(L"Log\\LogHopeRF-15-15-13.bin", L"Bitmaps");
+	//GenerateLogBitmaps(L"Log\\LogFileDraw-4118.log", L"Bitmaps");
+	//GenerateLogFile(L"Log\\LogFileDraw-233.log", L"mat1.txt");
 	PostQuitMessage(0);
 	return;
 #endif
@@ -49,23 +57,19 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	m_ethernetCommGW.ConnectTo(ETHERNET_PORT_GATEWAY, NewPacketRxWrapper);
 	m_ethernetCommA2.ConnectTo(ETHERNET_PORT_A2, NewPacketRxWrapper);
 
-	// init filters
-	m_FilterControlStationRSSI.Init(100);
-	m_FilterA2RSSI.Init(100);
-	m_FilterFuelPercent.Init(100);
-	m_FilterVertSpeed.Init(30);
-	m_FilterSpeed.Init(30);
-
 	// open log file
 	TCHAR filename[100];
-	swprintf_s(filename, 100, L"LogFile-%d.log", (int)CPerformanceTimer::GetCurrentTimestamp());
-	m_LogFile.open(filename, std::ios::binary);
+	swprintf_s(filename, 100, L"Log\\LogFileDraw-%d.log", (int)CPerformanceTimer::GetCurrentTimestamp());
+	m_LogFileDraw.open(filename, std::ios::binary);
+	swprintf_s(filename, 100, L"Log\\LogHopeRF-%d.log", (int)CPerformanceTimer::GetCurrentTimestamp());
+	m_LogFileHopeRF.open(filename, std::ios::binary);
 }
 
 void CApplication::Shutdown()
 {	
 	// close log file
-	m_LogFile.close();
+	m_LogFileHopeRF.close();
+	m_LogFileDraw.close();
 
 	m_dir2D.Shutdown();
 }
@@ -81,117 +85,16 @@ void CApplication::OnTimer()
 
 	// fill data and draw
 	SUserData drawData;
-	memset(&drawData, 0, sizeof(drawData));
-	//drawData.LoopCounter = m_RXHopeRFData.LoopCounter;
-	drawData.LoopCounter = m_RXGatewayData.LoopCounter;
-	drawData.ActualMode = m_RXHopeRFData.ActualMode;
-	drawData.Roll = m_RXHopeRFData.Roll;
-	drawData.Pitch = m_RXHopeRFData.Pitch;
-	drawData.Yaw = m_RXHopeRFData.Yaw;
-
-	drawData.dRoll = m_RXHopeRFData.dRoll;
-	drawData.dPitch = m_RXHopeRFData.dPitch;
-	drawData.dYaw = m_RXHopeRFData.dYaw;
-
-	//drawData.Pressure = m_RXHopeRFData.Pressure;
-	drawData.Altitude = m_RXHopeRFData.Altitude;
-	//drawData.Vertspeed = m_RXData.Vertspeed;
-	drawData.Vertspeed = m_FilterVertSpeed.Add(m_RXHopeRFData.Vertspeed);
-	//drawData.FuelLevel = m_RXData.FuelLevel;
-	drawData.FuelLevel = m_FilterFuelPercent.Add(m_RXHopeRFData.BatteryVoltage);
-	//memcpy(drawData.MotorThrusts, m_RXData.MotorThrusts, 4);
-
-	// gps
-	//drawData.GPSTime = m_RXHopeRFData.GPSTime;
-	drawData.FixType = m_RXHopeRFData.FixType;
-	//drawData.FixFlags = m_RXHopeRFData.FixFlags;
-	drawData.NumSV = m_RXHopeRFData.NumSV;
-	drawData.Longitude = m_RXHopeRFData.Longitude;
-	drawData.Latitude = m_RXHopeRFData.Latitude;
-	//drawData.HeightMSL = m_RXHopeRFData.HeightMSL;
-	//drawData.HorizontalAccuracy = m_RXHopeRFData.HorizontalAccuracy;
-	//drawData.VerticalAccuracy = m_RXHopeRFData.VerticalAccuracy;
-	drawData.VelN = m_RXHopeRFData.VelN;
-	drawData.VelE = m_RXHopeRFData.VelE;
-	//drawData.VelD = m_RXHopeRFData.VelD;
-	//drawData.SpeedAcc = m_RXHopeRFData.SpeedAcc;
-	//drawData.Speed = (float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f; // [km/h!!!]
-	drawData.Speed = m_FilterSpeed.Add((float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f); // [km/h!!!]
-
-	//drawData.RXKikiFrameCount = m_RXHopeRFData.RXFrameCount;
-	drawData.RXControlStationFrameCount = m_RXPacketCounter;
-	drawData.RXA2RSSI = (int)m_FilterA2RSSI.Add(-(float)m_RXHopeRFData.HopeRXRSSI); // filter RSSI
-	drawData.RXControlStationRSSI = (int)m_FilterControlStationRSSI.Add(-(float)m_RXHopeRFData.HopeTXRSSI); // filter RSSI
-
-	drawData.LocalTime = CPerformanceTimer::GetCurrentTimestamp();
-
+	memset(&drawData, 0, sizeof(drawData));	
+	FillHopeRFData(drawData);
+	//FillEthernetData(drawData);
 	m_dir2D.Draw(drawData, m_NoTelemetry);
 
 	// Save Data To File
-	m_LogFile.write((const char*)&drawData, sizeof(SUserData));
+	m_LogFileDraw.write((const char*)&drawData, sizeof(SUserData));
 }
 
-void CApplication::GenerateLogBitmaps(std::wstring logFilename, std::wstring destination)
-{
-	std::ifstream file(logFilename, std::ios::binary);
-	
-	SUserData data;	
-	file.read((char*)&data, sizeof(SUserData)); // read first chunk
-	double timestamp = data.LocalTime; // start time
-	double frameTime = 1 / 30.00; // 30.00 frames per second (Mobius)
-	int index = 0;
 
-	while (!file.eof())
-	{
-		SUserData nextData;
-		file.read((char*)&nextData, sizeof(SUserData));
-		double dataTime = nextData.LocalTime;
-
-		while (timestamp < dataTime)
-		{
-			if (data.LoopCounter > 70000) // Ignore begining
-			{
-				m_dir2D.Draw(data, false); // display! (data)
-				TCHAR filename[100];
-				swprintf_s(filename, 100, L"%s//image-%d.png", destination.c_str(), index++);
-				m_dir2D.DrawToBitmap(data, filename);
-			}
-			timestamp += frameTime;
-		}
-		data = nextData;
-	};
-
-	file.close();
-}
-
-void CApplication::GenerateLogFile(std::wstring logFilename, std::wstring destination)
-{
-	std::ifstream file(logFilename, std::ios::binary);
-	std::ofstream logFile(destination, std::ios::binary);
-
-	logFile << "Loop " << "Mode " << "NumSV " << "FuelLevel " << "Roll " << "Pitch " << "Yaw " << "dRoll " << "dPitch " << "dYaw " << "T1 " << "T2 " << "T3 " << "T4 " << "Altitude " << "VertSpeed " << "Pressure " << "MSL " << "VelN " << "VelE " << "VelD " << "HorAcc " << std::endl;
-
-	do
-	{
-		SUserData data;
-		file.read((char*)&data, sizeof(SUserData));
-		
-		// dump to file
-		CHAR buf[500];
-		sprintf_s(buf, 500, "%d %d %d %0.2f", data.LoopCounter, data.ActualMode, data.NumSV, data.FuelLevel);
-		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f", buf, data.Roll, data.Pitch, data.Yaw);
-		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f", buf, data.dRoll, data.dPitch, data.dYaw);
-		sprintf_s(buf, 500, "%s %d %d %d %d", buf, data.MotorThrusts[0], data.MotorThrusts[1], data.MotorThrusts[2], data.MotorThrusts[3]);
-		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f %0.2f", buf, data.Altitude, data.Vertspeed, data.Pressure, data.HeightMSL / 1000.0);
-		sprintf_s(buf, 500, "%s %0.3f %0.3f %0.3f %0.3f", buf, data.VelN / 1000.0, data.VelE / 1000.0, data.VelD / 1000.0, data.HorizontalAccuracy / 1000.0);
-		logFile << buf << std::endl;
-
-
-	} while ((!file.eof()));
-
-	file.close();
-	logFile.close();
-}
 
 // RX callback (from Ethernet.NewRXPacket() )
 void CApplication::NewPacketReceived(char type, BYTE* data, int len)
@@ -217,7 +120,6 @@ void CApplication::NewPacketReceived(char type, BYTE* data, int len)
 				memcpy(&commDataHopeRF, data, sizeof(commDataHopeRF));
 				//ReceivedHopeRFCounter++;
 				
-
 				// check checksum
 				unsigned int crcSum = CRC32::CalculateCrc32((BYTE*)&commDataHopeRF, sizeof(commDataHopeRF)-sizeof(commDataHopeRF.CRC32));
 				if (crcSum == commDataHopeRF.CRC32) // CRC OK?
@@ -225,9 +127,8 @@ void CApplication::NewPacketReceived(char type, BYTE* data, int len)
 					memcpy(&m_RXHopeRFData, &commDataHopeRF, sizeof(commDataHopeRF)); // data valid, copy to internal structure
 					m_RXHopeRFData.HopeTXRSSI = m_RXGatewayData.HopeRXRSSI; // fill with received/gatewayed Hope RSSI 
 
-					// save to file
-					//byte[] arrayToWrite = Comm.GetBytes(commDataHopeRF);
-					//logStream.Write(arrayToWrite, 0, arrayToWrite.Length);
+					// Save Data To File (HopeRF Log file, compatible with AvionA2 App)
+					m_LogFileHopeRF.write((const char*)&m_RXHopeRFData, sizeof(SCommHopeRFDataA2Avion));
 				}
 				//else ReceivedHopeRFCounterCrcErrors++;
 			}
@@ -249,34 +150,6 @@ void CApplication::NewPacketReceived(char type, BYTE* data, int len)
 				}
 			}*/
 	}
-
-	/*if (frametype == 0x80)
-	{
-		// DATA
-		m_RXRSSI = rssi;
-		
-		if (len == sizeof(m_RXEthData))
-		{
-			// fill data
-			memcpy(&m_RXEthData, data, len);
-			m_RXPacketCounter++;
-		}
-		
-	}
-	else if (frametype == 0x88)
-	{
-		// AT Response (used for Channel SCAN)
-		int channelNoise[12];
-		std::wstring channelsTxt;
-		for (int i = 0; i != 12; i++)
-		{
-			channelNoise[i] = -data[i + 4];
-			TCHAR buf[100];
-			swprintf_s(buf, 100, L"Ch 0x%02X: %d\n", i + 0x0C, channelNoise[i]);
-			channelsTxt += std::wstring(buf);
-		}
-		MessageBox(NULL, channelsTxt.c_str(), L"Noise Levels", MB_ICONASTERISK);
-	}*/
 }
 
 void CApplication::DownloadWaypoints(SWaypoint* wps, int cnt)
@@ -335,4 +208,203 @@ void CApplication::ExecuteOrbit(SWaypoint target, float velocity)
 	//int toSend = m_XBee.GenerateTXPacket((BYTE*)&data, len, packet);
 	//m_Serial.Write(packet, toSend);
 	//m_Serial.Write(packet, toSend);
+}
+
+
+void CApplication::FillHopeRFData(SUserData& drawData)
+{
+	drawData.LoopCounter = m_RXHopeRFData.LoopCounter;
+	drawData.ActualMode = m_RXHopeRFData.ActualMode;
+	drawData.Roll = m_RXHopeRFData.Roll;
+	drawData.Pitch = m_RXHopeRFData.Pitch;
+	drawData.Yaw = m_RXHopeRFData.Yaw;
+
+	drawData.dRoll = m_RXHopeRFData.dRoll;
+	drawData.dPitch = m_RXHopeRFData.dPitch;
+	drawData.dYaw = m_RXHopeRFData.dYaw;
+
+	//drawData.Pressure = m_RXHopeRFData.Pressure;
+	drawData.Altitude = m_RXHopeRFData.Altitude;
+	//drawData.Vertspeed = m_RXData.Vertspeed;
+	drawData.Vertspeed = m_FilterVertSpeed.Add(m_RXHopeRFData.Vertspeed);
+	//drawData.FuelLevel = m_RXData.FuelLevel;
+	drawData.FuelLevel = m_FilterFuelPercent.Add(m_RXHopeRFData.BatteryVoltage);
+	memcpy(drawData.MotorThrusts, m_RXHopeRFData.MotorThrusts, 4);
+
+	// gps
+	//drawData.GPSTime = m_RXHopeRFData.GPSTime;
+	drawData.FixType = m_RXHopeRFData.FixType;
+	//drawData.FixFlags = m_RXHopeRFData.FixFlags;
+	drawData.NumSV = m_RXHopeRFData.NumSV;
+	drawData.Longitude = m_RXHopeRFData.Longitude;
+	drawData.Latitude = m_RXHopeRFData.Latitude;
+	//drawData.HeightMSL = m_RXHopeRFData.HeightMSL;
+	//drawData.HorizontalAccuracy = m_RXHopeRFData.HorizontalAccuracy;
+	//drawData.VerticalAccuracy = m_RXHopeRFData.VerticalAccuracy;
+	drawData.VelN = m_RXHopeRFData.VelN;
+	drawData.VelE = m_RXHopeRFData.VelE;
+	//drawData.VelD = m_RXHopeRFData.VelD;
+	//drawData.SpeedAcc = m_RXHopeRFData.SpeedAcc;
+	//drawData.Speed = (float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f; // [km/h!!!]
+	drawData.Speed = m_FilterSpeed.Add((float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f); // [km/h!!!]
+
+	//drawData.RXKikiFrameCount = m_RXHopeRFData.RXFrameCount;
+	drawData.RXControlStationFrameCount = m_RXPacketCounter;
+	drawData.RXA2RSSI = (int)m_FilterA2RSSI.Add((float)m_RXHopeRFData.HopeRXRSSI); // filter RSSI
+	drawData.RXControlStationRSSI = (int)m_FilterControlStationRSSI.Add((float)m_RXHopeRFData.HopeTXRSSI); // filter RSSI
+
+	drawData.LocalTime = CPerformanceTimer::GetCurrentTimestamp();
+}
+
+// TODO!!!
+void CApplication::FillEthernetData(SUserData& drawData)
+{
+	drawData.LoopCounter = m_RXEthData.LoopCounter;
+	drawData.ActualMode = m_RXEthData.ActualMode;
+	drawData.Roll = m_RXEthData.Roll;
+	drawData.Pitch = m_RXEthData.Pitch;
+	drawData.Yaw = m_RXEthData.Yaw;
+
+	drawData.dRoll = m_RXEthData.dRoll;
+	drawData.dPitch = m_RXEthData.dPitch;
+	drawData.dYaw = m_RXEthData.dYaw;
+
+	drawData.Pressure = m_RXEthData.Pressure;
+	drawData.Altitude = m_RXEthData.Altitude;
+	drawData.Vertspeed = m_RXEthData.Vertspeed;
+	drawData.Vertspeed = m_FilterVertSpeed.Add(m_RXEthData.Vertspeed);
+	drawData.FuelLevel = m_RXEthData.FuelLevel;
+	drawData.FuelLevel = m_FilterFuelPercent.Add(m_RXEthData.BatteryVoltage);
+	memcpy(drawData.MotorThrusts, m_RXEthData.MotorThrusts, 4);
+
+	// gps
+	drawData.GPSTime = m_RXEthData.GPSTime;
+	drawData.FixType = m_RXEthData.FixType;
+	drawData.FixFlags = m_RXEthData.FixFlags;
+	drawData.NumSV = m_RXEthData.NumSV;
+	drawData.Longitude = m_RXEthData.Longitude;
+	drawData.Latitude = m_RXEthData.Latitude;
+	drawData.HeightMSL = m_RXEthData.HeightMSL;
+	drawData.HorizontalAccuracy = m_RXEthData.HorizontalAccuracy;
+	drawData.VerticalAccuracy = m_RXEthData.VerticalAccuracy;
+	drawData.VelN = m_RXEthData.VelN;
+	drawData.VelE = m_RXEthData.VelE;
+	drawData.VelD = m_RXEthData.VelD;
+	drawData.SpeedAcc = m_RXEthData.SpeedAcc;
+	drawData.Speed = (float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f; // [km/h!!!]
+	drawData.Speed = m_FilterSpeed.Add((float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f); // [km/h!!!]
+
+	drawData.RXA2RSSIFrameCount = m_RXEthData.HopeRXFrameCount;
+	drawData.RXControlStationFrameCount = m_RXPacketCounter;
+	drawData.RXA2RSSI = (int)m_FilterA2RSSI.Add((float)m_RXEthData.HopeRXRSSI); // filter RSSI
+	drawData.RXControlStationRSSI = (int)m_FilterControlStationRSSI.Add((float)m_RXEthData.HopeRXRSSI); // filter RSSI
+
+	drawData.LocalTime = CPerformanceTimer::GetCurrentTimestamp();
+}
+
+////////////////////////////////////////////
+// Log Files
+// Draw/HuD log file (LogFileDraw-%d.log)
+////////////////////////////////////////////
+void CApplication::GenerateLogBitmaps(std::wstring logFilename, std::wstring destination)
+{
+	std::ifstream file(logFilename, std::ios::binary);
+
+	SUserData data;
+	file.read((char*)&data, sizeof(SUserData)); // read first chunk
+	
+	
+	double timestamp = data.LocalTime; // start time
+	double frameTime = 1 / 30.00; // 30.00 frames per second (Mobius)
+	int index = 0;
+
+	while (!file.eof())
+	{
+		SUserData nextData;
+		file.read((char*)&nextData, sizeof(SUserData));
+		double dataTime = nextData.LocalTime;
+
+		while (timestamp < dataTime)
+		{
+			if (data.LoopCounter > 70000) // Ignore begining
+			{
+				m_dir2D.Draw(data, false); // display! (data)
+				TCHAR filename[100];
+				swprintf_s(filename, 100, L"%s//image-%d.png", destination.c_str(), index++);
+				m_dir2D.DrawToBitmap(data, filename);
+			}
+			timestamp += frameTime;
+		}
+		data = nextData;
+	};
+
+	file.close();
+}
+
+// Special HopeRF log generator (used for A2Avion app log data)
+void CApplication::GenerateLogBitmapsHopeRF(std::wstring logFilename, std::wstring destination)
+{
+	std::ifstream file(logFilename, std::ios::binary);
+
+	file.read((char*)&m_RXHopeRFData, sizeof(SCommHopeRFDataA2Avion)); // read first chunk
+	SUserData data;
+	memset(&data, 0, sizeof(SUserData));
+	FillHopeRFData(data); // convert
+
+	double timestamp = data.LoopCounter*0.0025; // start time
+	double frameTime = 1 / 30.00; // 30.00 frames per second (Mobius)
+	int index = 0;
+
+	while (!file.eof())
+	{
+		file.read((char*)&m_RXHopeRFData, sizeof(SCommHopeRFDataA2Avion)); // read first chunk
+		SUserData nextData;
+		memset(&nextData, 0, sizeof(SUserData));
+		FillHopeRFData(nextData); // convert
+		double dataTime = nextData.LoopCounter*0.0025;
+
+		while (timestamp < dataTime)
+		{
+			if (data.LoopCounter > 110000) // Ignore begining
+			{
+				m_dir2D.Draw(data, false); // display! (data)
+				TCHAR filename[100];
+				swprintf_s(filename, 100, L"%s//image-%d.png", destination.c_str(), index++);
+				//m_dir2D.DrawToBitmap(data, filename);
+			}
+			timestamp += frameTime;
+		}
+		data = nextData;
+	};
+
+	file.close();
+}
+
+void CApplication::GenerateLogFile(std::wstring logFilename, std::wstring destination)
+{
+	std::ifstream file(logFilename, std::ios::binary);
+	std::ofstream logFile(destination, std::ios::binary);
+
+	logFile << "Loop " << "Mode " << "NumSV " << "FuelLevel " << "Roll " << "Pitch " << "Yaw " << "dRoll " << "dPitch " << "dYaw " << "T1 " << "T2 " << "T3 " << "T4 " << "Altitude " << "VertSpeed " << "Pressure " << "MSL " << "VelN " << "VelE " << "VelD " << "HorAcc " << std::endl;
+
+	do
+	{
+		SUserData data;
+		file.read((char*)&data, sizeof(SUserData));
+
+		// dump to file
+		CHAR buf[500];
+		sprintf_s(buf, 500, "%d %d %d %0.2f", data.LoopCounter, data.ActualMode, data.NumSV, data.FuelLevel);
+		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f", buf, data.Roll, data.Pitch, data.Yaw);
+		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f", buf, data.dRoll, data.dPitch, data.dYaw);
+		sprintf_s(buf, 500, "%s %d %d %d %d", buf, data.MotorThrusts[0], data.MotorThrusts[1], data.MotorThrusts[2], data.MotorThrusts[3]);
+		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f %0.2f", buf, data.Altitude, data.Vertspeed, data.Pressure, data.HeightMSL / 1000.0);
+		sprintf_s(buf, 500, "%s %0.3f %0.3f %0.3f %0.3f", buf, data.VelN / 1000.0, data.VelE / 1000.0, data.VelD / 1000.0, data.HorizontalAccuracy / 1000.0);
+		logFile << buf << std::endl;
+
+
+	} while ((!file.eof()));
+
+	file.close();
+	logFile.close();
 }
