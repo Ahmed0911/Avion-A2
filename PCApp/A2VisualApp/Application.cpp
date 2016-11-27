@@ -27,6 +27,8 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	m_TimerCounter = 0;
 	m_ModeRequest = -1; // no mode set, using ctrl default
 	m_NoTelemetry = false; // XXX
+	m_RXHopeRFPacketCounter = 0;
+	m_RXHopeRFCRCErrorCounter = 0;
 
 	// create D2D
 	std::wstring mapName = L"Map\\mapa";
@@ -43,7 +45,7 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	m_FilterVertSpeed.Init(30);
 	m_FilterSpeed.Init(30);
 
-#if 1
+#if 0
 	GenerateLogBitmapsHopeRF(L"Log\\LogHopeRF-15-15-13.bin", L"Bitmaps");
 	//GenerateLogBitmaps(L"Log\\LogFileDraw-4118.log", L"Bitmaps");
 	//GenerateLogFile(L"Log\\LogFileDraw-233.log", L"mat1.txt");
@@ -118,7 +120,7 @@ void CApplication::NewPacketReceived(char type, BYTE* data, int len)
 			{
 				SCommHopeRFDataA2Avion commDataHopeRF;
 				memcpy(&commDataHopeRF, data, sizeof(commDataHopeRF));
-				//ReceivedHopeRFCounter++;
+				m_RXHopeRFPacketCounter++;
 				
 				// check checksum
 				unsigned int crcSum = CRC32::CalculateCrc32((BYTE*)&commDataHopeRF, sizeof(commDataHopeRF)-sizeof(commDataHopeRF.CRC32));
@@ -130,7 +132,7 @@ void CApplication::NewPacketReceived(char type, BYTE* data, int len)
 					// Save Data To File (HopeRF Log file, compatible with AvionA2 App)
 					m_LogFileHopeRF.write((const char*)&m_RXHopeRFData, sizeof(SCommHopeRFDataA2Avion));
 				}
-				//else ReceivedHopeRFCounterCrcErrors++;
+				else m_RXHopeRFCRCErrorCounter++;
 			}
 					 
 			break;
@@ -214,42 +216,45 @@ void CApplication::ExecuteOrbit(SWaypoint target, float velocity)
 void CApplication::FillHopeRFData(SUserData& drawData)
 {
 	drawData.LoopCounter = m_RXHopeRFData.LoopCounter;
-	drawData.ActualMode = m_RXHopeRFData.ActualMode;
+	
+	// IMU
 	drawData.Roll = m_RXHopeRFData.Roll;
 	drawData.Pitch = m_RXHopeRFData.Pitch;
 	drawData.Yaw = m_RXHopeRFData.Yaw;
-
 	drawData.dRoll = m_RXHopeRFData.dRoll;
 	drawData.dPitch = m_RXHopeRFData.dPitch;
 	drawData.dYaw = m_RXHopeRFData.dYaw;
 
-	//drawData.Pressure = m_RXHopeRFData.Pressure;
+
+	// alt/speed
 	drawData.Altitude = m_RXHopeRFData.Altitude;
-	//drawData.Vertspeed = m_RXData.Vertspeed;
-	drawData.Vertspeed = m_FilterVertSpeed.Add(m_RXHopeRFData.Vertspeed);
-	//drawData.FuelLevel = m_RXData.FuelLevel;
-	drawData.FuelLevel = m_FilterFuelPercent.Add(m_RXHopeRFData.BatteryVoltage);
+	//drawData.Vertspeed = m_RXHopeRFData.Vertspeed; // unfiltered
+	drawData.Vertspeed = m_FilterVertSpeed.Add(m_RXHopeRFData.Vertspeed); // filtered
+
+	// engines
 	memcpy(drawData.MotorThrusts, m_RXHopeRFData.MotorThrusts, 4);
 
-	// gps
-	//drawData.GPSTime = m_RXHopeRFData.GPSTime;
-	drawData.FixType = m_RXHopeRFData.FixType;
-	//drawData.FixFlags = m_RXHopeRFData.FixFlags;
+	// Voltage/Current
+	drawData.BatteryVoltage = m_RXHopeRFData.BatteryVoltage;
+	drawData.BatteryCurrentA = m_RXHopeRFData.BatteryCurrentA;
+	drawData.BatteryTotalCharge_mAh = m_RXHopeRFData.BatteryTotalCharge_mAh;
+	drawData.FuelLevel = (2000 - m_RXHopeRFData.BatteryTotalCharge_mAh)/2000*100;
+	
+	// GPS
 	drawData.NumSV = m_RXHopeRFData.NumSV;
+	drawData.FixType = m_RXHopeRFData.FixType;
+	drawData.ActualMode = m_RXHopeRFData.ActualMode;
 	drawData.Longitude = m_RXHopeRFData.Longitude;
 	drawData.Latitude = m_RXHopeRFData.Latitude;
-	//drawData.HeightMSL = m_RXHopeRFData.HeightMSL;
-	//drawData.HorizontalAccuracy = m_RXHopeRFData.HorizontalAccuracy;
-	//drawData.VerticalAccuracy = m_RXHopeRFData.VerticalAccuracy;
 	drawData.VelN = m_RXHopeRFData.VelN;
 	drawData.VelE = m_RXHopeRFData.VelE;
-	//drawData.VelD = m_RXHopeRFData.VelD;
-	//drawData.SpeedAcc = m_RXHopeRFData.SpeedAcc;
 	//drawData.Speed = (float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f; // [km/h!!!]
 	drawData.Speed = m_FilterSpeed.Add((float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f); // [km/h!!!]
 
-	//drawData.RXKikiFrameCount = m_RXHopeRFData.RXFrameCount;
-	drawData.RXControlStationFrameCount = m_RXPacketCounter;
+	// RX/TX. HopeRF Data
+	drawData.RXA2RSSIFrameCount = m_RXHopeRFData.HopeRXFrameCount;
+	drawData.RXControlStationFrameCount = m_RXHopeRFPacketCounter;
+	drawData.RXControlStationFrameErrorCount = m_RXHopeRFCRCErrorCounter;
 	drawData.RXA2RSSI = (int)m_FilterA2RSSI.Add((float)m_RXHopeRFData.HopeRXRSSI); // filter RSSI
 	drawData.RXControlStationRSSI = (int)m_FilterControlStationRSSI.Add((float)m_RXHopeRFData.HopeTXRSSI); // filter RSSI
 
@@ -295,7 +300,7 @@ void CApplication::FillEthernetData(SUserData& drawData)
 	drawData.Speed = m_FilterSpeed.Add((float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f); // [km/h!!!]
 
 	drawData.RXA2RSSIFrameCount = m_RXEthData.HopeRXFrameCount;
-	drawData.RXControlStationFrameCount = m_RXPacketCounter;
+	drawData.RXControlStationFrameCount = m_RXHopeRFPacketCounter;
 	drawData.RXA2RSSI = (int)m_FilterA2RSSI.Add((float)m_RXEthData.HopeRXRSSI); // filter RSSI
 	drawData.RXControlStationRSSI = (int)m_FilterControlStationRSSI.Add((float)m_RXEthData.HopeRXRSSI); // filter RSSI
 
@@ -367,10 +372,14 @@ void CApplication::GenerateLogBitmapsHopeRF(std::wstring logFilename, std::wstri
 		{
 			if (data.LoopCounter > 110000) // Ignore begining
 			{
-				m_dir2D.Draw(data, false); // display! (data)
+				double delta = dataTime - timestamp; // check this for no data display
+				bool noData = false;
+				if (delta > 1) noData = true; // NODATA
+
+				m_dir2D.Draw(data, noData); // display! (data)
 				TCHAR filename[100];
 				swprintf_s(filename, 100, L"%s//image-%d.png", destination.c_str(), index++);
-				//m_dir2D.DrawToBitmap(data, filename);
+				m_dir2D.DrawToBitmap(data, filename);
 			}
 			timestamp += frameTime;
 		}

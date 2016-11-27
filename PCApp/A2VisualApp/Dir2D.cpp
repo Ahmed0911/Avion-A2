@@ -481,28 +481,30 @@ void CDir2D::DrawHUD(SUserData &data)
 	}
 	
 	// speed indicator
+	int MaxSpeed = 100; // km/h
+	float SpeedOffset = 600.0f / MaxSpeed;
 	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.05F, SCREENY * 0.47F));
-	for (int i = 0; i <= 30; i += 1)
+	for (int i = 0; i <= MaxSpeed; i += 2)
 	{
-		if ((i % 5) == 0)
+		if ((i % 10) == 0)
 		{
-			m_d2dContext->DrawLine(D2D1::Point2F(0, (i - 15) * 20.0f), D2D1::Point2F(40, (i - 15) * 20.0f), m_GreenBrush.Get(), 2, NULL);
-			DrawNumber(DNSTYLE_SMALL, -50, (15 - i) * 20 - 15.0f, 50, 30, i);
+			m_d2dContext->DrawLine(D2D1::Point2F(0, (i - MaxSpeed / 2) * SpeedOffset), D2D1::Point2F(40, (i - MaxSpeed / 2) * SpeedOffset), m_GreenBrush.Get(), 2, NULL);
+			DrawNumber(DNSTYLE_SMALL, -50, (MaxSpeed / 2 - i) * SpeedOffset - 15.0f, 50, 30, i);
 		}
 		else
 		{
-			m_d2dContext->DrawLine(D2D1::Point2F(20, (i - 15) * 20.0f), D2D1::Point2F(40, (i - 15) * 20.0f), m_GreenBrush.Get(), 1, NULL);
+			m_d2dContext->DrawLine(D2D1::Point2F(20, (i - MaxSpeed / 2) * SpeedOffset), D2D1::Point2F(40, (i - MaxSpeed / 2) * SpeedOffset), m_GreenBrush.Get(), 1, NULL);
 		}
 	}
-	m_d2dContext->DrawLine(D2D1::Point2F(40, 15 * 20), D2D1::Point2F(40, -15 * 20), m_GreenBrush.Get(), 2, NULL);
-
-	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.05 + 45, SCREENY *0.47F + (15 - speed) * 20));
+	m_d2dContext->DrawLine(D2D1::Point2F(40, 300), D2D1::Point2F(40, -300), m_GreenBrush.Get(), 2, NULL);
+	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.05 + 45, SCREENY *0.47F + (MaxSpeed / 2 - speed) * SpeedOffset));
 	m_d2dContext->DrawLine(D2D1::Point2F(0, 0), D2D1::Point2F(25, -25), m_GreenBrush.Get(), 2, NULL);
 	m_d2dContext->DrawLine(D2D1::Point2F(25, -25), D2D1::Point2F(120, -25), m_GreenBrush.Get(), 2, NULL);
 	m_d2dContext->DrawLine(D2D1::Point2F(0, 0), D2D1::Point2F(25, 25), m_GreenBrush.Get(), 2, NULL);
 	m_d2dContext->DrawLine(D2D1::Point2F(25, 25), D2D1::Point2F(120, 25), m_GreenBrush.Get(), 2, NULL);
 	m_d2dContext->DrawLine(D2D1::Point2F(120, -25), D2D1::Point2F(120, 25), m_GreenBrush.Get(), 2, NULL);
 	DrawNumber(DNSTYLE_YAW_BOX_FLOAT, 20, -25, 100, 50, 0, speed);
+	
 
 	// altitude
 	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.87F, SCREENY / 2));
@@ -573,13 +575,16 @@ void CDir2D::DrawHUD(SUserData &data)
 	// draw engine thrusts
 	for (int i = 0; i != 4; i++)
 	{
-		m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.015F + i * 50, SCREENY * 0.05F));
+		m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.015F + i * 55, SCREENY * 0.05F));
 		m_d2dContext->FillRectangle(D2D1::RectF(0, 100.0F - motorthrusts[i], 20, 100), m_BlueBrush.Get());
 		m_d2dContext->DrawRectangle(D2D1::RectF(0, 0, 20, 100), m_GreenBrush.Get(), 2);
 		TCHAR buf[10];
-		swprintf_s(buf, 10, L"M%d", i + 1);
-		DrawNumber(DNSTYLE_SMALL, -10, 110, 40, 20, 0, 0, buf);
-		DrawNumber(DNSTYLE_SMALL, -10, -25, 40, 20, motorthrusts[i]);
+		if (i == 0) swprintf_s(buf, 10, L"THR");
+		else if (i == 1) swprintf_s(buf, 10, L"AIL");
+		else if (i == 2) swprintf_s(buf, 10, L"ELE");
+		else if (i == 3) swprintf_s(buf, 10, L"RUD");
+		DrawNumber(DNSTYLE_SMALL, -15, 110, 52, 20, 0, 0, buf);
+		DrawNumber(DNSTYLE_SMALL, -15, -25, 50, 20, motorthrusts[i]);
 	}
 
 	// draw Comm signal
@@ -606,62 +611,65 @@ void CDir2D::DrawHUD(SUserData &data)
 
 	// draw battery indicator
 	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.80F, SCREENY * 0.92F));
-	fuelLevel = fuelLevel / 4; // XXX: single cell voltage
-	if (fuelLevel < 2.8) fuelLevel = 2.8f;
-	if (fuelLevel > 4.2) fuelLevel = 4.2f;
-	//m_d2dContext->FillRectangle(D2D1::RectF(0, 0, fuelLevel/100 * 300, 40), m_pLinearGradientRYGBrush.Get());
-	m_d2dContext->FillRectangle(D2D1::RectF(0, 0, (fuelLevel-2.8f)/1.4f * 300, 40), m_pLinearGradientRYGBrush.Get());
+	if (fuelLevel < 0) fuelLevel = 0;
+	if (fuelLevel > 100) fuelLevel = 100;
+	m_d2dContext->FillRectangle(D2D1::RectF(0, 0, fuelLevel/100 * 300, 40), m_pLinearGradientRYGBrush.Get());
 	m_d2dContext->DrawRectangle(D2D1::RectF(0, 0, 300, 40), m_GreenBrush.Get(), 2);
-	//swprintf_s(buf, 20, L"%d%%", (int)fuelLevel);
-	swprintf_s(buf, 20, L"%0.1f", fuelLevel);
+	swprintf_s(buf, 20, L"%d%%", (int)fuelLevel);
 	DrawNumber(DNSTYLE_YAW_BOX, 90, -5, 140, 50, 0, 0, buf);
 	m_d2dContext->DrawRectangle(D2D1::RectF(-50, 10, -10, 35), m_GreenBrush.Get(), 2);
 	m_d2dContext->DrawLine(D2D1::Point2F(-50, 10), D2D1::Point2F(-40, 0), m_GreenBrush.Get(), 2, NULL);
 	m_d2dContext->DrawLine(D2D1::Point2F(-10, 10), D2D1::Point2F(-20, 0), m_GreenBrush.Get(), 2, NULL);
 	DrawNumber(DNSTYLE_SMALL, -47, 13, 20, 20, 0, 0, L"+");
 	DrawNumber(DNSTYLE_SMALL, -30, 11, 20, 20, 0, 0, L"-");
-	
+	swprintf_s(buf, 20, L"V: %0.1f V", data.BatteryVoltage);
+	DrawNumber(DNSTYLE_SMALL,-10, -30, 100, 20, 0, 0, buf);
+	swprintf_s(buf, 20, L"C: %0.1f A", data.BatteryCurrentA);
+	DrawNumber(DNSTYLE_SMALL, -10+100, -30, 130, 20, 0, 0, buf);
+	swprintf_s(buf, 20, L"Q: %0.0f mAh", data.BatteryTotalCharge_mAh);
+	DrawNumber(DNSTYLE_SMALL, -10 + 230, -30, 150, 20, 0, 0, buf);
 
+	// GPS
+	float Yoffset = 5;
 	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.165F, SCREENY * 0.78F));
 	m_GreenTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 	swprintf_s(buf, 200, L"GPS Time: %0.2f", data.GPSTime / 1000.0f);
-	DrawNumber(DNSTYLE_SMALL, 0, 0, 350, 25, 0, 0, buf);
+	//DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);
 	swprintf_s(buf, 200, L"Sat Num#: %d", data.NumSV);
-	DrawNumber(DNSTYLE_SMALL, 0, 25, 180, 25, 0, 0, buf);
+	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset, 180, 25, 0, 0, buf);
 	// fix type
 	std::wstring fixTypes[] = { L"[]", L"[2D]", L"[3D]", L"[OK]", L"[Time]" };
 	std::wstring fixtyp = L"";
 	if (data.FixType <= 5) fixtyp += fixTypes[data.FixType];
-	DrawNumber(DNSTYLE_SMALL, 180, 25, 150, 25, 0, 0, (TCHAR*)fixtyp.c_str());
+	DrawNumber(DNSTYLE_SMALL, 150, 25 * Yoffset++, 100, 25, 0, 0, (TCHAR*)fixtyp.c_str());
 	// fix flags
-	std::wstring fixStr = L"";
+	std::wstring fixStr = L"NONE ";
 	if (data.FixFlags & 0x01) fixStr += L"FIX ";
 	if (data.FixFlags & 0x02) fixStr += L"DIFF ";
 	if (data.FixFlags & 0x20) fixStr += L"HDG ";
 	std::wstring psmState[] = { L"", L"ENABLED", L"ACQUISITION", L"TRACKING", L"PWROPT", L"INACTIVE", L"X", L"X", L"X" };
 	int psmIndex = (data.FixFlags >> 3) && 0x07;
 	fixStr += psmState[(psmIndex)];
-	DrawNumber(DNSTYLE_SMALL, 0, 50, 350, 25, 0, 0, (TCHAR*)fixStr.c_str());
+	//DrawNumber(DNSTYLE_SMALL, 0, 25*Yoffset++, 350, 25, 0, 0, (TCHAR*)fixStr.c_str());
 	// speeds
 	swprintf_s(buf, 200, L"N:%0.2f m/s E:%0.2f m/s", data.VelN / 1000.0, data.VelE / 1000.0);
-	DrawNumber(DNSTYLE_SMALL, 0, 75, 350, 25, 0, 0, buf);
+	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);
 	swprintf_s(buf, 200, L"Vert: %0.2f m/s [%0.2f m/s]", data.VelD / 1000.0, data.SpeedAcc / 1000.0);
-	DrawNumber(DNSTYLE_SMALL, 0, 100, 350, 25, 0, 0, buf);
+	//DrawNumber(DNSTYLE_SMALL, 0, 25*Yoffset++, 350, 25, 0, 0, buf);
 	// acc
 	swprintf_s(buf, 200, L"AccH: %0.2f m AccV: %0.2f m", data.HorizontalAccuracy/1000.0, data.VerticalAccuracy/1000.0f);
-	DrawNumber(DNSTYLE_SMALL, 0, 125, 450, 25, 0, 0, buf);
+	//DrawNumber(DNSTYLE_SMALL, 0, 25*Yoffset++, 450, 25, 0, 0, buf);
 	// position
-	swprintf_s(buf, 200, L"Long: %0.5f Lat: %0.5f", data.Longitude*1e-7, data.Latitude*1e-7);
-	DrawNumber(DNSTYLE_SMALL, 0, 150, 350, 25, 0, 0, buf);
+	swprintf_s(buf, 200, L"Lat: %0.5f Long: %0.5f ", data.Latitude*1e-7, data.Longitude*1e-7 );
+	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);
 	swprintf_s(buf, 200, L"MSL: %0.3f m", data.HeightMSL/1000.0);
-	DrawNumber(DNSTYLE_SMALL, 0, 175, 350, 25, 0, 0, buf);
+	//DrawNumber(DNSTYLE_SMALL, 0, 25*Yoffset++, 350, 25, 0, 0, buf);
 	if (m_Map.HaveHome())
 	{
 		double distanceFromHome = m_Map.DistanceFromHomeMeters(data.Longitude*1e-7, data.Latitude*1e-7);
-		swprintf_s(buf, 200, L"Home: %0.3f m", distanceFromHome);
-		DrawNumber(DNSTYLE_SMALL, 0, 200, 350, 25, 0, 0, buf);
+		swprintf_s(buf, 200, L"Home: %0.1f m", distanceFromHome);
+		DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);
 	}
-	
 	// GPS AutoFIX
 	if (!m_Map.HaveHome())
 	{
@@ -672,22 +680,23 @@ void CDir2D::DrawHUD(SUserData &data)
 		}
 	}
 
+
 	// System data
 	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.58F, SCREENY * 0.97F));
 	swprintf_s(buf, 20, L"LoopCnt: %d", data.LoopCounter);
 	DrawNumber(DNSTYLE_SMALL, 0, 0, 200, 20, 0, 0, buf);
-	swprintf_s(buf, 20, L"CS Frm: %d", data.RXControlStationFrameCount);
+	swprintf_s(buf, 20, L"CS_Frm: %d (%d)", data.RXControlStationFrameCount, data.RXControlStationFrameErrorCount);
 	DrawNumber(DNSTYLE_SMALL, 200, 0, 200, 20, 0, 0, buf);
-	swprintf_s(buf, 20, L"A2 Frm: %d", data.RXA2RSSIFrameCount);
+	swprintf_s(buf, 20, L"A2_Frm: %d", data.RXA2RSSIFrameCount);
 	DrawNumber(DNSTYLE_SMALL, 400, 0, 200, 20, 0, 0, buf);	
 	swprintf_s(buf, 20, L"%0.3lf s", data.LocalTime);
 	DrawNumber(DNSTYLE_SMALL, 600, 0, 200, 20, 0, 0, buf);
-	// Current/Requested Mode
-
+	
+	// Mode
 	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.015F, SCREENY * 0.005F));
 	if (data.ActualMode >= 0 && data.ActualMode <= 5)
 	{
-		std::wstring modes[] = { L"Off", L"Manual", L"Rate", L"RollPitch", L"Attitude", L"Auto" };
+		std::wstring modes[] = { L"Off", L"Manual", L"Attitude", L"Arcade", L"Mode4", L"Mode5" };
 		swprintf_s(buf, 100, L"Mode: %s [%d]", modes[data.ActualMode].c_str(), data.ActualMode);
 		m_Map.m_ActiveWaypoint = -1;
 	}
@@ -696,7 +705,6 @@ void CDir2D::DrawHUD(SUserData &data)
 		swprintf_s(buf, 100, L"Mode: WayPnt [%d]", data.ActualMode-10);
 		m_Map.m_ActiveWaypoint = data.ActualMode - 10;
 	}
-	
 	DrawNumber(DNSTYLE_SMALL, 0, 0, 300, 20, 0, 0, buf);
 	
 	m_GreenTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER); // restore alignment

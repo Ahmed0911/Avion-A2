@@ -37,6 +37,11 @@ struct SUserData
 
 	// engines
 	unsigned char MotorThrusts[4]; // [0-100%]
+
+	// Fuel
+	float BatteryVoltage; // [V]
+	float BatteryCurrentA; // [A]
+	float BatteryTotalCharge_mAh; // [mAh]
 	float FuelLevel; // [0...100%]
 
 	// GPS
@@ -58,6 +63,7 @@ struct SUserData
 	// Comm
 	unsigned int RXA2RSSIFrameCount;
 	unsigned int RXControlStationFrameCount;
+	unsigned int RXControlStationFrameErrorCount;
 	int RXA2RSSI;
 	int RXControlStationRSSI;
 

@@ -42,8 +42,10 @@ private:
 	SCommEthData m_RXGatewayData;
 	SCommEthData m_RXEthData;
 	SCommHopeRFDataA2Avion m_RXHopeRFData;
+	// counters
 	int m_RXRSSI;
-	int m_RXPacketCounter;
+	int m_RXHopeRFPacketCounter;
+	int m_RXHopeRFCRCErrorCounter;
 
 	bool m_NoTelemetry;
 
