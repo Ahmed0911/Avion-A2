@@ -47,7 +47,9 @@ private:
 	int m_RXHopeRFPacketCounter;
 	int m_RXHopeRFCRCErrorCounter;
 
+	// no telemetry stuff
 	bool m_NoTelemetry;
+	double m_lastTelemetryReceivedTimestamp;
 
 	// GPS
 	UBloxGPS m_GPS;

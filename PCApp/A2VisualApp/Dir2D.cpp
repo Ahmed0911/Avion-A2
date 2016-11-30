@@ -224,6 +224,10 @@ void CDir2D::CreateUserResources(void)
 	DX::ThrowIfFailed(
 		m_d2dContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::CadetBlue), &m_BlueBrush)
 		);
+
+	DX::ThrowIfFailed(
+		m_d2dContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::OrangeRed), &m_RedBrush)
+		);
 	
 
 	// gradient brush (red/yellow/green)	
@@ -296,6 +300,20 @@ void CDir2D::CreateUserResources(void)
 	m_GreenLargeTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 	m_GreenLargeTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 
+	// Create large Red Warning font
+	DX::ThrowIfFailed(
+		m_DWriteFactory->CreateTextFormat(
+		L"Arial",
+		NULL,
+		DWRITE_FONT_WEIGHT_NORMAL,
+		DWRITE_FONT_STYLE_NORMAL,
+		DWRITE_FONT_STRETCH_NORMAL,
+		60,
+		L"", //locale
+		&m_RedLargeWaringTextFormat)
+		);
+	m_RedLargeWaringTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+	m_RedLargeWaringTextFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 }
 
 void CDir2D::DrawVideo()
@@ -334,7 +352,7 @@ void CDir2D::DrawVideo()
 	}
 }
 
-void CDir2D::DrawHUD(SUserData &data)
+void CDir2D::DrawHUD(SUserData &data, bool noTelemetry)
 {
 	// get data
 	float pixPerDeg = (float)(SCREENY / VFOV);
@@ -374,6 +392,16 @@ void CDir2D::DrawHUD(SUserData &data)
 	txRSSI = (int)(sin(x) * 20 - 60);
 	rxRSSI = (int)(sin(x-2.2) * 20 - 60);
 	fuelLevel = (float)(sin(x + 0.5) * 50 + 50);*/
+
+	// draw only message on NO_TELEMETRY
+	if (noTelemetry)
+	{
+		// draw at center
+		m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX / 2, SCREENY *0.1f));
+		DrawNumber(DNSTYLE_RED_WARNING, -250, 0, 500, 50, 0, 0, L"NO TELEMETRY");
+
+		return;
+	}
 
 	// GPS/MAP
 	// TEST
@@ -652,9 +680,9 @@ void CDir2D::DrawHUD(SUserData &data)
 	fixStr += psmState[(psmIndex)];
 	//DrawNumber(DNSTYLE_SMALL, 0, 25*Yoffset++, 350, 25, 0, 0, (TCHAR*)fixStr.c_str());
 	// speeds
-	swprintf_s(buf, 200, L"N:%0.2f m/s E:%0.2f m/s", data.VelN / 1000.0, data.VelE / 1000.0);
+	swprintf_s(buf, 200, L"N:%0.1f m/s E:%0.1f m/s", data.VelN / 1000.0, data.VelE / 1000.0);
 	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);
-	swprintf_s(buf, 200, L"Vert: %0.2f m/s [%0.2f m/s]", data.VelD / 1000.0, data.SpeedAcc / 1000.0);
+	swprintf_s(buf, 200, L"Vert: %0.1f m/s [%0.1f m/s]", data.VelD / 1000.0, data.SpeedAcc / 1000.0);
 	//DrawNumber(DNSTYLE_SMALL, 0, 25*Yoffset++, 350, 25, 0, 0, buf);
 	// acc
 	swprintf_s(buf, 200, L"AccH: %0.2f m AccV: %0.2f m", data.HorizontalAccuracy/1000.0, data.VerticalAccuracy/1000.0f);
@@ -689,7 +717,7 @@ void CDir2D::DrawHUD(SUserData &data)
 	DrawNumber(DNSTYLE_SMALL, 200, 0, 200, 20, 0, 0, buf);
 	swprintf_s(buf, 20, L"A2_Frm: %d", data.RXA2RSSIFrameCount);
 	DrawNumber(DNSTYLE_SMALL, 400, 0, 200, 20, 0, 0, buf);	
-	swprintf_s(buf, 20, L"%0.3lf s", data.LocalTime);
+	swprintf_s(buf, 20, L"%0.1lf s", data.LocalTime);
 	DrawNumber(DNSTYLE_SMALL, 600, 0, 200, 20, 0, 0, buf);
 	
 	// Mode
@@ -759,6 +787,21 @@ void CDir2D::DrawNumber(int style, float x, float y, float dx, float dy, int num
 
 		//m_d2dContext->DrawRectangle(&layoutRect, m_GreenBrush.Get());
 	}
+	else if (style == DNSTYLE_RED_WARNING)
+	{
+		TCHAR buffer[100];
+		if (text != NULL) wcscpy_s(buffer, text);
+		else _itow_s(number, buffer, 100, 10);
+		D2D1_RECT_F layoutRect = D2D1::RectF(x, y, x + dx, y + dy);
+		m_d2dContext->DrawText(
+			buffer,        // The string to render.
+			(UINT32)_tcslen(buffer),    // The string's length.
+			m_RedLargeWaringTextFormat.Get(),    // The text format.
+			&layoutRect,       // The region of the window where the text will be rendered.
+			m_RedBrush.Get()     // The brush used to draw the text.
+			);
+		//m_d2dContext->DrawRectangle(&layoutRect, m_RedBrush.Get());
+	}
 }
 
 void CDir2D::Draw(SUserData &data, bool noTelemetry)
@@ -771,10 +814,8 @@ void CDir2D::Draw(SUserData &data, bool noTelemetry)
 	DrawVideo();
 
 	// draw HUD
-	if (!noTelemetry)
-	{
-		DrawHUD(data);
-	}
+	DrawHUD(data, noTelemetry);
+
 
 	DX::ThrowIfFailed(
 		m_d2dContext->EndDraw()
@@ -787,14 +828,14 @@ void CDir2D::Draw(SUserData &data, bool noTelemetry)
 
 }
 
-void CDir2D::DrawToBitmap(SUserData &data, std::wstring bitmapfile)
+void CDir2D::DrawToBitmap(SUserData &data, std::wstring bitmapfile, bool noTelemetry)
 {
 	m_d2dContext->SetTarget(m_saveBitmap.Get());
 	m_d2dContext->BeginDraw();
 	m_d2dContext->Clear(D2D1::ColorF(D2D1::ColorF::Black, 0.0f)); // transparent background
 
 	// draw HUD
-	DrawHUD(data);
+	DrawHUD(data, noTelemetry);
 
 	m_d2dContext->EndDraw();
 

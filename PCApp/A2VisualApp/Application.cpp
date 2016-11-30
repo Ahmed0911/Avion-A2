@@ -26,7 +26,8 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	instance = this;
 	m_TimerCounter = 0;
 	m_ModeRequest = -1; // no mode set, using ctrl default
-	m_NoTelemetry = false; // XXX
+	m_NoTelemetry = false;
+	m_lastTelemetryReceivedTimestamp = CPerformanceTimer::GetCurrentTimestamp();
 	m_RXHopeRFPacketCounter = 0;
 	m_RXHopeRFCRCErrorCounter = 0;
 
@@ -84,6 +85,10 @@ void CApplication::OnTimer()
 	m_ethernetCommGW.Update();
 	//m_ethernetCommA2.Update();
 
+	// check telemetry timestamps, mark m_NoTelemetry
+	double currentTimestamp = CPerformanceTimer::GetCurrentTimestamp();
+	if ((currentTimestamp - m_lastTelemetryReceivedTimestamp) < 2.0) m_NoTelemetry = false;
+	else m_NoTelemetry = true;
 
 	// fill data and draw
 	SUserData drawData;
@@ -128,6 +133,9 @@ void CApplication::NewPacketReceived(char type, BYTE* data, int len)
 				{
 					memcpy(&m_RXHopeRFData, &commDataHopeRF, sizeof(commDataHopeRF)); // data valid, copy to internal structure
 					m_RXHopeRFData.HopeTXRSSI = m_RXGatewayData.HopeRXRSSI; // fill with received/gatewayed Hope RSSI 
+
+					// reset timestamp
+					m_lastTelemetryReceivedTimestamp = CPerformanceTimer::GetCurrentTimestamp();
 
 					// Save Data To File (HopeRF Log file, compatible with AvionA2 App)
 					m_LogFileHopeRF.write((const char*)&m_RXHopeRFData, sizeof(SCommHopeRFDataA2Avion));
@@ -336,7 +344,7 @@ void CApplication::GenerateLogBitmaps(std::wstring logFilename, std::wstring des
 				m_dir2D.Draw(data, false); // display! (data)
 				TCHAR filename[100];
 				swprintf_s(filename, 100, L"%s//image-%d.png", destination.c_str(), index++);
-				m_dir2D.DrawToBitmap(data, filename);
+				m_dir2D.DrawToBitmap(data, filename, false);
 			}
 			timestamp += frameTime;
 		}
@@ -379,7 +387,7 @@ void CApplication::GenerateLogBitmapsHopeRF(std::wstring logFilename, std::wstri
 				m_dir2D.Draw(data, noData); // display! (data)
 				TCHAR filename[100];
 				swprintf_s(filename, 100, L"%s//image-%d.png", destination.c_str(), index++);
-				m_dir2D.DrawToBitmap(data, filename);
+				//m_dir2D.DrawToBitmap(data, filename, noData);
 			}
 			timestamp += frameTime;
 		}

@@ -73,6 +73,7 @@ struct SUserData
 #define DNSTYLE_SMALL 0
 #define DNSTYLE_YAW_BOX 1
 #define DNSTYLE_YAW_BOX_FLOAT 2
+#define DNSTYLE_RED_WARNING 3
 
 class CDir2D
 {
@@ -83,7 +84,7 @@ public:
 	void Init(HWND hWnd, TCHAR* mapName);
 	void Shutdown(void);
 	void Draw(SUserData& data, bool noTelemetry);
-	void DrawToBitmap(SUserData &data, std::wstring bitmapfile);
+	void DrawToBitmap(SUserData &data, std::wstring bitmapfile, bool noTelemetry);
 	void SetMapWpyCommands(WPARAM param);
 	CMapManager* GetMapMgr();
 
@@ -93,7 +94,7 @@ public:
 
 private:
 	void CreateUserResources(void);
-	void DrawHUD(SUserData &data);
+	void DrawHUD(SUserData &data, bool noTelemetry);
 	void DrawVideo(void);
 	void DrawNumber(int style, float x, float y, float dx, float dy, int number, float numberF = 0, TCHAR* text = NULL);
 
@@ -110,11 +111,13 @@ private:
 	ComPtr<IDWriteFactory> m_DWriteFactory;
 	
 	ComPtr<ID2D1SolidColorBrush> m_GreenBrush;
+	ComPtr<ID2D1SolidColorBrush> m_RedBrush;
 	ComPtr<ID2D1SolidColorBrush> m_BlueBrush;
 	ComPtr<ID2D1LinearGradientBrush>	m_pLinearGradientRYGBrush;
 	ComPtr<ID2D1StrokeStyle> m_DashedLineStroke;
 	ComPtr<IDWriteTextFormat> m_GreenTextFormat;
 	ComPtr<IDWriteTextFormat> m_GreenLargeTextFormat;
+	ComPtr<IDWriteTextFormat> m_RedLargeWaringTextFormat;
 	
 	// camera
 	CamGrabber m_camGrabber;
