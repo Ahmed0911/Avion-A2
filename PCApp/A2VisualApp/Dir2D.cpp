@@ -405,17 +405,18 @@ void CDir2D::DrawHUD(SUserData &data, bool noTelemetry)
 
 	// GPS/MAP
 	// TEST
-	//data.Latitude =  (int)( (45.787469 + (0.005*sin(x)))*1e7 );
+	//data.Latitude =  (int)( (45.797469 + (0.005*sin(x)))*1e7 );
 	//data.Longitude = (int)( (15.889805 + (0.003*sin(1.8*x)))*1e7);
 	//data.NumSV = 12;
+	
 	// draw map
 	if (m_ActiveDisplay == EActiveDisplay::CAMERA)
 	{
-		m_d2dContext->SetTransform(D2D1::Matrix3x2F::Scale(0.29F, 0.29F) * D2D1::Matrix3x2F::Translation(SCREENX * 0.01F, SCREENY * 0.78F));
+		m_d2dContext->SetTransform(D2D1::Matrix3x2F::Scale(0.38F, 0.38F) * D2D1::Matrix3x2F::Translation(SCREENX * 0.006F, SCREENY * 0.78F));
 	}
 	else if(m_ActiveDisplay == EActiveDisplay::MAP )
 	{
-		m_d2dContext->SetTransform(D2D1::Matrix3x2F::Scale(1.25, 1.25) * D2D1::Matrix3x2F::Translation(SCREENX * 0.15F, SCREENY * 0.05F));
+		m_d2dContext->SetTransform(D2D1::Matrix3x2F::Scale(1.7, 1.7) * D2D1::Matrix3x2F::Translation(SCREENX * 0.13F, SCREENY * 0.03F));
 	}
 	m_Map.Draw(m_d2dContext.Get(), data.Longitude*1e-7, data.Latitude*1e-7);
 

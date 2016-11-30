@@ -32,7 +32,7 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	m_RXHopeRFCRCErrorCounter = 0;
 
 	// create D2D
-	std::wstring mapName = L"Map\\mapa";
+	std::wstring mapName = L"Map\\map-45.7996-15.84655-16-X.jpg";
 	if (cmdLine[0] != 0)
 	{
 		mapName = std::wstring(L"Map\\") + std::wstring(cmdLine);
@@ -88,7 +88,7 @@ void CApplication::OnTimer()
 	// check telemetry timestamps, mark m_NoTelemetry
 	double currentTimestamp = CPerformanceTimer::GetCurrentTimestamp();
 	if ((currentTimestamp - m_lastTelemetryReceivedTimestamp) < 2.0) m_NoTelemetry = false;
-	else m_NoTelemetry = true;
+	//else m_NoTelemetry = true;
 
 	// fill data and draw
 	SUserData drawData;
@@ -387,7 +387,7 @@ void CApplication::GenerateLogBitmapsHopeRF(std::wstring logFilename, std::wstri
 				m_dir2D.Draw(data, noData); // display! (data)
 				TCHAR filename[100];
 				swprintf_s(filename, 100, L"%s//image-%d.png", destination.c_str(), index++);
-				//m_dir2D.DrawToBitmap(data, filename, noData);
+				m_dir2D.DrawToBitmap(data, filename, noData);
 			}
 			timestamp += frameTime;
 		}

@@ -4,8 +4,26 @@
 #include <math.h>
 #include <fstream>
 #include "Application.h"
+#include <vector>
+#include <string>
+using namespace std;
 
 extern CApplication app;
+
+vector<wstring> split(const TCHAR *str, TCHAR c = ' ')
+{
+	vector<wstring> result;
+
+	do
+	{
+		const TCHAR *begin = str;
+		while (*str != c && *str) str++;
+
+		result.push_back(wstring(begin, str));
+	} while (0 != *str++);
+
+	return result;
+}
 
 CMapManager::CMapManager()
 {	
@@ -22,6 +40,8 @@ CMapManager::CMapManager()
 CMapManager::~CMapManager()
 {
 }
+
+
 
 void CMapManager::LoadMap(TCHAR* mapname, ID2D1DeviceContext* d2dDeviceContext, IDWriteFactory* writeFactory, HWND hWnd)
 {
@@ -83,11 +103,10 @@ void CMapManager::LoadMap(TCHAR* mapname, ID2D1DeviceContext* d2dDeviceContext, 
 		IID_PPV_ARGS(&m_wicFactory))
 	);
 
-	std::wstring mapName = mapname + std::wstring(L".jpg");
 	ComPtr<IWICBitmapDecoder> wicBitmapDecoder;
 	DX::ThrowIfFailed(
 		m_wicFactory->CreateDecoderFromFilename(
-			mapName.c_str(),
+			mapname,
 			NULL,
 			GENERIC_READ,
 			WICDecodeMetadataCacheOnLoad,
@@ -125,17 +144,11 @@ void CMapManager::LoadMap(TCHAR* mapname, ID2D1DeviceContext* d2dDeviceContext, 
 			&m_mapBitmap)
 	);
 
-	// load data
-	std::wstring txtName = mapname + std::wstring(L".txt");
-	std::ifstream file(txtName, std::ios_base::in);
-	if (!file.is_open())
-	{
-		MessageBox(NULL, L"Can't open MAP file", txtName.c_str(), MB_ICONWARNING);
-	}
-	file >> m_ZoomLevel;
-	file >> m_CenterLatitude;
-	file >> m_CenterLongitude;
-	file.close();
+	// get map data
+	vector<wstring> toks = split(mapname, '-');
+	m_CenterLatitude = _tstof(toks[1].c_str());
+	m_CenterLongitude = _tstof(toks[2].c_str());
+	m_ZoomLevel = _tstof(toks[3].c_str());
 	
 	UINT sizeX, sizeY;
 	pSource->GetSize(&sizeX, &sizeY);
@@ -235,11 +248,11 @@ void CMapManager::Draw(ID2D1DeviceContext* d2dDeviceContext, double longitude, d
 	if (m_SelectedWaypoint == 0) swprintf_s(str, 100, L"Immediate");
 	else if (m_SelectedWaypoint == 9) swprintf_s(str, 100, L"Orbit");
 	else swprintf_s(str, 100, L"Index: %d", m_SelectedWaypoint);
-	d2dDeviceContext->DrawText(str, (UINT32)_tcslen(str), m_HomeTextFormat.Get(), &D2D1::RectF(350, 750, 500, 800), m_HomeBrush.Get());
+	d2dDeviceContext->DrawText(str, (UINT32)_tcslen(str), m_HomeTextFormat.Get(), &D2D1::RectF(200, 550, 350, 600), m_HomeBrush.Get());
 	swprintf_s(str, 100, L"Altitude: %d", (int)m_SelectedAltitude);
-	d2dDeviceContext->DrawText(str, (UINT32)_tcslen(str), m_HomeTextFormat.Get(), &D2D1::RectF(500, 750, 650, 800), m_HomeBrush.Get());
+	d2dDeviceContext->DrawText(str, (UINT32)_tcslen(str), m_HomeTextFormat.Get(), &D2D1::RectF(350, 550, 500, 600), m_HomeBrush.Get());
 	swprintf_s(str, 100, L"Velocity: %0.1f", m_SelectedVelocity);
-	d2dDeviceContext->DrawText(str, (UINT32)_tcslen(str), m_HomeTextFormat.Get(), &D2D1::RectF(650, 750, 800, 800), m_HomeBrush.Get());
+	d2dDeviceContext->DrawText(str, (UINT32)_tcslen(str), m_HomeTextFormat.Get(), &D2D1::RectF(500, 550, 650, 600), m_HomeBrush.Get());
 }
 
 void CMapManager::SetMapWpyCommands(WPARAM param)
