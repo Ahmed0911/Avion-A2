@@ -2,6 +2,7 @@
 #include "EthernetComm.h"
 #include "TrajectoryMgr.h"
 #include "CommData.h"
+#include <Ws2tcpip.h>
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
 /* Max length of buffer */
@@ -39,13 +40,13 @@ bool CEthernetComm::Init(int localPort)
 	return true;
 }
 
-void CEthernetComm::ConnectTo(char* targetAddress, NewPacketCallbackType callback)
+void CEthernetComm::ConnectTo(TCHAR* targetAddress, NewPacketCallbackType callback)
 {
 	//setup address structure
 	memset((char *)&m_siTarget, 0, sizeof(m_siTarget));
 	m_siTarget.sin_family = AF_INET;
 	m_siTarget.sin_port = htons(TARGET_PORT);
-	m_siTarget.sin_addr.S_un.S_addr = inet_addr(targetAddress);
+	InetPton(AF_INET, targetAddress, &m_siTarget.sin_addr);
 
 	// set RX callback
 	NewPacketCallback = callback;

@@ -10,7 +10,7 @@ public:
 	CEthernetComm();
 	bool Init(int localPort);
 	void Close();
-	void ConnectTo(char* targetAddress, NewPacketCallbackType callback);
+	void ConnectTo(TCHAR* targetAddress, NewPacketCallbackType callback);
 	
 	void Update();
 	void SendData(char type, BYTE* buffer, int length);

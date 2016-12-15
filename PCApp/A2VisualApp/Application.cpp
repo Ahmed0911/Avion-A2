@@ -6,8 +6,8 @@
 #include "CRC32.h"
 #include <fstream>
 
-#define ETHERNET_PORT_GATEWAY "10.0.1.101"
-#define ETHERNET_PORT_A2 "10.0.1.121"
+#define ETHERNET_PORT_GATEWAY L"10.0.1.101"
+#define ETHERNET_PORT_A2 L"10.0.1.121"
 
 // Callback wrapper
 void NewPacketRxWrapper(char type, BYTE* data, int len)
