@@ -38,6 +38,7 @@
 #include "LLConverter.h"
 #include "LaunchMgr.h"
 #include "CRC32.h"
+#include "Comm433MHz.h"
 
 uint32_t g_ui32SysClock;
 
@@ -56,19 +57,20 @@ MPU9250Drv mpu9250Drv;
 LSM90DDrv lsm90Drv;
 UBloxGPS gps;
 EtherDriver etherDrv;
-HopeRF	hopeRF;
+//HopeRF	hopeRF;
 IMU imu;
 LaunchMgr launch;
 EEPROMDrv eeprom;
 CRC32 crc;
+Comm433MHz comm433MHz;
 
 // System Objects
 ControllerModelClass ctrl;
 LLConverter llConv;
 
 // GPS Port (serialU2->Internal GPS, serialU5->External GPS on Ext Comm.)
-//#define serialGPS serialU2
-#define serialGPS serialU5
+#define serialGPS serialU2
+//#define serialGPS serialU5
 
 // Systick
 #define SysTickFrequency 400
@@ -163,7 +165,7 @@ void main(void)
 	pwmDrv.SetWidthUS(3, 1500);	// Set midpoint PWMs
 	serialU2.Init(UART2_BASE, 9600); // GPS
 	serialU3.Init(UART3_BASE, 100000); // SBUS
-	serialU5.Init(UART5_BASE, 9600); // Ext. Comm, Ext. GPS
+	serialU5.Init(UART5_BASE, 115200); // Ext. Comm
 	sbusRecv.Init();
 	adcDrv.Init();
 	baroDrv.Init();
@@ -171,7 +173,7 @@ void main(void)
     //lsm90Drv.Init();
 	InitGPS(); // init GPS
 	etherDrv.Init();
-	hopeRF.Init();
+	//hopeRF.Init();
 	imu.Init();
 	launch.Init();
 	ctrl.initialize();
@@ -249,22 +251,9 @@ void main(void)
 		// process ethernet (RX)
 		etherDrv.Process(1000/SysTickFrequency); // 2.5ms tick
 
-		// HopeRF
-		HopeRSSI = hopeRF.ReadRSSI();
-		// Hope RX Stuff
-		int hopeReceived = hopeRF.Read(HopeRFbuffer);
-		if( hopeReceived > 0)
-		{
-			// TODO: Add additional check to avoid crash on invalid RF packet!!!
-			if( (HopeRFbuffer[0] == 0x80)  ||
-				(HopeRFbuffer[0] == 0x60)  ||
-				(HopeRFbuffer[0] == 0x61)  ||
-				(HopeRFbuffer[0] == 0x63) ) // allow goto/abort, params commands only
-			{
-				ProcessCommand(HopeRFbuffer[0], &HopeRFbuffer[1], hopeReceived-1);
-			}
-		}
-
+        // Read Lora Data
+        int dataReceived = serialU5.Read(CommBuffer, COMMBUFFERSIZE);
+        comm433MHz.NewRXPacket(CommBuffer, dataReceived); // calls ProcessCommand callback!!!
 
 		// set inputs
 		ctrl.rtU.RPY[0] = imu.Roll;
@@ -344,6 +333,7 @@ void main(void)
 
 void SendPeriodicDataEth(void)
 {
+#if 0
 	// Fill data
 	SCommEthData data;
 	data.LoopCounter = MainLoopCounter;
@@ -428,9 +418,10 @@ void SendPeriodicDataEth(void)
 
 	// send packet (type 0x20 - data)
 	etherDrv.SendPacket(0x20, (char*)&data, sizeof(data));
+#endif
 
-	// Send to HopeRF
-	if( MainLoopCounter%40 == 0) // 400hz/40 = 10hz, every 100ms
+	// Send to Lora
+	if( MainLoopCounter%80 == 0) // 400hz/80 = 5hz, every 200ms
 	{
 		SCommHopeRFDataA2Avion dataRF;
 		dataRF.LoopCounter = MainLoopCounter;
@@ -459,14 +450,16 @@ void SendPeriodicDataEth(void)
 		dataRF.Latitude = gps.Latitude;
 		dataRF.VelN = gps.VelN;
 		dataRF.VelE = gps.VelE;
-		dataRF.HopeRXFrameCount = hopeRF.ReceivedFrames;
-		dataRF.HopeRXRSSI = hopeRF.PacketRSSI;
+		dataRF.HopeRXFrameCount = comm433MHz.MsgReceivedOK;
+		dataRF.HopeRXRSSI = comm433MHz.HeaderFails; // fail counter, use as RSSI?
 		dataRF.HopeTXRSSI = 0; // will be filled on GW station
 
-		// fill CRC code
+		// fill CRC code (not needed, auto generated in GenerateTXPacket()!!!!)
 		dataRF.CRC32 = crc.CalculateCRC32((BYTE*)&dataRF, sizeof(dataRF)-sizeof(dataRF.CRC32));
 
-		hopeRF.Write((BYTE*)&dataRF, sizeof(dataRF));
+		// Send to LORA
+        int bytesToSend = comm433MHz.GenerateTXPacket(0x20, (BYTE*)&dataRF, sizeof(dataRF), CommBuffer);
+        serialU5.Write(CommBuffer, bytesToSend);
 	}
 }
 
@@ -487,7 +480,7 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 		case 0x40: // Relay to HopeRF
 		{
 			// Send to hopeRF
-			hopeRF.Write(data, dataSize);
+			//hopeRF.Write(data, dataSize);
 			AssistNextChunkToSend = 0;
 			break;
 		}
@@ -524,7 +517,11 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 			etherDrv.SendPacket(0x62, (char*)&params, sizeof(params));
 
 			// send to RF
-			hopeRF.Write((BYTE*)&params, sizeof(params));
+			//hopeRF.Write((BYTE*)&params, sizeof(params));
+
+			// Send to LORA
+            int bytesToSend = comm433MHz.GenerateTXPacket(0x62, (BYTE*)&params, sizeof(params), CommBuffer);
+            serialU5.Write(CommBuffer, bytesToSend);
 			break;
 		}
 
@@ -638,7 +635,7 @@ void InitGPS(void)
 	int toSend = gps.GenerateMsgCFGPrt(CommBuffer, 57600); // set to 57k
 	serialGPS.Write(CommBuffer, toSend);
 	SysCtlDelay(g_ui32SysClock/10); // 100ms wait, flush
-	serialGPS.Init(UART5_BASE, 57600); // open with 57k (115k doesn't work well??? small int FIFO, wrong INT prio?)'
+	serialGPS.Init(UART2_BASE, 57600); // open with 57k (115k doesn't work well??? small int FIFO, wrong INT prio?)'
 	toSend = gps.GenerateMsgCFGRate(CommBuffer, 100); // 100ms rate, 10Hz
 	serialGPS.Write(CommBuffer, toSend);
 	toSend = gps.GenerateMsgCFGMsg(CommBuffer, 0x01, 0x07, 1); // NAV-PVT
@@ -759,7 +756,7 @@ extern "C" void IntGPIOK(void)
 
 extern "C" void IntGPION(void)
 {
-	hopeRF.IntHandler();
+	//hopeRF.IntHandler();
 }
 
 extern "C" void SysTickIntHandler(void)
