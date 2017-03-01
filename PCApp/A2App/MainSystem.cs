@@ -28,9 +28,11 @@ namespace WinEthApp
 
         // Data
         SCommEthData MainSystemData;
+        SCommHopeRFDataA2Avion RelayedData;
 
         // Log File
         FileStream logStream = null;
+        FileStream logStreamRF = null;
 
         public MainSystem(FormMain form)
         {
@@ -39,6 +41,9 @@ namespace WinEthApp
             // open log file
             string filename = string.Format("Log\\LogWifi-{0}-{1}-{2}.bin", DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
             logStream = File.Create(filename);
+            // open RF log file
+            string filenameRF = string.Format("Log\\LogHopeRF-{0}-{1}-{2}.bin", DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+            logStreamRF = File.Create(filenameRF);
         }
 
         public void Connect(string targetAddress)
@@ -52,8 +57,16 @@ namespace WinEthApp
         ///////////////////////////////
         // DATA PARSER
         ///////////////////////////////
-        public unsafe void Update()
+        public unsafe void Update(SerialPortComm serialPortComm)
         {
+            ///////////////////////////////
+            // Process Serial Data
+            ///////////////////////////////
+            serialPortComm.Update(ProcessMessage);
+
+            ///////////////////////////////
+            // Process Ethernet Data
+            ///////////////////////////////
             if (udp == null) return;
 
             // Get data from UDP
@@ -114,10 +127,11 @@ namespace WinEthApp
 
             // Update assist now
             byte[] toSend = assistNow.Update(MainSystemData.AssistNextChunkToSend);
-            if (toSend != null) SendData(0x30, toSend);
+            if (toSend != null) SendData(0x30, toSend);            
         }
-                
-        
+
+
+
         ///////////////////////////////
         // COMMANDS
         ///////////////////////////////
@@ -159,6 +173,35 @@ namespace WinEthApp
             // Send
             byte[] toSend = Comm.GetBytes(launch);
             SendData(0x90, toSend);
+        }
+
+        ///////////////////////////////
+        // Serial Parser
+        ///////////////////////////////
+        private void ProcessMessage(byte type, byte[] data, byte len)
+        {
+            // data
+            if (type == 0x20)
+            {
+                SCommHopeRFDataA2Avion commDataHopeRF = (SCommHopeRFDataA2Avion)Comm.FromBytes(data, new SCommHopeRFDataA2Avion());
+                
+                RelayedData = commDataHopeRF;
+
+                // save to file
+                //byte[] arrayToWrite = Comm.GetBytes(commDataHopeRF);
+                //logStream.Write(arrayToWrite, 0, arrayToWrite.Length);   
+
+                formMain.DisplayRelayedData(RelayedData);
+            }
+            if (type == 0x62)
+            {
+
+                // Parameters structure
+                SParameters parametersDataHopeRF = (SParameters)Comm.FromBytes(data, new SParameters());
+
+                // Display
+                formMain.DisplayParams(parametersDataHopeRF);
+            }
         }
 
         ///////////////////////////////

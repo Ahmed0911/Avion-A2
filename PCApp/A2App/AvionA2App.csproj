@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="AssistNow.cs" />
     <Compile Include="Comm.cs" />
+    <Compile Include="Comm433MHz.cs" />
     <Compile Include="CRC32.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
@@ -58,13 +59,12 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="Gateway.cs" />
-    <Compile Include="GimbaledTracker.cs" />
     <Compile Include="LLConverter.cs" />
     <Compile Include="Navigation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MainSystem.cs" />
+    <Compile Include="SerialPortComm.cs" />
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>

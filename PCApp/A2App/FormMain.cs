@@ -18,8 +18,7 @@ namespace WinEthApp
     {
         MainSystem mainSystem;
         Navigation navigation;
-        Gateway gateway;
-        GimbaledTracker gimbaledTracker;
+        SerialPortComm serialPortComm = new SerialPortComm();
 
         // Filtered Data (RPY)
         public double FilteredRoll;
@@ -39,11 +38,8 @@ namespace WinEthApp
 
             mainSystem = new MainSystem(this);
 
-            gateway = new Gateway(this);
-            navigation = new Navigation(this, mainSystem, gateway);
-            gimbaledTracker = new GimbaledTracker();
+            navigation = new Navigation(this, mainSystem);
             comboBoxMapSelector.SelectedIndex = comboBoxMapSelector.Items.Count-1; // Load default map            
-            comboBoxGWTrackerMode.SelectedIndex = 0;
             // Fill Default Params
             labelParam1.Text = "GyroOffX";
             labelParam2.Text = "GyroOffY";
@@ -62,6 +58,10 @@ namespace WinEthApp
             labelParam15.Text = "PitchKi";
             labelParam16.Text = "PitchKd";
             labelParam17.Text = "";
+
+            // Serial port stuff
+            comboBoxSerialPorts.Items.AddRange(serialPortComm.EnumeratePorts());
+            if (comboBoxSerialPorts.Items.Count > 0) comboBoxSerialPorts.SelectedIndex = 0;
         }
 
         private void buttonConnectSystem_Click(object sender, EventArgs e)
@@ -71,19 +71,20 @@ namespace WinEthApp
             buttonConnectSystem.Text = "Opened";
         }
 
-        private void buttonConnectGateway_Click(object sender, EventArgs e)
-        {
-            gateway.Connect(textBoxAddressGateway.Text);
-            buttonConnectGateway.Enabled = false;
-            buttonConnectGateway.Text = "Opened";
-        }
-
         private void timerCommUpdate_Tick(object sender, EventArgs e)
         {
-            mainSystem.Update();
+            mainSystem.Update(serialPortComm);
             navigation.Update();
-            gateway.Update();
-            UpdateTracker();
+            //gateway.Update();
+
+            // update
+            // update data            
+            if (serialPortComm.comm433MHz != null)
+            {
+                textBoxCommMsgOK.Text = serialPortComm.comm433MHz.MsgReceivedOK.ToString();
+                textBoxCommCRCErrors.Text = serialPortComm.comm433MHz.CrcErrors.ToString();
+                textBoxCommHeaderErrors.Text = serialPortComm.comm433MHz.HeaderFails.ToString();
+            }
 
             // REMOVE START
             // dummy, REMOVE ME
@@ -293,17 +294,6 @@ namespace WinEthApp
                 navigation.SetHome(MainSystemData.HomeLongitude * 1e-7, MainSystemData.HomeLatitude * 1e-7);
                 // Update current position
                 navigation.UpdateCurrentPosition(MainSystemData.Altitude, MainSystemData.Longitude * 1e-7, MainSystemData.Latitude * 1e-7, MainSystemData.ActualMode);
-                
-                // Update Target Position
-                if( navigation.llConv.IsHomeSet() )
-                {
-                    float N, E;
-                    navigation.llConv.ConvertLLToM(MainSystemData.Latitude * 1e-7, MainSystemData.Longitude * 1e-7, out N, out E);
-                    gimbaledTracker.UpdateTargetPosition(MainSystemData.Altitude, N, E);
-                    textBoxGWTrackerTargetN.Text = string.Format("{0:0.00} m", N);
-                    textBoxGWTrackerTargetE.Text = string.Format("{0:0.00} m", E);
-                    textBoxGWTrackerTargetZ.Text = string.Format("{0:0.00} m", MainSystemData.Altitude);
-                }
             }               
         }
         public unsafe void DisplayRelayedData(SCommHopeRFDataA2Avion RelayedData)
@@ -353,16 +343,6 @@ namespace WinEthApp
 
                 // Update current position
                 navigation.UpdateCurrentPosition(RelayedData.Altitude, RelayedData.Longitude * 1e-7, RelayedData.Latitude * 1e-7, RelayedData.ActualMode);
-                // Update Target Position
-                if (navigation.llConv.IsHomeSet())
-                {
-                    float N, E;
-                    navigation.llConv.ConvertLLToM(RelayedData.Latitude * 1e-7, RelayedData.Longitude * 1e-7, out N, out E);
-                    gimbaledTracker.UpdateTargetPosition(RelayedData.Altitude, N, E);
-                    textBoxGWTrackerTargetN.Text = string.Format("{0:0.00} m", N);
-                    textBoxGWTrackerTargetE.Text = string.Format("{0:0.00} m", E);
-                    textBoxGWTrackerTargetZ.Text = string.Format("{0:0.00} m", RelayedData.Altitude);
-                }
 
                 // update Params Command Ack
                 ParamsCommandAckCntReceived = RelayedData.ParamsCommandAckCnt;
@@ -379,45 +359,6 @@ namespace WinEthApp
                 }
             }
         }
-
-        public unsafe void DisplayGatewayData(int receivedHopeRFCounter, int receivedHopeRFCrcErrors, int receivedPacketsCounter, SCommEthData GatewayData)
-        {           
-            // System
-            textBoxHopeRFReceived.Text = receivedHopeRFCounter.ToString();
-            textBoxGatewayPressure.Text = (GatewayData.Pressure / 100).ToString("0.00 hPa");
-            textBoxGatewayTemperature.Text = (GatewayData.Temperature).ToString("0.0 °C");
-            textBoxGatewayEthFrames.Text = receivedPacketsCounter.ToString();
-            textBoxGatewayEthSent.Text = GatewayData.EthSentCount.ToString();
-            textBoxGatewayEthReceived.Text = GatewayData.EthReceivedCount.ToString();
-            textBoxGatewayLoop.Text = GatewayData.LoopCounter.ToString();
-            textBoxGatewayLoopTime.Text = GatewayData.PerfLoopTimeMS.ToString("0.000 ms");
-            textBoxGatewayCPUTime.Text = GatewayData.PerfCpuTimeMS.ToString("0.000 ms");
-            textBoxGatewayCPUTimeMax.Text = GatewayData.PerfCpuTimeMSMAX.ToString("0.000 ms");
-            textBoxGatewayBattery.Text = GatewayData.BatteryVoltage.ToString("0.00 V");
-
-            textBoxGatewaySatNr.Text = GatewayData.NumSV.ToString();
-            textBoxGatewayLat.Text = (GatewayData.Latitude * 1e-7).ToString("0.000000");
-            textBoxGatewayLon.Text = (GatewayData.Longitude * 1e-7).ToString("0.000000");
-            textBoxGatewayRoll.Text = GatewayData.Roll.ToString("0.0");
-            textBoxGatewayPitch.Text = GatewayData.Pitch.ToString("0.0");
-            textBoxGatewayYaw.Text = GatewayData.Yaw.ToString("0.0");
-
-            // HopeRF
-            textBoxGatewayHopeRXCount.Text = GatewayData.HopeRXFrameCount.ToString();
-            textBoxGatewayHopeRXCrcErrors.Text = receivedHopeRFCrcErrors.ToString();
-            textBoxGatewayHopeRSSI.Text = GatewayData.HopeRSSI.ToString();
-            textBoxGatewayHopeRXRSSI.Text = GatewayData.HopeRXRSSI.ToString();
-
-            // ESC Data
-            textBoxGWESC1OpMode.Text = ((int)GatewayData.TuningData[0]).ToString();
-            textBoxGWESC2OpMode.Text = ((int)GatewayData.TuningData[1]).ToString();
-            textBoxGWESC1EncoLocked.Text = ((int)GatewayData.TuningData[2]).ToString();
-            textBoxGWESC2EncoLocked.Text = ((int)GatewayData.TuningData[3]).ToString();
-            textBoxGWESC1Position.Text = ((int)GatewayData.TuningData[4]).ToString();
-            textBoxGWESC2Position.Text = ((int)GatewayData.TuningData[5]).ToString();
-            textBoxGWESC1Current.Text = GatewayData.TuningData[6].ToString("0.0 A");
-            textBoxGWESC2Current.Text = GatewayData.TuningData[7].ToString("0.0 A");
-        }
         
         // Send data to Wifi/HopeRF
         public void SendData(byte type, byte[] buffer)
@@ -428,7 +369,7 @@ namespace WinEthApp
             }
             if (radioButtonHopeRF.Checked || radioButtonWifiHopeRF.Checked)
             {
-                gateway.SendDataOverRF(type, buffer);
+                //gateway.SendDataOverRF(type, buffer);
             }
         }
 
@@ -497,98 +438,11 @@ namespace WinEthApp
             else navigation.SaveWaypoints();
         }
 
-        private void comboBoxGWTrackerMode_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int trackingMode = comboBoxGWTrackerMode.SelectedIndex;
-            int panRef = int.Parse(textBoxGWTrackerPanRef.Text);
-            int tiltRef = int.Parse(textBoxGWTrackerTiltRef.Text);
-            
-            if( trackingMode == 0)
-            {
-                // disable all
-                trackBarGWTrackerManualPanRef.Enabled = false;
-                trackBarGWTrackerManualTiltRef.Enabled = false;
-                textBoxGWTrackerTargetN.Enabled = false;
-                textBoxGWTrackerTargetE.Enabled = false;
-                textBoxGWTrackerTargetZ.Enabled = false;
-                gateway.ChangeTrackerMode(trackingMode, panRef, tiltRef);
-            }
-            else if( trackingMode == 1)
-            {
-                // enable manual control
-                trackBarGWTrackerManualPanRef.Enabled = true;
-                trackBarGWTrackerManualTiltRef.Enabled = true;
-                textBoxGWTrackerTargetN.Enabled = false;
-                textBoxGWTrackerTargetE.Enabled = false;
-                textBoxGWTrackerTargetZ.Enabled = false;
-                gateway.ChangeTrackerMode(trackingMode, panRef, tiltRef);
-            }
-            else if( trackingMode == 2)
-            {
-                // semi auto
-                trackBarGWTrackerManualPanRef.Enabled = false;
-                trackBarGWTrackerManualTiltRef.Enabled = false;
-                textBoxGWTrackerTargetN.Enabled = true;
-                textBoxGWTrackerTargetE.Enabled = true;
-                textBoxGWTrackerTargetZ.Enabled = true;
-                // Tracker mode will be set/enabloed on ref send! Do not enable ESCs before position ref is initialized
-            }
-        }
+       
 
-        private void UpdateTracker()
-        {
-            // update Tracker
-            int trackingMode = comboBoxGWTrackerMode.SelectedIndex;
-            if (trackingMode == 2)
-            {
-                double roll = double.Parse(textBoxGatewayRoll.Text);
-                double pitch = double.Parse(textBoxGatewayPitch.Text);
-                double yaw = double.Parse(textBoxGatewayYaw.Text);
+       
 
-                TrackerAngles panTilt = gimbaledTracker.Update(roll, pitch, yaw);
-                textBoxGWTrackerPanRef.Text = panTilt.PanCNT.ToString();
-                textBoxGWTrackerTiltRef.Text = panTilt.TiltCNT.ToString();
-                
-                // do not send refs if BASE is not SET!
-                if (gimbaledTracker.BaseSet != eBaseSetState.NONE)
-                {
-                    gateway.SendTrackerRef(panTilt.PanCNT, panTilt.TiltCNT);                
-                }
-            }
-
-            textBoxGWTrackerBaseState.Text = gimbaledTracker.BaseSet.ToString();
-            textBoxGWTrackerBaseRoll.Text = string.Format("{0:0.0} °", gimbaledTracker.BaseRoll);
-            textBoxGWTrackerBasePitch.Text = string.Format("{0:0.0} °", gimbaledTracker.BasePitch);
-            textBoxGWTrackerBaseYaw.Text = string.Format("{0:0.0} °", gimbaledTracker.BaseYaw);
-        }
-
-        private void buttonGWTrackerTargetTest_Click(object sender, EventArgs e)
-        {
-            float alt = float.Parse(textBoxGWTrackerTargetZ.Text);
-            double N = float.Parse(textBoxGWTrackerTargetN.Text);
-            double E = float.Parse(textBoxGWTrackerTargetE.Text);
-            gimbaledTracker.UpdateTargetPosition(alt, N, E);           
-        }
-
-        private void buttonGWTrackerBaseSet_Click(object sender, EventArgs e)
-        {
-            comboBoxGWTrackerMode.SelectedIndex = 2;
-            
-            int startingPan = int.Parse(textBoxGWESC1Position.Text);
-            int startingTilt = int.Parse(textBoxGWESC2Position.Text);
-
-            gimbaledTracker.StartBaseSetProcedure(startingPan, startingTilt);            
-        }   
-
-        private void trackBarGWTrackerManualPanRef_Scroll(object sender, EventArgs e)
-        {
-            int panRef = trackBarGWTrackerManualPanRef.Value;
-            int tiltRef = trackBarGWTrackerManualTiltRef.Value;
-            textBoxGWTrackerPanRef.Text = panRef.ToString();
-            textBoxGWTrackerTiltRef.Text = tiltRef.ToString();
-
-            gateway.SendTrackerRef(panRef, tiltRef);
-        }
+     
 
         private void trackBarParams_Scroll(object sender, EventArgs e)
         {
@@ -626,6 +480,12 @@ namespace WinEthApp
             trackBarParamsPitchKp.Value = PitchKp;
             trackBarParamsPitchKi.Value = PitchKi;
             trackBarParamsPitchKd.Value = PitchKd;   
+        }
+
+        private void buttonSerialOpen_Click(object sender, EventArgs e)
+        {
+            serialPortComm.Open((string)comboBoxSerialPorts.SelectedItem, 115200);
+            buttonSerialOpen.Enabled = false;
         }
     }
 }

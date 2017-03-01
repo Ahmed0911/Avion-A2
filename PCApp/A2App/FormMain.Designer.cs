@@ -158,6 +158,9 @@
             this.labelParam1 = new System.Windows.Forms.Label();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageMainSystem = new System.Windows.Forms.TabPage();
+            this.buttonSerialOpen = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.comboBoxSerialPorts = new System.Windows.Forms.ComboBox();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.buttonWpnFire2 = new System.Windows.Forms.Button();
             this.textBoxWpnStatus2 = new System.Windows.Forms.TextBox();
@@ -245,99 +248,12 @@
             this.textBoxWaypointsDownloadCnt = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
             this.pictureBoxMap = new System.Windows.Forms.PictureBox();
-            this.tabPageGateway = new System.Windows.Forms.TabPage();
-            this.groupBox16 = new System.Windows.Forms.GroupBox();
-            this.buttonGWTrackerTargetTest = new System.Windows.Forms.Button();
-            this.textBoxGWTrackerBaseState = new System.Windows.Forms.TextBox();
-            this.label98 = new System.Windows.Forms.Label();
-            this.buttonGWTrackerBaseSet = new System.Windows.Forms.Button();
-            this.textBoxGWTrackerBaseYaw = new System.Windows.Forms.TextBox();
-            this.textBoxGWTrackerBasePitch = new System.Windows.Forms.TextBox();
-            this.textBoxGWTrackerBaseRoll = new System.Windows.Forms.TextBox();
-            this.label95 = new System.Windows.Forms.Label();
-            this.label96 = new System.Windows.Forms.Label();
-            this.label97 = new System.Windows.Forms.Label();
-            this.textBoxGWTrackerTargetZ = new System.Windows.Forms.TextBox();
-            this.textBoxGWTrackerTargetE = new System.Windows.Forms.TextBox();
-            this.textBoxGWTrackerTargetN = new System.Windows.Forms.TextBox();
-            this.label94 = new System.Windows.Forms.Label();
-            this.label93 = new System.Windows.Forms.Label();
-            this.label92 = new System.Windows.Forms.Label();
-            this.trackBarGWTrackerManualTiltRef = new System.Windows.Forms.TrackBar();
-            this.trackBarGWTrackerManualPanRef = new System.Windows.Forms.TrackBar();
-            this.label91 = new System.Windows.Forms.Label();
-            this.label87 = new System.Windows.Forms.Label();
-            this.textBoxGWTrackerTiltRef = new System.Windows.Forms.TextBox();
-            this.textBoxGWTrackerPanRef = new System.Windows.Forms.TextBox();
-            this.label85 = new System.Windows.Forms.Label();
-            this.comboBoxGWTrackerMode = new System.Windows.Forms.ComboBox();
-            this.groupBox15 = new System.Windows.Forms.GroupBox();
-            this.label79 = new System.Windows.Forms.Label();
-            this.textBoxGWESC2OpMode = new System.Windows.Forms.TextBox();
-            this.textBoxGWESC2Current = new System.Windows.Forms.TextBox();
-            this.label81 = new System.Windows.Forms.Label();
-            this.textBoxGWESC2EncoLocked = new System.Windows.Forms.TextBox();
-            this.label82 = new System.Windows.Forms.Label();
-            this.textBoxGWESC2Position = new System.Windows.Forms.TextBox();
-            this.label84 = new System.Windows.Forms.Label();
-            this.groupBox14 = new System.Windows.Forms.GroupBox();
-            this.label78 = new System.Windows.Forms.Label();
-            this.textBoxGWESC1OpMode = new System.Windows.Forms.TextBox();
-            this.textBoxGWESC1Current = new System.Windows.Forms.TextBox();
-            this.label75 = new System.Windows.Forms.Label();
-            this.textBoxGWESC1EncoLocked = new System.Windows.Forms.TextBox();
-            this.label76 = new System.Windows.Forms.Label();
-            this.textBoxGWESC1Position = new System.Windows.Forms.TextBox();
-            this.label77 = new System.Windows.Forms.Label();
-            this.groupBox13 = new System.Windows.Forms.GroupBox();
-            this.textBoxGatewayLon = new System.Windows.Forms.TextBox();
-            this.textBoxGatewayLat = new System.Windows.Forms.TextBox();
-            this.textBoxGatewaySatNr = new System.Windows.Forms.TextBox();
-            this.label88 = new System.Windows.Forms.Label();
-            this.label89 = new System.Windows.Forms.Label();
-            this.label90 = new System.Windows.Forms.Label();
-            this.groupBox12 = new System.Windows.Forms.GroupBox();
-            this.textBoxGatewayYaw = new System.Windows.Forms.TextBox();
-            this.label80 = new System.Windows.Forms.Label();
-            this.textBoxGatewayPitch = new System.Windows.Forms.TextBox();
-            this.label83 = new System.Windows.Forms.Label();
-            this.textBoxGatewayRoll = new System.Windows.Forms.TextBox();
-            this.label86 = new System.Windows.Forms.Label();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.textBoxGatewayHopeRXCrcErrors = new System.Windows.Forms.TextBox();
-            this.label99 = new System.Windows.Forms.Label();
-            this.textBoxGatewayHopeRXCount = new System.Windows.Forms.TextBox();
-            this.label64 = new System.Windows.Forms.Label();
-            this.textBoxGatewayHopeRSSI = new System.Windows.Forms.TextBox();
-            this.label65 = new System.Windows.Forms.Label();
-            this.textBoxGatewayHopeRXRSSI = new System.Windows.Forms.TextBox();
-            this.label66 = new System.Windows.Forms.Label();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.textBoxGatewayTemperature = new System.Windows.Forms.TextBox();
-            this.label56 = new System.Windows.Forms.Label();
-            this.textBoxGatewayPressure = new System.Windows.Forms.TextBox();
-            this.label63 = new System.Windows.Forms.Label();
-            this.textBoxGatewayLoop = new System.Windows.Forms.TextBox();
-            this.label53 = new System.Windows.Forms.Label();
-            this.textBoxGatewayCPUTimeMax = new System.Windows.Forms.TextBox();
-            this.label54 = new System.Windows.Forms.Label();
-            this.textBoxHopeRFReceived = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.textBoxGatewayCPUTime = new System.Windows.Forms.TextBox();
-            this.label55 = new System.Windows.Forms.Label();
-            this.textBoxGatewayLoopTime = new System.Windows.Forms.TextBox();
-            this.label57 = new System.Windows.Forms.Label();
-            this.textBoxGatewayEthReceived = new System.Windows.Forms.TextBox();
-            this.label58 = new System.Windows.Forms.Label();
-            this.textBoxGatewayEthSent = new System.Windows.Forms.TextBox();
-            this.label59 = new System.Windows.Forms.Label();
-            this.textBoxGatewayEthFrames = new System.Windows.Forms.TextBox();
-            this.label61 = new System.Windows.Forms.Label();
-            this.label555 = new System.Windows.Forms.Label();
-            this.textBoxGatewayBattery = new System.Windows.Forms.TextBox();
             this.label47 = new System.Windows.Forms.Label();
-            this.textBoxAddressGateway = new System.Windows.Forms.TextBox();
-            this.buttonConnectGateway = new System.Windows.Forms.Button();
+            this.textBoxCommMsgOK = new System.Windows.Forms.TextBox();
+            this.label53 = new System.Windows.Forms.Label();
+            this.textBoxCommHeaderErrors = new System.Windows.Forms.TextBox();
+            this.label54 = new System.Windows.Forms.Label();
+            this.textBoxCommCRCErrors = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -357,16 +273,6 @@
             this.groupBox9.SuspendLayout();
             this.groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMap)).BeginInit();
-            this.tabPageGateway.SuspendLayout();
-            this.groupBox16.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarGWTrackerManualTiltRef)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarGWTrackerManualPanRef)).BeginInit();
-            this.groupBox15.SuspendLayout();
-            this.groupBox14.SuspendLayout();
-            this.groupBox13.SuspendLayout();
-            this.groupBox12.SuspendLayout();
-            this.groupBox7.SuspendLayout();
-            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxAddressSystem
@@ -1657,7 +1563,6 @@
             // 
             this.tabControlMain.Controls.Add(this.tabPageMainSystem);
             this.tabControlMain.Controls.Add(this.tabPageNavigation);
-            this.tabControlMain.Controls.Add(this.tabPageGateway);
             this.tabControlMain.Location = new System.Drawing.Point(2, 3);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
@@ -1666,6 +1571,15 @@
             // 
             // tabPageMainSystem
             // 
+            this.tabPageMainSystem.Controls.Add(this.label47);
+            this.tabPageMainSystem.Controls.Add(this.textBoxCommMsgOK);
+            this.tabPageMainSystem.Controls.Add(this.label53);
+            this.tabPageMainSystem.Controls.Add(this.textBoxCommHeaderErrors);
+            this.tabPageMainSystem.Controls.Add(this.label54);
+            this.tabPageMainSystem.Controls.Add(this.textBoxCommCRCErrors);
+            this.tabPageMainSystem.Controls.Add(this.buttonSerialOpen);
+            this.tabPageMainSystem.Controls.Add(this.label14);
+            this.tabPageMainSystem.Controls.Add(this.comboBoxSerialPorts);
             this.tabPageMainSystem.Controls.Add(this.groupBox10);
             this.tabPageMainSystem.Controls.Add(this.groupBoxSourceSelect);
             this.tabPageMainSystem.Controls.Add(this.groupBox5);
@@ -1683,6 +1597,37 @@
             this.tabPageMainSystem.TabIndex = 0;
             this.tabPageMainSystem.Text = "System";
             this.tabPageMainSystem.UseVisualStyleBackColor = true;
+            // 
+            // buttonSerialOpen
+            // 
+            this.buttonSerialOpen.Location = new System.Drawing.Point(921, 22);
+            this.buttonSerialOpen.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonSerialOpen.Name = "buttonSerialOpen";
+            this.buttonSerialOpen.Size = new System.Drawing.Size(112, 35);
+            this.buttonSerialOpen.TabIndex = 43;
+            this.buttonSerialOpen.Text = "Open";
+            this.buttonSerialOpen.UseVisualStyleBackColor = true;
+            this.buttonSerialOpen.Click += new System.EventHandler(this.buttonSerialOpen_Click);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(752, 30);
+            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(42, 20);
+            this.label14.TabIndex = 42;
+            this.label14.Text = "Port:";
+            // 
+            // comboBoxSerialPorts
+            // 
+            this.comboBoxSerialPorts.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSerialPorts.FormattingEnabled = true;
+            this.comboBoxSerialPorts.Location = new System.Drawing.Point(805, 25);
+            this.comboBoxSerialPorts.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.comboBoxSerialPorts.Name = "comboBoxSerialPorts";
+            this.comboBoxSerialPorts.Size = new System.Drawing.Size(106, 28);
+            this.comboBoxSerialPorts.TabIndex = 41;
             // 
             // groupBox10
             // 
@@ -2627,994 +2572,65 @@
             this.pictureBoxMap.TabStop = false;
             this.pictureBoxMap.Click += new System.EventHandler(this.pictureBoxMap_Click);
             // 
-            // tabPageGateway
-            // 
-            this.tabPageGateway.Controls.Add(this.groupBox16);
-            this.tabPageGateway.Controls.Add(this.groupBox15);
-            this.tabPageGateway.Controls.Add(this.groupBox14);
-            this.tabPageGateway.Controls.Add(this.groupBox13);
-            this.tabPageGateway.Controls.Add(this.groupBox12);
-            this.tabPageGateway.Controls.Add(this.groupBox7);
-            this.tabPageGateway.Controls.Add(this.groupBox6);
-            this.tabPageGateway.Controls.Add(this.label47);
-            this.tabPageGateway.Controls.Add(this.textBoxAddressGateway);
-            this.tabPageGateway.Controls.Add(this.buttonConnectGateway);
-            this.tabPageGateway.Location = new System.Drawing.Point(4, 29);
-            this.tabPageGateway.Name = "tabPageGateway";
-            this.tabPageGateway.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGateway.Size = new System.Drawing.Size(1567, 1021);
-            this.tabPageGateway.TabIndex = 2;
-            this.tabPageGateway.Text = "Gateway";
-            this.tabPageGateway.UseVisualStyleBackColor = true;
-            // 
-            // groupBox16
-            // 
-            this.groupBox16.Controls.Add(this.buttonGWTrackerTargetTest);
-            this.groupBox16.Controls.Add(this.textBoxGWTrackerBaseState);
-            this.groupBox16.Controls.Add(this.label98);
-            this.groupBox16.Controls.Add(this.buttonGWTrackerBaseSet);
-            this.groupBox16.Controls.Add(this.textBoxGWTrackerBaseYaw);
-            this.groupBox16.Controls.Add(this.textBoxGWTrackerBasePitch);
-            this.groupBox16.Controls.Add(this.textBoxGWTrackerBaseRoll);
-            this.groupBox16.Controls.Add(this.label95);
-            this.groupBox16.Controls.Add(this.label96);
-            this.groupBox16.Controls.Add(this.label97);
-            this.groupBox16.Controls.Add(this.textBoxGWTrackerTargetZ);
-            this.groupBox16.Controls.Add(this.textBoxGWTrackerTargetE);
-            this.groupBox16.Controls.Add(this.textBoxGWTrackerTargetN);
-            this.groupBox16.Controls.Add(this.label94);
-            this.groupBox16.Controls.Add(this.label93);
-            this.groupBox16.Controls.Add(this.label92);
-            this.groupBox16.Controls.Add(this.trackBarGWTrackerManualTiltRef);
-            this.groupBox16.Controls.Add(this.trackBarGWTrackerManualPanRef);
-            this.groupBox16.Controls.Add(this.label91);
-            this.groupBox16.Controls.Add(this.label87);
-            this.groupBox16.Controls.Add(this.textBoxGWTrackerTiltRef);
-            this.groupBox16.Controls.Add(this.textBoxGWTrackerPanRef);
-            this.groupBox16.Controls.Add(this.label85);
-            this.groupBox16.Controls.Add(this.comboBoxGWTrackerMode);
-            this.groupBox16.Location = new System.Drawing.Point(333, 500);
-            this.groupBox16.Name = "groupBox16";
-            this.groupBox16.Size = new System.Drawing.Size(696, 415);
-            this.groupBox16.TabIndex = 46;
-            this.groupBox16.TabStop = false;
-            this.groupBox16.Text = "Tracker";
-            // 
-            // buttonGWTrackerTargetTest
-            // 
-            this.buttonGWTrackerTargetTest.Location = new System.Drawing.Point(605, 337);
-            this.buttonGWTrackerTargetTest.Name = "buttonGWTrackerTargetTest";
-            this.buttonGWTrackerTargetTest.Size = new System.Drawing.Size(75, 33);
-            this.buttonGWTrackerTargetTest.TabIndex = 63;
-            this.buttonGWTrackerTargetTest.Text = "Test";
-            this.buttonGWTrackerTargetTest.UseVisualStyleBackColor = true;
-            this.buttonGWTrackerTargetTest.Click += new System.EventHandler(this.buttonGWTrackerTargetTest_Click);
-            // 
-            // textBoxGWTrackerBaseState
-            // 
-            this.textBoxGWTrackerBaseState.Location = new System.Drawing.Point(558, 43);
-            this.textBoxGWTrackerBaseState.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWTrackerBaseState.Name = "textBoxGWTrackerBaseState";
-            this.textBoxGWTrackerBaseState.Size = new System.Drawing.Size(122, 26);
-            this.textBoxGWTrackerBaseState.TabIndex = 62;
-            // 
-            // label98
-            // 
-            this.label98.AutoSize = true;
-            this.label98.Location = new System.Drawing.Point(466, 46);
-            this.label98.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label98.Name = "label98";
-            this.label98.Size = new System.Drawing.Size(93, 20);
-            this.label98.TabIndex = 48;
-            this.label98.Text = "Base State:";
-            // 
-            // buttonGWTrackerBaseSet
-            // 
-            this.buttonGWTrackerBaseSet.Location = new System.Drawing.Point(588, 234);
-            this.buttonGWTrackerBaseSet.Name = "buttonGWTrackerBaseSet";
-            this.buttonGWTrackerBaseSet.Size = new System.Drawing.Size(92, 78);
-            this.buttonGWTrackerBaseSet.TabIndex = 61;
-            this.buttonGWTrackerBaseSet.Text = "Set";
-            this.buttonGWTrackerBaseSet.UseVisualStyleBackColor = true;
-            this.buttonGWTrackerBaseSet.Click += new System.EventHandler(this.buttonGWTrackerBaseSet_Click);
-            // 
-            // textBoxGWTrackerBaseYaw
-            // 
-            this.textBoxGWTrackerBaseYaw.Location = new System.Drawing.Point(489, 260);
-            this.textBoxGWTrackerBaseYaw.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWTrackerBaseYaw.Name = "textBoxGWTrackerBaseYaw";
-            this.textBoxGWTrackerBaseYaw.ReadOnly = true;
-            this.textBoxGWTrackerBaseYaw.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWTrackerBaseYaw.TabIndex = 56;
-            // 
-            // textBoxGWTrackerBasePitch
-            // 
-            this.textBoxGWTrackerBasePitch.Location = new System.Drawing.Point(299, 260);
-            this.textBoxGWTrackerBasePitch.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWTrackerBasePitch.Name = "textBoxGWTrackerBasePitch";
-            this.textBoxGWTrackerBasePitch.ReadOnly = true;
-            this.textBoxGWTrackerBasePitch.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWTrackerBasePitch.TabIndex = 57;
-            // 
-            // textBoxGWTrackerBaseRoll
-            // 
-            this.textBoxGWTrackerBaseRoll.Location = new System.Drawing.Point(105, 260);
-            this.textBoxGWTrackerBaseRoll.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWTrackerBaseRoll.Name = "textBoxGWTrackerBaseRoll";
-            this.textBoxGWTrackerBaseRoll.ReadOnly = true;
-            this.textBoxGWTrackerBaseRoll.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWTrackerBaseRoll.TabIndex = 55;
-            // 
-            // label95
-            // 
-            this.label95.AutoSize = true;
-            this.label95.Location = new System.Drawing.Point(397, 263);
-            this.label95.Name = "label95";
-            this.label95.Size = new System.Drawing.Size(85, 20);
-            this.label95.TabIndex = 60;
-            this.label95.Text = "Base Yaw:";
-            // 
-            // label96
-            // 
-            this.label96.AutoSize = true;
-            this.label96.Location = new System.Drawing.Point(204, 263);
-            this.label96.Name = "label96";
-            this.label96.Size = new System.Drawing.Size(89, 20);
-            this.label96.TabIndex = 59;
-            this.label96.Text = "Base Pitch:";
-            // 
-            // label97
-            // 
-            this.label97.AutoSize = true;
-            this.label97.Location = new System.Drawing.Point(18, 263);
-            this.label97.Name = "label97";
-            this.label97.Size = new System.Drawing.Size(81, 20);
-            this.label97.TabIndex = 58;
-            this.label97.Text = "Base Roll:";
-            // 
-            // textBoxGWTrackerTargetZ
-            // 
-            this.textBoxGWTrackerTargetZ.Location = new System.Drawing.Point(489, 340);
-            this.textBoxGWTrackerTargetZ.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWTrackerTargetZ.Name = "textBoxGWTrackerTargetZ";
-            this.textBoxGWTrackerTargetZ.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWTrackerTargetZ.TabIndex = 48;
-            // 
-            // textBoxGWTrackerTargetE
-            // 
-            this.textBoxGWTrackerTargetE.Location = new System.Drawing.Point(299, 340);
-            this.textBoxGWTrackerTargetE.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWTrackerTargetE.Name = "textBoxGWTrackerTargetE";
-            this.textBoxGWTrackerTargetE.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWTrackerTargetE.TabIndex = 48;
-            // 
-            // textBoxGWTrackerTargetN
-            // 
-            this.textBoxGWTrackerTargetN.Location = new System.Drawing.Point(105, 340);
-            this.textBoxGWTrackerTargetN.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWTrackerTargetN.Name = "textBoxGWTrackerTargetN";
-            this.textBoxGWTrackerTargetN.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWTrackerTargetN.TabIndex = 47;
-            // 
-            // label94
-            // 
-            this.label94.AutoSize = true;
-            this.label94.Location = new System.Drawing.Point(409, 343);
-            this.label94.Name = "label94";
-            this.label94.Size = new System.Drawing.Size(73, 20);
-            this.label94.TabIndex = 54;
-            this.label94.Text = "Target Z:";
-            // 
-            // label93
-            // 
-            this.label93.AutoSize = true;
-            this.label93.Location = new System.Drawing.Point(218, 343);
-            this.label93.Name = "label93";
-            this.label93.Size = new System.Drawing.Size(74, 20);
-            this.label93.TabIndex = 53;
-            this.label93.Text = "Target E:";
-            // 
-            // label92
-            // 
-            this.label92.AutoSize = true;
-            this.label92.Location = new System.Drawing.Point(25, 343);
-            this.label92.Name = "label92";
-            this.label92.Size = new System.Drawing.Size(74, 20);
-            this.label92.TabIndex = 52;
-            this.label92.Text = "Target N:";
-            // 
-            // trackBarGWTrackerManualTiltRef
-            // 
-            this.trackBarGWTrackerManualTiltRef.Enabled = false;
-            this.trackBarGWTrackerManualTiltRef.LargeChange = 25;
-            this.trackBarGWTrackerManualTiltRef.Location = new System.Drawing.Point(173, 159);
-            this.trackBarGWTrackerManualTiltRef.Maximum = 3500;
-            this.trackBarGWTrackerManualTiltRef.Minimum = 1000;
-            this.trackBarGWTrackerManualTiltRef.Name = "trackBarGWTrackerManualTiltRef";
-            this.trackBarGWTrackerManualTiltRef.Size = new System.Drawing.Size(507, 69);
-            this.trackBarGWTrackerManualTiltRef.TabIndex = 51;
-            this.trackBarGWTrackerManualTiltRef.TickFrequency = 50;
-            this.trackBarGWTrackerManualTiltRef.Value = 1000;
-            this.trackBarGWTrackerManualTiltRef.Scroll += new System.EventHandler(this.trackBarGWTrackerManualPanRef_Scroll);
-            // 
-            // trackBarGWTrackerManualPanRef
-            // 
-            this.trackBarGWTrackerManualPanRef.Enabled = false;
-            this.trackBarGWTrackerManualPanRef.LargeChange = 50;
-            this.trackBarGWTrackerManualPanRef.Location = new System.Drawing.Point(173, 84);
-            this.trackBarGWTrackerManualPanRef.Maximum = 3000;
-            this.trackBarGWTrackerManualPanRef.Minimum = -3000;
-            this.trackBarGWTrackerManualPanRef.Name = "trackBarGWTrackerManualPanRef";
-            this.trackBarGWTrackerManualPanRef.Size = new System.Drawing.Size(507, 69);
-            this.trackBarGWTrackerManualPanRef.TabIndex = 50;
-            this.trackBarGWTrackerManualPanRef.TickFrequency = 100;
-            this.trackBarGWTrackerManualPanRef.Scroll += new System.EventHandler(this.trackBarGWTrackerManualPanRef_Scroll);
-            // 
-            // label91
-            // 
-            this.label91.AutoSize = true;
-            this.label91.Location = new System.Drawing.Point(19, 162);
-            this.label91.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label91.Name = "label91";
-            this.label91.Size = new System.Drawing.Size(33, 20);
-            this.label91.TabIndex = 48;
-            this.label91.Text = "Tilt:";
-            // 
-            // label87
-            // 
-            this.label87.AutoSize = true;
-            this.label87.Location = new System.Drawing.Point(19, 87);
-            this.label87.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label87.Name = "label87";
-            this.label87.Size = new System.Drawing.Size(41, 20);
-            this.label87.TabIndex = 47;
-            this.label87.Text = "Pan:";
-            // 
-            // textBoxGWTrackerTiltRef
-            // 
-            this.textBoxGWTrackerTiltRef.Location = new System.Drawing.Point(67, 159);
-            this.textBoxGWTrackerTiltRef.Name = "textBoxGWTrackerTiltRef";
-            this.textBoxGWTrackerTiltRef.ReadOnly = true;
-            this.textBoxGWTrackerTiltRef.Size = new System.Drawing.Size(100, 26);
-            this.textBoxGWTrackerTiltRef.TabIndex = 49;
-            this.textBoxGWTrackerTiltRef.Text = "1000";
-            // 
-            // textBoxGWTrackerPanRef
-            // 
-            this.textBoxGWTrackerPanRef.Location = new System.Drawing.Point(67, 84);
-            this.textBoxGWTrackerPanRef.Name = "textBoxGWTrackerPanRef";
-            this.textBoxGWTrackerPanRef.ReadOnly = true;
-            this.textBoxGWTrackerPanRef.Size = new System.Drawing.Size(100, 26);
-            this.textBoxGWTrackerPanRef.TabIndex = 48;
-            this.textBoxGWTrackerPanRef.Text = "0";
-            // 
-            // label85
-            // 
-            this.label85.AutoSize = true;
-            this.label85.Location = new System.Drawing.Point(7, 41);
-            this.label85.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label85.Name = "label85";
-            this.label85.Size = new System.Drawing.Size(53, 20);
-            this.label85.TabIndex = 47;
-            this.label85.Text = "Mode:";
-            // 
-            // comboBoxGWTrackerMode
-            // 
-            this.comboBoxGWTrackerMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxGWTrackerMode.FormattingEnabled = true;
-            this.comboBoxGWTrackerMode.Items.AddRange(new object[] {
-            "Disabled",
-            "Manual",
-            "Semi Auto"});
-            this.comboBoxGWTrackerMode.Location = new System.Drawing.Point(67, 38);
-            this.comboBoxGWTrackerMode.Name = "comboBoxGWTrackerMode";
-            this.comboBoxGWTrackerMode.Size = new System.Drawing.Size(134, 28);
-            this.comboBoxGWTrackerMode.TabIndex = 0;
-            this.comboBoxGWTrackerMode.SelectedIndexChanged += new System.EventHandler(this.comboBoxGWTrackerMode_SelectedIndexChanged);
-            // 
-            // groupBox15
-            // 
-            this.groupBox15.Controls.Add(this.label79);
-            this.groupBox15.Controls.Add(this.textBoxGWESC2OpMode);
-            this.groupBox15.Controls.Add(this.textBoxGWESC2Current);
-            this.groupBox15.Controls.Add(this.label81);
-            this.groupBox15.Controls.Add(this.textBoxGWESC2EncoLocked);
-            this.groupBox15.Controls.Add(this.label82);
-            this.groupBox15.Controls.Add(this.textBoxGWESC2Position);
-            this.groupBox15.Controls.Add(this.label84);
-            this.groupBox15.Location = new System.Drawing.Point(568, 281);
-            this.groupBox15.Name = "groupBox15";
-            this.groupBox15.Size = new System.Drawing.Size(216, 203);
-            this.groupBox15.TabIndex = 45;
-            this.groupBox15.TabStop = false;
-            this.groupBox15.Text = "ESC2 Data";
-            // 
-            // label79
-            // 
-            this.label79.AutoSize = true;
-            this.label79.Location = new System.Drawing.Point(22, 152);
-            this.label79.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label79.Name = "label79";
-            this.label79.Size = new System.Drawing.Size(66, 20);
-            this.label79.TabIndex = 46;
-            this.label79.Text = "Current:";
-            // 
-            // textBoxGWESC2OpMode
-            // 
-            this.textBoxGWESC2OpMode.Location = new System.Drawing.Point(105, 46);
-            this.textBoxGWESC2OpMode.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWESC2OpMode.Name = "textBoxGWESC2OpMode";
-            this.textBoxGWESC2OpMode.ReadOnly = true;
-            this.textBoxGWESC2OpMode.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWESC2OpMode.TabIndex = 16;
-            // 
-            // textBoxGWESC2Current
-            // 
-            this.textBoxGWESC2Current.Location = new System.Drawing.Point(105, 149);
-            this.textBoxGWESC2Current.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWESC2Current.Name = "textBoxGWESC2Current";
-            this.textBoxGWESC2Current.ReadOnly = true;
-            this.textBoxGWESC2Current.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWESC2Current.TabIndex = 45;
-            // 
-            // label81
-            // 
-            this.label81.AutoSize = true;
-            this.label81.Location = new System.Drawing.Point(13, 49);
-            this.label81.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label81.Name = "label81";
-            this.label81.Size = new System.Drawing.Size(78, 20);
-            this.label81.TabIndex = 15;
-            this.label81.Text = "Op Mode:";
-            // 
-            // textBoxGWESC2EncoLocked
-            // 
-            this.textBoxGWESC2EncoLocked.Location = new System.Drawing.Point(105, 81);
-            this.textBoxGWESC2EncoLocked.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWESC2EncoLocked.Name = "textBoxGWESC2EncoLocked";
-            this.textBoxGWESC2EncoLocked.ReadOnly = true;
-            this.textBoxGWESC2EncoLocked.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWESC2EncoLocked.TabIndex = 9;
-            // 
-            // label82
-            // 
-            this.label82.AutoSize = true;
-            this.label82.Location = new System.Drawing.Point(22, 118);
-            this.label82.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label82.Name = "label82";
-            this.label82.Size = new System.Drawing.Size(69, 20);
-            this.label82.TabIndex = 31;
-            this.label82.Text = "Position:";
-            // 
-            // textBoxGWESC2Position
-            // 
-            this.textBoxGWESC2Position.Location = new System.Drawing.Point(105, 115);
-            this.textBoxGWESC2Position.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWESC2Position.Name = "textBoxGWESC2Position";
-            this.textBoxGWESC2Position.ReadOnly = true;
-            this.textBoxGWESC2Position.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWESC2Position.TabIndex = 30;
-            // 
-            // label84
-            // 
-            this.label84.AutoSize = true;
-            this.label84.Location = new System.Drawing.Point(26, 84);
-            this.label84.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label84.Name = "label84";
-            this.label84.Size = new System.Drawing.Size(65, 20);
-            this.label84.TabIndex = 10;
-            this.label84.Text = "Locked:";
-            // 
-            // groupBox14
-            // 
-            this.groupBox14.Controls.Add(this.label78);
-            this.groupBox14.Controls.Add(this.textBoxGWESC1OpMode);
-            this.groupBox14.Controls.Add(this.textBoxGWESC1Current);
-            this.groupBox14.Controls.Add(this.label75);
-            this.groupBox14.Controls.Add(this.textBoxGWESC1EncoLocked);
-            this.groupBox14.Controls.Add(this.label76);
-            this.groupBox14.Controls.Add(this.textBoxGWESC1Position);
-            this.groupBox14.Controls.Add(this.label77);
-            this.groupBox14.Location = new System.Drawing.Point(333, 281);
-            this.groupBox14.Name = "groupBox14";
-            this.groupBox14.Size = new System.Drawing.Size(216, 203);
-            this.groupBox14.TabIndex = 44;
-            this.groupBox14.TabStop = false;
-            this.groupBox14.Text = "ESC1 Data";
-            // 
-            // label78
-            // 
-            this.label78.AutoSize = true;
-            this.label78.Location = new System.Drawing.Point(22, 152);
-            this.label78.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label78.Name = "label78";
-            this.label78.Size = new System.Drawing.Size(66, 20);
-            this.label78.TabIndex = 46;
-            this.label78.Text = "Current:";
-            // 
-            // textBoxGWESC1OpMode
-            // 
-            this.textBoxGWESC1OpMode.Location = new System.Drawing.Point(105, 46);
-            this.textBoxGWESC1OpMode.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWESC1OpMode.Name = "textBoxGWESC1OpMode";
-            this.textBoxGWESC1OpMode.ReadOnly = true;
-            this.textBoxGWESC1OpMode.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWESC1OpMode.TabIndex = 16;
-            // 
-            // textBoxGWESC1Current
-            // 
-            this.textBoxGWESC1Current.Location = new System.Drawing.Point(105, 149);
-            this.textBoxGWESC1Current.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWESC1Current.Name = "textBoxGWESC1Current";
-            this.textBoxGWESC1Current.ReadOnly = true;
-            this.textBoxGWESC1Current.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWESC1Current.TabIndex = 45;
-            // 
-            // label75
-            // 
-            this.label75.AutoSize = true;
-            this.label75.Location = new System.Drawing.Point(13, 49);
-            this.label75.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label75.Name = "label75";
-            this.label75.Size = new System.Drawing.Size(78, 20);
-            this.label75.TabIndex = 15;
-            this.label75.Text = "Op Mode:";
-            // 
-            // textBoxGWESC1EncoLocked
-            // 
-            this.textBoxGWESC1EncoLocked.Location = new System.Drawing.Point(105, 81);
-            this.textBoxGWESC1EncoLocked.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWESC1EncoLocked.Name = "textBoxGWESC1EncoLocked";
-            this.textBoxGWESC1EncoLocked.ReadOnly = true;
-            this.textBoxGWESC1EncoLocked.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWESC1EncoLocked.TabIndex = 9;
-            // 
-            // label76
-            // 
-            this.label76.AutoSize = true;
-            this.label76.Location = new System.Drawing.Point(22, 118);
-            this.label76.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label76.Name = "label76";
-            this.label76.Size = new System.Drawing.Size(69, 20);
-            this.label76.TabIndex = 31;
-            this.label76.Text = "Position:";
-            // 
-            // textBoxGWESC1Position
-            // 
-            this.textBoxGWESC1Position.Location = new System.Drawing.Point(105, 115);
-            this.textBoxGWESC1Position.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGWESC1Position.Name = "textBoxGWESC1Position";
-            this.textBoxGWESC1Position.ReadOnly = true;
-            this.textBoxGWESC1Position.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGWESC1Position.TabIndex = 30;
-            // 
-            // label77
-            // 
-            this.label77.AutoSize = true;
-            this.label77.Location = new System.Drawing.Point(26, 84);
-            this.label77.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label77.Name = "label77";
-            this.label77.Size = new System.Drawing.Size(65, 20);
-            this.label77.TabIndex = 10;
-            this.label77.Text = "Locked:";
-            // 
-            // groupBox13
-            // 
-            this.groupBox13.Controls.Add(this.textBoxGatewayLon);
-            this.groupBox13.Controls.Add(this.textBoxGatewayLat);
-            this.groupBox13.Controls.Add(this.textBoxGatewaySatNr);
-            this.groupBox13.Controls.Add(this.label88);
-            this.groupBox13.Controls.Add(this.label89);
-            this.groupBox13.Controls.Add(this.label90);
-            this.groupBox13.Location = new System.Drawing.Point(764, 86);
-            this.groupBox13.Margin = new System.Windows.Forms.Padding(4);
-            this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox13.Size = new System.Drawing.Size(265, 164);
-            this.groupBox13.TabIndex = 43;
-            this.groupBox13.TabStop = false;
-            this.groupBox13.Text = "GPS";
-            // 
-            // textBoxGatewayLon
-            // 
-            this.textBoxGatewayLon.Location = new System.Drawing.Point(88, 114);
-            this.textBoxGatewayLon.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewayLon.Name = "textBoxGatewayLon";
-            this.textBoxGatewayLon.ReadOnly = true;
-            this.textBoxGatewayLon.Size = new System.Drawing.Size(148, 26);
-            this.textBoxGatewayLon.TabIndex = 1;
-            // 
-            // textBoxGatewayLat
-            // 
-            this.textBoxGatewayLat.Location = new System.Drawing.Point(88, 81);
-            this.textBoxGatewayLat.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewayLat.Name = "textBoxGatewayLat";
-            this.textBoxGatewayLat.ReadOnly = true;
-            this.textBoxGatewayLat.Size = new System.Drawing.Size(148, 26);
-            this.textBoxGatewayLat.TabIndex = 1;
-            // 
-            // textBoxGatewaySatNr
-            // 
-            this.textBoxGatewaySatNr.Location = new System.Drawing.Point(88, 46);
-            this.textBoxGatewaySatNr.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewaySatNr.Name = "textBoxGatewaySatNr";
-            this.textBoxGatewaySatNr.ReadOnly = true;
-            this.textBoxGatewaySatNr.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGatewaySatNr.TabIndex = 1;
-            // 
-            // label88
-            // 
-            this.label88.AutoSize = true;
-            this.label88.Location = new System.Drawing.Point(9, 50);
-            this.label88.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label88.Name = "label88";
-            this.label88.Size = new System.Drawing.Size(54, 20);
-            this.label88.TabIndex = 0;
-            this.label88.Text = "SatNr:";
-            // 
-            // label89
-            // 
-            this.label89.AutoSize = true;
-            this.label89.Location = new System.Drawing.Point(22, 118);
-            this.label89.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label89.Name = "label89";
-            this.label89.Size = new System.Drawing.Size(40, 20);
-            this.label89.TabIndex = 0;
-            this.label89.Text = "Lon:";
-            // 
-            // label90
-            // 
-            this.label90.AutoSize = true;
-            this.label90.Location = new System.Drawing.Point(22, 84);
-            this.label90.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label90.Name = "label90";
-            this.label90.Size = new System.Drawing.Size(36, 20);
-            this.label90.TabIndex = 0;
-            this.label90.Text = "Lat:";
-            // 
-            // groupBox12
-            // 
-            this.groupBox12.Controls.Add(this.textBoxGatewayYaw);
-            this.groupBox12.Controls.Add(this.label80);
-            this.groupBox12.Controls.Add(this.textBoxGatewayPitch);
-            this.groupBox12.Controls.Add(this.label83);
-            this.groupBox12.Controls.Add(this.textBoxGatewayRoll);
-            this.groupBox12.Controls.Add(this.label86);
-            this.groupBox12.Location = new System.Drawing.Point(580, 86);
-            this.groupBox12.Margin = new System.Windows.Forms.Padding(4);
-            this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox12.Size = new System.Drawing.Size(166, 164);
-            this.groupBox12.TabIndex = 42;
-            this.groupBox12.TabStop = false;
-            this.groupBox12.Text = "Attitude";
-            // 
-            // textBoxGatewayYaw
-            // 
-            this.textBoxGatewayYaw.Location = new System.Drawing.Point(68, 116);
-            this.textBoxGatewayYaw.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewayYaw.Name = "textBoxGatewayYaw";
-            this.textBoxGatewayYaw.ReadOnly = true;
-            this.textBoxGatewayYaw.Size = new System.Drawing.Size(74, 26);
-            this.textBoxGatewayYaw.TabIndex = 9;
-            this.textBoxGatewayYaw.Text = "0";
-            // 
-            // label80
-            // 
-            this.label80.AutoSize = true;
-            this.label80.Location = new System.Drawing.Point(16, 118);
-            this.label80.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label80.Name = "label80";
-            this.label80.Size = new System.Drawing.Size(44, 20);
-            this.label80.TabIndex = 10;
-            this.label80.Text = "Yaw:";
-            // 
-            // textBoxGatewayPitch
-            // 
-            this.textBoxGatewayPitch.Location = new System.Drawing.Point(68, 80);
-            this.textBoxGatewayPitch.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewayPitch.Name = "textBoxGatewayPitch";
-            this.textBoxGatewayPitch.ReadOnly = true;
-            this.textBoxGatewayPitch.Size = new System.Drawing.Size(74, 26);
-            this.textBoxGatewayPitch.TabIndex = 7;
-            this.textBoxGatewayPitch.Text = "0";
-            // 
-            // label83
-            // 
-            this.label83.AutoSize = true;
-            this.label83.Location = new System.Drawing.Point(16, 84);
-            this.label83.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label83.Name = "label83";
-            this.label83.Size = new System.Drawing.Size(48, 20);
-            this.label83.TabIndex = 8;
-            this.label83.Text = "Pitch:";
-            // 
-            // textBoxGatewayRoll
-            // 
-            this.textBoxGatewayRoll.Location = new System.Drawing.Point(68, 44);
-            this.textBoxGatewayRoll.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewayRoll.Name = "textBoxGatewayRoll";
-            this.textBoxGatewayRoll.ReadOnly = true;
-            this.textBoxGatewayRoll.Size = new System.Drawing.Size(74, 26);
-            this.textBoxGatewayRoll.TabIndex = 6;
-            this.textBoxGatewayRoll.Text = "0";
-            // 
-            // label86
-            // 
-            this.label86.AutoSize = true;
-            this.label86.Location = new System.Drawing.Point(16, 50);
-            this.label86.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label86.Name = "label86";
-            this.label86.Size = new System.Drawing.Size(40, 20);
-            this.label86.TabIndex = 6;
-            this.label86.Text = "Roll:";
-            // 
-            // groupBox7
-            // 
-            this.groupBox7.Controls.Add(this.textBoxGatewayHopeRXCrcErrors);
-            this.groupBox7.Controls.Add(this.label99);
-            this.groupBox7.Controls.Add(this.textBoxGatewayHopeRXCount);
-            this.groupBox7.Controls.Add(this.label64);
-            this.groupBox7.Controls.Add(this.textBoxGatewayHopeRSSI);
-            this.groupBox7.Controls.Add(this.label65);
-            this.groupBox7.Controls.Add(this.textBoxGatewayHopeRXRSSI);
-            this.groupBox7.Controls.Add(this.label66);
-            this.groupBox7.Location = new System.Drawing.Point(333, 86);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(231, 182);
-            this.groupBox7.TabIndex = 41;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "HopeRF";
-            // 
-            // textBoxGatewayHopeRXCrcErrors
-            // 
-            this.textBoxGatewayHopeRXCrcErrors.Location = new System.Drawing.Point(105, 70);
-            this.textBoxGatewayHopeRXCrcErrors.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewayHopeRXCrcErrors.Name = "textBoxGatewayHopeRXCrcErrors";
-            this.textBoxGatewayHopeRXCrcErrors.ReadOnly = true;
-            this.textBoxGatewayHopeRXCrcErrors.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGatewayHopeRXCrcErrors.TabIndex = 33;
-            // 
-            // label99
-            // 
-            this.label99.AutoSize = true;
-            this.label99.Location = new System.Drawing.Point(14, 74);
-            this.label99.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label99.Name = "label99";
-            this.label99.Size = new System.Drawing.Size(72, 20);
-            this.label99.TabIndex = 32;
-            this.label99.Text = "CRC Err:";
-            // 
-            // textBoxGatewayHopeRXCount
-            // 
-            this.textBoxGatewayHopeRXCount.Location = new System.Drawing.Point(105, 36);
-            this.textBoxGatewayHopeRXCount.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewayHopeRXCount.Name = "textBoxGatewayHopeRXCount";
-            this.textBoxGatewayHopeRXCount.ReadOnly = true;
-            this.textBoxGatewayHopeRXCount.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGatewayHopeRXCount.TabIndex = 16;
-            // 
-            // label64
-            // 
-            this.label64.AutoSize = true;
-            this.label64.Location = new System.Drawing.Point(14, 40);
-            this.label64.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label64.Name = "label64";
-            this.label64.Size = new System.Drawing.Size(83, 20);
-            this.label64.TabIndex = 15;
-            this.label64.Text = "RX Count:";
-            // 
-            // textBoxGatewayHopeRSSI
-            // 
-            this.textBoxGatewayHopeRSSI.Location = new System.Drawing.Point(105, 108);
-            this.textBoxGatewayHopeRSSI.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewayHopeRSSI.Name = "textBoxGatewayHopeRSSI";
-            this.textBoxGatewayHopeRSSI.ReadOnly = true;
-            this.textBoxGatewayHopeRSSI.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGatewayHopeRSSI.TabIndex = 9;
-            // 
-            // label65
-            // 
-            this.label65.AutoSize = true;
-            this.label65.Location = new System.Drawing.Point(26, 146);
-            this.label65.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(71, 20);
-            this.label65.TabIndex = 31;
-            this.label65.Text = "RxRSSI:";
-            // 
-            // textBoxGatewayHopeRXRSSI
-            // 
-            this.textBoxGatewayHopeRXRSSI.Location = new System.Drawing.Point(105, 143);
-            this.textBoxGatewayHopeRXRSSI.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewayHopeRXRSSI.Name = "textBoxGatewayHopeRXRSSI";
-            this.textBoxGatewayHopeRXRSSI.ReadOnly = true;
-            this.textBoxGatewayHopeRXRSSI.Size = new System.Drawing.Size(92, 26);
-            this.textBoxGatewayHopeRXRSSI.TabIndex = 30;
-            // 
-            // label66
-            // 
-            this.label66.AutoSize = true;
-            this.label66.Location = new System.Drawing.Point(40, 111);
-            this.label66.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label66.Name = "label66";
-            this.label66.Size = new System.Drawing.Size(52, 20);
-            this.label66.TabIndex = 10;
-            this.label66.Text = "RSSI:";
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.textBoxGatewayTemperature);
-            this.groupBox6.Controls.Add(this.label56);
-            this.groupBox6.Controls.Add(this.textBoxGatewayPressure);
-            this.groupBox6.Controls.Add(this.label63);
-            this.groupBox6.Controls.Add(this.textBoxGatewayLoop);
-            this.groupBox6.Controls.Add(this.label53);
-            this.groupBox6.Controls.Add(this.textBoxGatewayCPUTimeMax);
-            this.groupBox6.Controls.Add(this.label54);
-            this.groupBox6.Controls.Add(this.textBoxHopeRFReceived);
-            this.groupBox6.Controls.Add(this.label14);
-            this.groupBox6.Controls.Add(this.textBoxGatewayCPUTime);
-            this.groupBox6.Controls.Add(this.label55);
-            this.groupBox6.Controls.Add(this.textBoxGatewayLoopTime);
-            this.groupBox6.Controls.Add(this.label57);
-            this.groupBox6.Controls.Add(this.textBoxGatewayEthReceived);
-            this.groupBox6.Controls.Add(this.label58);
-            this.groupBox6.Controls.Add(this.textBoxGatewayEthSent);
-            this.groupBox6.Controls.Add(this.label59);
-            this.groupBox6.Controls.Add(this.textBoxGatewayEthFrames);
-            this.groupBox6.Controls.Add(this.label61);
-            this.groupBox6.Controls.Add(this.label555);
-            this.groupBox6.Controls.Add(this.textBoxGatewayBattery);
-            this.groupBox6.Location = new System.Drawing.Point(27, 80);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(278, 476);
-            this.groupBox6.TabIndex = 38;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "System";
-            // 
-            // textBoxGatewayTemperature
-            // 
-            this.textBoxGatewayTemperature.Location = new System.Drawing.Point(128, 414);
-            this.textBoxGatewayTemperature.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewayTemperature.Name = "textBoxGatewayTemperature";
-            this.textBoxGatewayTemperature.ReadOnly = true;
-            this.textBoxGatewayTemperature.Size = new System.Drawing.Size(102, 26);
-            this.textBoxGatewayTemperature.TabIndex = 43;
-            this.textBoxGatewayTemperature.Text = "0";
-            // 
-            // label56
-            // 
-            this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(40, 420);
-            this.label56.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label56.Name = "label56";
-            this.label56.Size = new System.Drawing.Size(53, 20);
-            this.label56.TabIndex = 42;
-            this.label56.Text = "Temp:";
-            // 
-            // textBoxGatewayPressure
-            // 
-            this.textBoxGatewayPressure.Location = new System.Drawing.Point(128, 378);
-            this.textBoxGatewayPressure.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewayPressure.Name = "textBoxGatewayPressure";
-            this.textBoxGatewayPressure.ReadOnly = true;
-            this.textBoxGatewayPressure.Size = new System.Drawing.Size(102, 26);
-            this.textBoxGatewayPressure.TabIndex = 40;
-            this.textBoxGatewayPressure.Text = "0";
-            // 
-            // label63
-            // 
-            this.label63.AutoSize = true;
-            this.label63.Location = new System.Drawing.Point(40, 384);
-            this.label63.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label63.Name = "label63";
-            this.label63.Size = new System.Drawing.Size(32, 20);
-            this.label63.TabIndex = 39;
-            this.label63.Text = "P0:";
-            // 
-            // textBoxGatewayLoop
-            // 
-            this.textBoxGatewayLoop.Location = new System.Drawing.Point(129, 198);
-            this.textBoxGatewayLoop.Name = "textBoxGatewayLoop";
-            this.textBoxGatewayLoop.ReadOnly = true;
-            this.textBoxGatewayLoop.Size = new System.Drawing.Size(100, 26);
-            this.textBoxGatewayLoop.TabIndex = 21;
-            this.textBoxGatewayLoop.Text = "0";
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(1152, 893);
+            this.label47.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(108, 20);
+            this.label47.TabIndex = 49;
+            this.label47.Text = "MessagesOK:";
+            // 
+            // textBoxCommMsgOK
+            // 
+            this.textBoxCommMsgOK.Location = new System.Drawing.Point(1268, 890);
+            this.textBoxCommMsgOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.textBoxCommMsgOK.Name = "textBoxCommMsgOK";
+            this.textBoxCommMsgOK.ReadOnly = true;
+            this.textBoxCommMsgOK.Size = new System.Drawing.Size(84, 26);
+            this.textBoxCommMsgOK.TabIndex = 48;
+            this.textBoxCommMsgOK.Text = "0";
             // 
             // label53
             // 
             this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(15, 201);
+            this.label53.Location = new System.Drawing.Point(1152, 859);
             this.label53.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(49, 20);
-            this.label53.TabIndex = 18;
-            this.label53.Text = "Loop:";
+            this.label53.Size = new System.Drawing.Size(113, 20);
+            this.label53.TabIndex = 47;
+            this.label53.Text = "Header Errors:";
             // 
-            // textBoxGatewayCPUTimeMax
+            // textBoxCommHeaderErrors
             // 
-            this.textBoxGatewayCPUTimeMax.Location = new System.Drawing.Point(129, 306);
-            this.textBoxGatewayCPUTimeMax.Name = "textBoxGatewayCPUTimeMax";
-            this.textBoxGatewayCPUTimeMax.ReadOnly = true;
-            this.textBoxGatewayCPUTimeMax.Size = new System.Drawing.Size(100, 26);
-            this.textBoxGatewayCPUTimeMax.TabIndex = 17;
-            this.textBoxGatewayCPUTimeMax.Text = "0";
+            this.textBoxCommHeaderErrors.Location = new System.Drawing.Point(1268, 856);
+            this.textBoxCommHeaderErrors.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.textBoxCommHeaderErrors.Name = "textBoxCommHeaderErrors";
+            this.textBoxCommHeaderErrors.ReadOnly = true;
+            this.textBoxCommHeaderErrors.Size = new System.Drawing.Size(84, 26);
+            this.textBoxCommHeaderErrors.TabIndex = 46;
+            this.textBoxCommHeaderErrors.Text = "0";
             // 
             // label54
             // 
             this.label54.AutoSize = true;
-            this.label54.Location = new System.Drawing.Point(15, 309);
+            this.label54.Location = new System.Drawing.Point(1152, 824);
             this.label54.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(109, 20);
-            this.label54.TabIndex = 16;
-            this.label54.Text = "CPUMaxTime:";
+            this.label54.Size = new System.Drawing.Size(94, 20);
+            this.label54.TabIndex = 45;
+            this.label54.Text = "CRC Errors:";
             // 
-            // textBoxHopeRFReceived
+            // textBoxCommCRCErrors
             // 
-            this.textBoxHopeRFReceived.Location = new System.Drawing.Point(129, 52);
-            this.textBoxHopeRFReceived.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxHopeRFReceived.Name = "textBoxHopeRFReceived";
-            this.textBoxHopeRFReceived.ReadOnly = true;
-            this.textBoxHopeRFReceived.Size = new System.Drawing.Size(100, 26);
-            this.textBoxHopeRFReceived.TabIndex = 16;
-            this.textBoxHopeRFReceived.Text = "0";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(15, 56);
-            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(99, 20);
-            this.label14.TabIndex = 15;
-            this.label14.Text = "Hope Count:";
-            // 
-            // textBoxGatewayCPUTime
-            // 
-            this.textBoxGatewayCPUTime.Location = new System.Drawing.Point(129, 270);
-            this.textBoxGatewayCPUTime.Name = "textBoxGatewayCPUTime";
-            this.textBoxGatewayCPUTime.ReadOnly = true;
-            this.textBoxGatewayCPUTime.Size = new System.Drawing.Size(100, 26);
-            this.textBoxGatewayCPUTime.TabIndex = 15;
-            this.textBoxGatewayCPUTime.Text = "0";
-            // 
-            // label55
-            // 
-            this.label55.AutoSize = true;
-            this.label55.Location = new System.Drawing.Point(15, 273);
-            this.label55.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(80, 20);
-            this.label55.TabIndex = 14;
-            this.label55.Text = "CPUTime:";
-            // 
-            // textBoxGatewayLoopTime
-            // 
-            this.textBoxGatewayLoopTime.Location = new System.Drawing.Point(129, 234);
-            this.textBoxGatewayLoopTime.Name = "textBoxGatewayLoopTime";
-            this.textBoxGatewayLoopTime.ReadOnly = true;
-            this.textBoxGatewayLoopTime.Size = new System.Drawing.Size(100, 26);
-            this.textBoxGatewayLoopTime.TabIndex = 11;
-            this.textBoxGatewayLoopTime.Text = "0";
-            // 
-            // label57
-            // 
-            this.label57.AutoSize = true;
-            this.label57.Location = new System.Drawing.Point(15, 237);
-            this.label57.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label57.Name = "label57";
-            this.label57.Size = new System.Drawing.Size(83, 20);
-            this.label57.TabIndex = 10;
-            this.label57.Text = "LoopTime:";
-            // 
-            // textBoxGatewayEthReceived
-            // 
-            this.textBoxGatewayEthReceived.Location = new System.Drawing.Point(129, 160);
-            this.textBoxGatewayEthReceived.Name = "textBoxGatewayEthReceived";
-            this.textBoxGatewayEthReceived.ReadOnly = true;
-            this.textBoxGatewayEthReceived.Size = new System.Drawing.Size(100, 26);
-            this.textBoxGatewayEthReceived.TabIndex = 9;
-            this.textBoxGatewayEthReceived.Text = "0";
-            // 
-            // label58
-            // 
-            this.label58.AutoSize = true;
-            this.label58.Location = new System.Drawing.Point(15, 164);
-            this.label58.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label58.Name = "label58";
-            this.label58.Size = new System.Drawing.Size(108, 20);
-            this.label58.TabIndex = 8;
-            this.label58.Text = "Eth Received:";
-            // 
-            // textBoxGatewayEthSent
-            // 
-            this.textBoxGatewayEthSent.Location = new System.Drawing.Point(129, 124);
-            this.textBoxGatewayEthSent.Name = "textBoxGatewayEthSent";
-            this.textBoxGatewayEthSent.ReadOnly = true;
-            this.textBoxGatewayEthSent.Size = new System.Drawing.Size(100, 26);
-            this.textBoxGatewayEthSent.TabIndex = 7;
-            this.textBoxGatewayEthSent.Text = "0";
-            // 
-            // label59
-            // 
-            this.label59.AutoSize = true;
-            this.label59.Location = new System.Drawing.Point(15, 128);
-            this.label59.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label59.Name = "label59";
-            this.label59.Size = new System.Drawing.Size(76, 20);
-            this.label59.TabIndex = 6;
-            this.label59.Text = "Eth Sent:";
-            // 
-            // textBoxGatewayEthFrames
-            // 
-            this.textBoxGatewayEthFrames.Location = new System.Drawing.Point(129, 90);
-            this.textBoxGatewayEthFrames.Name = "textBoxGatewayEthFrames";
-            this.textBoxGatewayEthFrames.ReadOnly = true;
-            this.textBoxGatewayEthFrames.Size = new System.Drawing.Size(100, 26);
-            this.textBoxGatewayEthFrames.TabIndex = 3;
-            this.textBoxGatewayEthFrames.Text = "0";
-            // 
-            // label61
-            // 
-            this.label61.AutoSize = true;
-            this.label61.Location = new System.Drawing.Point(15, 345);
-            this.label61.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label61.Name = "label61";
-            this.label61.Size = new System.Drawing.Size(87, 20);
-            this.label61.TabIndex = 8;
-            this.label61.Text = "Battery [V]:";
-            // 
-            // label555
-            // 
-            this.label555.AutoSize = true;
-            this.label555.Location = new System.Drawing.Point(15, 93);
-            this.label555.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label555.Name = "label555";
-            this.label555.Size = new System.Drawing.Size(96, 20);
-            this.label555.TabIndex = 1;
-            this.label555.Text = "Eth Frames:";
-            // 
-            // textBoxGatewayBattery
-            // 
-            this.textBoxGatewayBattery.Location = new System.Drawing.Point(128, 342);
-            this.textBoxGatewayBattery.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxGatewayBattery.Name = "textBoxGatewayBattery";
-            this.textBoxGatewayBattery.ReadOnly = true;
-            this.textBoxGatewayBattery.Size = new System.Drawing.Size(102, 26);
-            this.textBoxGatewayBattery.TabIndex = 7;
-            this.textBoxGatewayBattery.Text = "0";
-            // 
-            // label47
-            // 
-            this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(22, 32);
-            this.label47.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(72, 20);
-            this.label47.TabIndex = 18;
-            this.label47.Text = "Address:";
-            // 
-            // textBoxAddressGateway
-            // 
-            this.textBoxAddressGateway.Location = new System.Drawing.Point(104, 26);
-            this.textBoxAddressGateway.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxAddressGateway.Name = "textBoxAddressGateway";
-            this.textBoxAddressGateway.Size = new System.Drawing.Size(148, 26);
-            this.textBoxAddressGateway.TabIndex = 17;
-            this.textBoxAddressGateway.Text = "10.0.1.101";
-            // 
-            // buttonConnectGateway
-            // 
-            this.buttonConnectGateway.Location = new System.Drawing.Point(268, 14);
-            this.buttonConnectGateway.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonConnectGateway.Name = "buttonConnectGateway";
-            this.buttonConnectGateway.Size = new System.Drawing.Size(112, 50);
-            this.buttonConnectGateway.TabIndex = 19;
-            this.buttonConnectGateway.Text = "Connect";
-            this.buttonConnectGateway.UseVisualStyleBackColor = true;
-            this.buttonConnectGateway.Click += new System.EventHandler(this.buttonConnectGateway_Click);
+            this.textBoxCommCRCErrors.Location = new System.Drawing.Point(1268, 821);
+            this.textBoxCommCRCErrors.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.textBoxCommCRCErrors.Name = "textBoxCommCRCErrors";
+            this.textBoxCommCRCErrors.ReadOnly = true;
+            this.textBoxCommCRCErrors.Size = new System.Drawing.Size(84, 26);
+            this.textBoxCommCRCErrors.TabIndex = 44;
+            this.textBoxCommCRCErrors.Text = "0";
             // 
             // FormMain
             // 
@@ -3656,24 +2672,6 @@
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMap)).EndInit();
-            this.tabPageGateway.ResumeLayout(false);
-            this.tabPageGateway.PerformLayout();
-            this.groupBox16.ResumeLayout(false);
-            this.groupBox16.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarGWTrackerManualTiltRef)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarGWTrackerManualPanRef)).EndInit();
-            this.groupBox15.ResumeLayout(false);
-            this.groupBox15.PerformLayout();
-            this.groupBox14.ResumeLayout(false);
-            this.groupBox14.PerformLayout();
-            this.groupBox13.ResumeLayout(false);
-            this.groupBox13.PerformLayout();
-            this.groupBox12.ResumeLayout(false);
-            this.groupBox12.PerformLayout();
-            this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -3767,7 +2765,6 @@
         private System.Windows.Forms.TabControl tabControlMain;
         private System.Windows.Forms.TabPage tabPageMainSystem;
         private System.Windows.Forms.TabPage tabPageNavigation;
-        private System.Windows.Forms.TabPage tabPageGateway;
         private System.Windows.Forms.TextBox textBoxSatCNOs2;
         private System.Windows.Forms.TextBox textBoxdYawFiltered;
         private System.Windows.Forms.TextBox textBoxdPitchFiltered;
@@ -3803,42 +2800,11 @@
         private System.Windows.Forms.Label label44;
         private System.Windows.Forms.TextBox textBoxSystemT1;
         private System.Windows.Forms.Label label43;
-        private System.Windows.Forms.TextBox textBoxHopeRFReceived;
-        private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TextBox textBoxWaypointsCnt;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.TextBox textBoxWaypointsDownloadCnt;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.Button buttonNavDownloadWaypoints;
-        private System.Windows.Forms.Label label47;
-        private System.Windows.Forms.TextBox textBoxAddressGateway;
-        private System.Windows.Forms.Button buttonConnectGateway;
-        private System.Windows.Forms.TextBox textBoxGatewayLoop;
-        private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.TextBox textBoxGatewayHopeRXCount;
-        private System.Windows.Forms.Label label64;
-        private System.Windows.Forms.TextBox textBoxGatewayHopeRSSI;
-        private System.Windows.Forms.Label label65;
-        private System.Windows.Forms.TextBox textBoxGatewayHopeRXRSSI;
-        private System.Windows.Forms.Label label66;
-        private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.TextBox textBoxGatewayPressure;
-        private System.Windows.Forms.Label label63;
-        private System.Windows.Forms.Label label53;
-        private System.Windows.Forms.TextBox textBoxGatewayCPUTimeMax;
-        private System.Windows.Forms.Label label54;
-        private System.Windows.Forms.TextBox textBoxGatewayCPUTime;
-        private System.Windows.Forms.Label label55;
-        private System.Windows.Forms.TextBox textBoxGatewayLoopTime;
-        private System.Windows.Forms.Label label57;
-        private System.Windows.Forms.TextBox textBoxGatewayEthReceived;
-        private System.Windows.Forms.Label label58;
-        private System.Windows.Forms.TextBox textBoxGatewayEthSent;
-        private System.Windows.Forms.Label label59;
-        private System.Windows.Forms.TextBox textBoxGatewayEthFrames;
-        private System.Windows.Forms.Label label61;
-        private System.Windows.Forms.Label label555;
-        private System.Windows.Forms.TextBox textBoxGatewayBattery;
         private System.Windows.Forms.TextBox textBoxHopeRXCount;
         private System.Windows.Forms.GroupBox groupBoxSourceSelect;
         private System.Windows.Forms.RadioButton radioButtonWifiHopeRF;
@@ -3867,8 +2833,6 @@
         private System.Windows.Forms.Label label49;
         private System.Windows.Forms.TextBox textBoxLocTemperature;
         private System.Windows.Forms.Label label52;
-        private System.Windows.Forms.TextBox textBoxGatewayTemperature;
-        private System.Windows.Forms.Label label56;
         private System.Windows.Forms.Label label67;
         private System.Windows.Forms.Label label62;
         private System.Windows.Forms.Label label60;
@@ -3896,63 +2860,6 @@
         private System.Windows.Forms.Button buttonNavigationWaypointsLoad;
         private System.Windows.Forms.Button buttonNavigationWaypointsSave;
         private System.Windows.Forms.Button buttonNavAbortWaypoints;
-        private System.Windows.Forms.GroupBox groupBox12;
-        private System.Windows.Forms.TextBox textBoxGatewayYaw;
-        private System.Windows.Forms.Label label80;
-        private System.Windows.Forms.TextBox textBoxGatewayPitch;
-        private System.Windows.Forms.Label label83;
-        private System.Windows.Forms.TextBox textBoxGatewayRoll;
-        private System.Windows.Forms.Label label86;
-        private System.Windows.Forms.GroupBox groupBox13;
-        private System.Windows.Forms.TextBox textBoxGatewayLon;
-        private System.Windows.Forms.TextBox textBoxGatewayLat;
-        private System.Windows.Forms.TextBox textBoxGatewaySatNr;
-        private System.Windows.Forms.Label label88;
-        private System.Windows.Forms.Label label89;
-        private System.Windows.Forms.Label label90;
-        private System.Windows.Forms.GroupBox groupBox15;
-        private System.Windows.Forms.Label label79;
-        private System.Windows.Forms.TextBox textBoxGWESC2OpMode;
-        private System.Windows.Forms.TextBox textBoxGWESC2Current;
-        private System.Windows.Forms.Label label81;
-        private System.Windows.Forms.TextBox textBoxGWESC2EncoLocked;
-        private System.Windows.Forms.Label label82;
-        private System.Windows.Forms.TextBox textBoxGWESC2Position;
-        private System.Windows.Forms.Label label84;
-        private System.Windows.Forms.GroupBox groupBox14;
-        private System.Windows.Forms.Label label78;
-        private System.Windows.Forms.TextBox textBoxGWESC1OpMode;
-        private System.Windows.Forms.TextBox textBoxGWESC1Current;
-        private System.Windows.Forms.Label label75;
-        private System.Windows.Forms.TextBox textBoxGWESC1EncoLocked;
-        private System.Windows.Forms.Label label76;
-        private System.Windows.Forms.TextBox textBoxGWESC1Position;
-        private System.Windows.Forms.Label label77;
-        private System.Windows.Forms.GroupBox groupBox16;
-        private System.Windows.Forms.Label label85;
-        private System.Windows.Forms.ComboBox comboBoxGWTrackerMode;
-        private System.Windows.Forms.Label label91;
-        private System.Windows.Forms.Label label87;
-        private System.Windows.Forms.TextBox textBoxGWTrackerTiltRef;
-        private System.Windows.Forms.TextBox textBoxGWTrackerPanRef;
-        private System.Windows.Forms.TrackBar trackBarGWTrackerManualTiltRef;
-        private System.Windows.Forms.TrackBar trackBarGWTrackerManualPanRef;
-        private System.Windows.Forms.Label label94;
-        private System.Windows.Forms.Label label93;
-        private System.Windows.Forms.Label label92;
-        private System.Windows.Forms.TextBox textBoxGWTrackerTargetZ;
-        private System.Windows.Forms.TextBox textBoxGWTrackerTargetE;
-        private System.Windows.Forms.TextBox textBoxGWTrackerTargetN;
-        private System.Windows.Forms.Button buttonGWTrackerBaseSet;
-        private System.Windows.Forms.TextBox textBoxGWTrackerBaseYaw;
-        private System.Windows.Forms.TextBox textBoxGWTrackerBasePitch;
-        private System.Windows.Forms.TextBox textBoxGWTrackerBaseRoll;
-        private System.Windows.Forms.Label label95;
-        private System.Windows.Forms.Label label96;
-        private System.Windows.Forms.Label label97;
-        private System.Windows.Forms.TextBox textBoxGWTrackerBaseState;
-        private System.Windows.Forms.Label label98;
-        private System.Windows.Forms.Button buttonGWTrackerTargetTest;
         private System.Windows.Forms.Button buttonStoreToFlash;
         private System.Windows.Forms.TextBox textBoxParam17;
         private System.Windows.Forms.Label labelParam17;
@@ -3968,8 +2875,6 @@
         private System.Windows.Forms.Label labelParam12;
         private System.Windows.Forms.TextBox textBoxParam11;
         private System.Windows.Forms.Label labelParam11;
-        private System.Windows.Forms.TextBox textBoxGatewayHopeRXCrcErrors;
-        private System.Windows.Forms.Label label99;
         private System.Windows.Forms.TextBox textBoxParamsState;
         private System.Windows.Forms.Label label100;
         private System.Windows.Forms.TextBox textBoxParamsStateNum;
@@ -3989,6 +2894,15 @@
         private System.Windows.Forms.TextBox textBoxSystemBatteryTotalCharge_mAH;
         private System.Windows.Forms.Label label107;
         private System.Windows.Forms.TextBox textBoxSystemBatteryCurrentA;
+        private System.Windows.Forms.Button buttonSerialOpen;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.ComboBox comboBoxSerialPorts;
+        private System.Windows.Forms.Label label47;
+        private System.Windows.Forms.TextBox textBoxCommMsgOK;
+        private System.Windows.Forms.Label label53;
+        private System.Windows.Forms.TextBox textBoxCommHeaderErrors;
+        private System.Windows.Forms.Label label54;
+        private System.Windows.Forms.TextBox textBoxCommCRCErrors;
     }
 }
 

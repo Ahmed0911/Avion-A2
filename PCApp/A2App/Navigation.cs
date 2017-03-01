@@ -21,7 +21,6 @@ namespace WinEthApp
     {
         private FormMain formMain;
         private MainSystem mainSystem;
-        private Gateway gateway;
 
         public LLConverter llConv = new LLConverter();
 
@@ -54,11 +53,10 @@ namespace WinEthApp
         BufferedGraphicsContext DBcurrentContext;
         BufferedGraphics DBmyBuffer;
 
-        public Navigation(FormMain formMain, MainSystem mainSystem, Gateway gateway)
+        public Navigation(FormMain formMain, MainSystem mainSystem)
         {
             this.formMain = formMain;
             this.mainSystem = mainSystem;
-            this.gateway = gateway;
 
             // Create DB objects
             DBcurrentContext = BufferedGraphicsManager.Current;
