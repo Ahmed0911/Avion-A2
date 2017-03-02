@@ -39,7 +39,9 @@ namespace WinEthApp
             mainSystem = new MainSystem(this);
 
             navigation = new Navigation(this, mainSystem);
-            comboBoxMapSelector.SelectedIndex = comboBoxMapSelector.Items.Count-1; // Load default map            
+            comboBoxMapSelector.SelectedIndex = comboBoxMapSelector.Items.Count-1; // Load default map         
+            radioButtonHopeRF.Checked = true;
+               
             // Fill Default Params
             labelParam1.Text = "GyroOffX";
             labelParam2.Text = "GyroOffY";
@@ -369,7 +371,7 @@ namespace WinEthApp
             }
             if (radioButtonHopeRF.Checked || radioButtonWifiHopeRF.Checked)
             {
-                //gateway.SendDataOverRF(type, buffer);
+                serialPortComm.Send(type, buffer);
             }
         }
 
@@ -486,6 +488,11 @@ namespace WinEthApp
         {
             serialPortComm.Open((string)comboBoxSerialPorts.SelectedItem, 115200);
             buttonSerialOpen.Enabled = false;
+        }
+
+        private void buttonPing_Click(object sender, EventArgs e)
+        {
+            mainSystem.SendPing();
         }
     }
 }

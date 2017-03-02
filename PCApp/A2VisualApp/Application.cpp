@@ -6,8 +6,8 @@
 #include "CRC32.h"
 #include <fstream>
 
-#define ETHERNET_PORT_GATEWAY L"10.0.1.101"
 #define ETHERNET_PORT_A2 L"10.0.1.121"
+#define SERIAL_PORT_A2 L"\\\\.\\COM7"
 
 // Callback wrapper
 void NewPacketRxWrapper(char type, BYTE* data, int len)
@@ -55,10 +55,11 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 #endif
 
 	// Open ethernet port
-	m_ethernetCommGW.Init(8000);
 	m_ethernetCommA2.Init(8100);
-	m_ethernetCommGW.ConnectTo(ETHERNET_PORT_GATEWAY, NewPacketRxWrapper);
 	m_ethernetCommA2.ConnectTo(ETHERNET_PORT_A2, NewPacketRxWrapper);
+
+	m_serialCommA2.Init();
+	m_serialCommA2.ConnectTo(SERIAL_PORT_A2, NewPacketRxWrapper);
 
 	// open log file
 	TCHAR filename[100];
@@ -82,7 +83,7 @@ void CApplication::OnTimer()
 	m_TimerCounter++;
 	
 	// Receive data from network!!!
-	m_ethernetCommGW.Update();
+	m_serialCommA2.Update();
 	//m_ethernetCommA2.Update();
 
 	// check telemetry timestamps, mark m_NoTelemetry
@@ -115,51 +116,40 @@ void CApplication::NewPacketReceived(char type, BYTE* data, int len)
 			{
 				memcpy(&m_RXGatewayData, data, sizeof(m_RXGatewayData));
 			}
-			break;
-		}
-
-		case 0x41:
-		{
-			// relayed data (HopeRF from A2)
-			if (len == sizeof(m_RXHopeRFData))
+			else if (len == sizeof(m_RXHopeRFData))
 			{
-				SCommHopeRFDataA2Avion commDataHopeRF;
-				memcpy(&commDataHopeRF, data, sizeof(commDataHopeRF));
+				// data from Lora Modem (serial)
+				memcpy(&m_RXHopeRFData, data, sizeof(m_RXHopeRFData));
 				m_RXHopeRFPacketCounter++;
-				
-				// check checksum
-				unsigned int crcSum = CRC32::CalculateCrc32((BYTE*)&commDataHopeRF, sizeof(commDataHopeRF)-sizeof(commDataHopeRF.CRC32));
-				if (crcSum == commDataHopeRF.CRC32) // CRC OK?
-				{
-					memcpy(&m_RXHopeRFData, &commDataHopeRF, sizeof(commDataHopeRF)); // data valid, copy to internal structure
-					m_RXHopeRFData.HopeTXRSSI = m_RXGatewayData.HopeRXRSSI; // fill with received/gatewayed Hope RSSI 
 
-					// reset timestamp
-					m_lastTelemetryReceivedTimestamp = CPerformanceTimer::GetCurrentTimestamp();
+				// data received, send ping
+				//SendPing();
 
-					// Save Data To File (HopeRF Log file, compatible with AvionA2 App)
-					m_LogFileHopeRF.write((const char*)&m_RXHopeRFData, sizeof(SCommHopeRFDataA2Avion));
-				}
-				else m_RXHopeRFCRCErrorCounter++;
+				// reset timestamp
+				m_lastTelemetryReceivedTimestamp = CPerformanceTimer::GetCurrentTimestamp();
+
+				// Save Data To File (HopeRF Log file, compatible with AvionA2 App)
+				m_LogFileHopeRF.write((const char*)&m_RXHopeRFData, sizeof(SCommHopeRFDataA2Avion));
 			}
-					 
 			break;
 		}
-			/*			
-			else if (withoutHeader.Length == Marshal.SizeOf(new SParameters())) // check size
-			{
-				// Parameters structure
-				SParameters parametersDataHopeRF = (SParameters)Comm.FromBytes(withoutHeader, new SParameters());
 
-				// check checksum
-				uint crcSum = Crc32.CalculateCrc32(withoutHeader, withoutHeader.Length - sizeof(uint));
-				if (crcSum == parametersDataHopeRF.CRC32) // CRC OK?
-				{
-					// Display
-					formMain.DisplayParams(parametersDataHopeRF);
-				}
-			}*/
+		case 0x62:
+		{
+			// Parameters structure
+			//SParameters parametersDataHopeRF = (SParameters)Comm.FromBytes(data, new SParameters());
+
+			// Display
+			//formMain.DisplayParams(parametersDataHopeRF);
+			break;
+		}
 	}
+}
+
+void CApplication::SendPing()
+{
+	BYTE toSend[] = { 1, 2, 3, 4 }; // dummy
+	m_serialCommA2.SendData(0x10, toSend, 4);
 }
 
 void CApplication::DownloadWaypoints(SWaypoint* wps, int cnt)

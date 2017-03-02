@@ -103,6 +103,8 @@ int HopeRSSI;
 int AssistNextChunkToSend = 0;
 float Pressure0 = 101300;
 
+bool PingedSendData = false;
+
 // Battery State
 float BatteryCurrentA = 0;
 double BatteryTotalCharge_mAh = 0;
@@ -421,7 +423,8 @@ void SendPeriodicDataEth(void)
 #endif
 
 	// Send to Lora
-	if( MainLoopCounter%80 == 0) // 400hz/80 = 5hz, every 200ms
+	//if( MainLoopCounter%4000 == 0 || PingedSendData) // 400hz/4000 = 0.1hz, every 10s OR ping
+	if( MainLoopCounter%200 == 0 || PingedSendData) // 400hz/200 = 2hz, every 500ms OR ping
 	{
 		SCommHopeRFDataA2Avion dataRF;
 		dataRF.LoopCounter = MainLoopCounter;
@@ -460,6 +463,8 @@ void SendPeriodicDataEth(void)
 		// Send to LORA
         int bytesToSend = comm433MHz.GenerateTXPacket(0x20, (BYTE*)&dataRF, sizeof(dataRF), CommBuffer);
         serialU5.Write(CommBuffer, bytesToSend);
+
+        PingedSendData = false;
 	}
 }
 
@@ -468,6 +473,13 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 {
 	switch( cmd )
 	{
+	    case 0x10: // PING
+        {
+            // Schedule data transfer
+            PingedSendData = true;
+            break;
+        }
+
 		case 0x30: // AssistNow
 		{
 			// send data to GPS

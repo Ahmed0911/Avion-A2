@@ -44,6 +44,13 @@ namespace WinEthApp
             comm433MHz.NewRXPacket(buffer, dataLen, ProcessMessage);
         }
 
+        public void Send(byte type, byte[] bufferToSend)
+        {
+            // Send
+            byte[] outputPacket = new byte[100];
+            int size = comm433MHz.GenerateTXPacket(type, bufferToSend, (byte)bufferToSend.Length, outputPacket);
+            serialPort.Write(outputPacket, 0, size);
+        }
 
         public void Close()
         {

@@ -158,6 +158,12 @@
             this.labelParam1 = new System.Windows.Forms.Label();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageMainSystem = new System.Windows.Forms.TabPage();
+            this.label47 = new System.Windows.Forms.Label();
+            this.textBoxCommMsgOK = new System.Windows.Forms.TextBox();
+            this.label53 = new System.Windows.Forms.Label();
+            this.textBoxCommHeaderErrors = new System.Windows.Forms.TextBox();
+            this.label54 = new System.Windows.Forms.Label();
+            this.textBoxCommCRCErrors = new System.Windows.Forms.TextBox();
             this.buttonSerialOpen = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.comboBoxSerialPorts = new System.Windows.Forms.ComboBox();
@@ -248,12 +254,7 @@
             this.textBoxWaypointsDownloadCnt = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
             this.pictureBoxMap = new System.Windows.Forms.PictureBox();
-            this.label47 = new System.Windows.Forms.Label();
-            this.textBoxCommMsgOK = new System.Windows.Forms.TextBox();
-            this.label53 = new System.Windows.Forms.Label();
-            this.textBoxCommHeaderErrors = new System.Windows.Forms.TextBox();
-            this.label54 = new System.Windows.Forms.Label();
-            this.textBoxCommCRCErrors = new System.Windows.Forms.TextBox();
+            this.buttonPing = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -308,7 +309,7 @@
             // timerCommUpdate
             // 
             this.timerCommUpdate.Enabled = true;
-            this.timerCommUpdate.Interval = 50;
+            this.timerCommUpdate.Interval = 25;
             this.timerCommUpdate.Tick += new System.EventHandler(this.timerCommUpdate_Tick);
             // 
             // textBoxSystemEthFrames
@@ -1571,6 +1572,7 @@
             // 
             // tabPageMainSystem
             // 
+            this.tabPageMainSystem.Controls.Add(this.buttonPing);
             this.tabPageMainSystem.Controls.Add(this.label47);
             this.tabPageMainSystem.Controls.Add(this.textBoxCommMsgOK);
             this.tabPageMainSystem.Controls.Add(this.label53);
@@ -1597,6 +1599,66 @@
             this.tabPageMainSystem.TabIndex = 0;
             this.tabPageMainSystem.Text = "System";
             this.tabPageMainSystem.UseVisualStyleBackColor = true;
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(1152, 893);
+            this.label47.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(108, 20);
+            this.label47.TabIndex = 49;
+            this.label47.Text = "MessagesOK:";
+            // 
+            // textBoxCommMsgOK
+            // 
+            this.textBoxCommMsgOK.Location = new System.Drawing.Point(1268, 890);
+            this.textBoxCommMsgOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.textBoxCommMsgOK.Name = "textBoxCommMsgOK";
+            this.textBoxCommMsgOK.ReadOnly = true;
+            this.textBoxCommMsgOK.Size = new System.Drawing.Size(84, 26);
+            this.textBoxCommMsgOK.TabIndex = 48;
+            this.textBoxCommMsgOK.Text = "0";
+            // 
+            // label53
+            // 
+            this.label53.AutoSize = true;
+            this.label53.Location = new System.Drawing.Point(1152, 859);
+            this.label53.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(113, 20);
+            this.label53.TabIndex = 47;
+            this.label53.Text = "Header Errors:";
+            // 
+            // textBoxCommHeaderErrors
+            // 
+            this.textBoxCommHeaderErrors.Location = new System.Drawing.Point(1268, 856);
+            this.textBoxCommHeaderErrors.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.textBoxCommHeaderErrors.Name = "textBoxCommHeaderErrors";
+            this.textBoxCommHeaderErrors.ReadOnly = true;
+            this.textBoxCommHeaderErrors.Size = new System.Drawing.Size(84, 26);
+            this.textBoxCommHeaderErrors.TabIndex = 46;
+            this.textBoxCommHeaderErrors.Text = "0";
+            // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.Location = new System.Drawing.Point(1152, 824);
+            this.label54.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(94, 20);
+            this.label54.TabIndex = 45;
+            this.label54.Text = "CRC Errors:";
+            // 
+            // textBoxCommCRCErrors
+            // 
+            this.textBoxCommCRCErrors.Location = new System.Drawing.Point(1268, 821);
+            this.textBoxCommCRCErrors.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.textBoxCommCRCErrors.Name = "textBoxCommCRCErrors";
+            this.textBoxCommCRCErrors.ReadOnly = true;
+            this.textBoxCommCRCErrors.Size = new System.Drawing.Size(84, 26);
+            this.textBoxCommCRCErrors.TabIndex = 44;
+            this.textBoxCommCRCErrors.Text = "0";
             // 
             // buttonSerialOpen
             // 
@@ -2572,65 +2634,15 @@
             this.pictureBoxMap.TabStop = false;
             this.pictureBoxMap.Click += new System.EventHandler(this.pictureBoxMap_Click);
             // 
-            // label47
+            // buttonPing
             // 
-            this.label47.AutoSize = true;
-            this.label47.Location = new System.Drawing.Point(1152, 893);
-            this.label47.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(108, 20);
-            this.label47.TabIndex = 49;
-            this.label47.Text = "MessagesOK:";
-            // 
-            // textBoxCommMsgOK
-            // 
-            this.textBoxCommMsgOK.Location = new System.Drawing.Point(1268, 890);
-            this.textBoxCommMsgOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.textBoxCommMsgOK.Name = "textBoxCommMsgOK";
-            this.textBoxCommMsgOK.ReadOnly = true;
-            this.textBoxCommMsgOK.Size = new System.Drawing.Size(84, 26);
-            this.textBoxCommMsgOK.TabIndex = 48;
-            this.textBoxCommMsgOK.Text = "0";
-            // 
-            // label53
-            // 
-            this.label53.AutoSize = true;
-            this.label53.Location = new System.Drawing.Point(1152, 859);
-            this.label53.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label53.Name = "label53";
-            this.label53.Size = new System.Drawing.Size(113, 20);
-            this.label53.TabIndex = 47;
-            this.label53.Text = "Header Errors:";
-            // 
-            // textBoxCommHeaderErrors
-            // 
-            this.textBoxCommHeaderErrors.Location = new System.Drawing.Point(1268, 856);
-            this.textBoxCommHeaderErrors.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.textBoxCommHeaderErrors.Name = "textBoxCommHeaderErrors";
-            this.textBoxCommHeaderErrors.ReadOnly = true;
-            this.textBoxCommHeaderErrors.Size = new System.Drawing.Size(84, 26);
-            this.textBoxCommHeaderErrors.TabIndex = 46;
-            this.textBoxCommHeaderErrors.Text = "0";
-            // 
-            // label54
-            // 
-            this.label54.AutoSize = true;
-            this.label54.Location = new System.Drawing.Point(1152, 824);
-            this.label54.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label54.Name = "label54";
-            this.label54.Size = new System.Drawing.Size(94, 20);
-            this.label54.TabIndex = 45;
-            this.label54.Text = "CRC Errors:";
-            // 
-            // textBoxCommCRCErrors
-            // 
-            this.textBoxCommCRCErrors.Location = new System.Drawing.Point(1268, 821);
-            this.textBoxCommCRCErrors.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.textBoxCommCRCErrors.Name = "textBoxCommCRCErrors";
-            this.textBoxCommCRCErrors.ReadOnly = true;
-            this.textBoxCommCRCErrors.Size = new System.Drawing.Size(84, 26);
-            this.textBoxCommCRCErrors.TabIndex = 44;
-            this.textBoxCommCRCErrors.Text = "0";
+            this.buttonPing.Location = new System.Drawing.Point(1374, 844);
+            this.buttonPing.Name = "buttonPing";
+            this.buttonPing.Size = new System.Drawing.Size(75, 56);
+            this.buttonPing.TabIndex = 50;
+            this.buttonPing.Text = "Ping";
+            this.buttonPing.UseVisualStyleBackColor = true;
+            this.buttonPing.Click += new System.EventHandler(this.buttonPing_Click);
             // 
             // FormMain
             // 
@@ -2903,6 +2915,7 @@
         private System.Windows.Forms.TextBox textBoxCommHeaderErrors;
         private System.Windows.Forms.Label label54;
         private System.Windows.Forms.TextBox textBoxCommCRCErrors;
+        private System.Windows.Forms.Button buttonPing;
     }
 }
 

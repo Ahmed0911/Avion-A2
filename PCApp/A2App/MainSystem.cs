@@ -39,8 +39,8 @@ namespace WinEthApp
             formMain = form;
            
             // open log file
-            string filename = string.Format("Log\\LogWifi-{0}-{1}-{2}.bin", DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
-            logStream = File.Create(filename);
+            //string filename = string.Format("Log\\LogWifi-{0}-{1}-{2}.bin", DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+            //logStream = File.Create(filename);
             // open RF log file
             string filenameRF = string.Format("Log\\LogHopeRF-{0}-{1}-{2}.bin", DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
             logStreamRF = File.Create(filenameRF);
@@ -144,6 +144,7 @@ namespace WinEthApp
             // Send read request
             byte[] toSend = new byte[1];
             formMain.SendData(0x61, toSend);
+            SendPing();
         }
 
         public void WriteParams(SParameters p)
@@ -151,6 +152,7 @@ namespace WinEthApp
             // Send
             byte[] toSend = Comm.GetBytes(p);
             formMain.SendData(0x60, toSend);
+            SendPing();
         }
 
         public void StoreToFlashParams()
@@ -175,6 +177,12 @@ namespace WinEthApp
             SendData(0x90, toSend);
         }
 
+        public void SendPing()
+        {            
+            byte[] toSend = new byte[] { 1, 2, 3, 4 }; // dummy
+            formMain.SendData(0x10, toSend);
+        }
+
         ///////////////////////////////
         // Serial Parser
         ///////////////////////////////
@@ -187,9 +195,11 @@ namespace WinEthApp
                 
                 RelayedData = commDataHopeRF;
 
+                // data received, send ping
+                SendPing();
+
                 // save to file
-                //byte[] arrayToWrite = Comm.GetBytes(commDataHopeRF);
-                //logStream.Write(arrayToWrite, 0, arrayToWrite.Length);   
+                logStreamRF.Write(data, 0, data.Length);   
 
                 formMain.DisplayRelayedData(RelayedData);
             }

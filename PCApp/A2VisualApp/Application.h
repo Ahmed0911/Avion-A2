@@ -2,6 +2,7 @@
 #include <fstream>
 #include "Serial.h"
 #include "EthernetComm.h"
+#include "SerialComm.h"
 #include "Dir2D.h"
 #include "CommData.h"
 #include "AvgFilter.h"
@@ -24,6 +25,7 @@ public:
 	CDir2D m_dir2D;
 
 private:
+	void SendPing();
 	void FillHopeRFData(SUserData& drawData);
 	void FillEthernetData(SUserData& drawData);
 	void GenerateLogBitmaps(std::wstring logFilename, std::wstring destination);
@@ -35,8 +37,8 @@ private:
 
 private:
 	// Communication
-	CEthernetComm m_ethernetCommGW;
 	CEthernetComm m_ethernetCommA2;
+	CSerialComm m_serialCommA2;
 	CSerial m_SerialGPS;
 	
 	SCommEthData m_RXGatewayData;

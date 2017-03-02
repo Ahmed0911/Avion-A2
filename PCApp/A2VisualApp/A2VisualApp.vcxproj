@@ -156,6 +156,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="AvgFilter.h" />
     <ClInclude Include="CamGrabber.h" />
+    <ClInclude Include="Comm433MHz.h" />
     <ClInclude Include="CommData.h" />
     <ClInclude Include="Dir2D.h" />
     <ClInclude Include="EthernetComm.h" />
@@ -165,6 +166,7 @@
     <ClInclude Include="CRC32.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Serial.h" />
+    <ClInclude Include="SerialComm.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Timer.h" />
@@ -175,6 +177,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="AvgFilter.cpp" />
     <ClCompile Include="CamGrabber.cpp" />
+    <ClCompile Include="Comm433MHz.cpp" />
     <ClCompile Include="Dir2D.cpp" />
     <ClCompile Include="EthernetComm.cpp" />
     <ClCompile Include="Fifo.cpp" />
@@ -183,6 +186,7 @@
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="CRC32.cpp" />
     <ClCompile Include="Serial.cpp" />
+    <ClCompile Include="SerialComm.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
