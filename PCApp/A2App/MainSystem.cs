@@ -23,6 +23,9 @@ namespace WinEthApp
         private int ReceivedPacketsCounter = 0;
         private int PingCounter = 0;
 
+        // CommMgr
+        public CommMgr commMgr = new CommMgr();
+
         // Assist now
         private AssistNow assistNow = new AssistNow();
 
@@ -46,6 +49,7 @@ namespace WinEthApp
             logStreamRF = File.Create(filenameRF);
         }
 
+        // UDP
         public void Connect(string targetAddress)
         {
             TargetAdress = targetAddress;
@@ -54,15 +58,21 @@ namespace WinEthApp
             LocalPort = ((IPEndPoint)udp.Client.LocalEndPoint).Port;
         }
 
+        // Serial
+        public void ConnectToSerial(string selectedPort)
+        {
+            commMgr.Open(selectedPort, ProcessMessage);            
+        }
+
         ///////////////////////////////
         // DATA PARSER
         ///////////////////////////////
-        public unsafe void Update(SerialPortComm serialPortComm)
+        public unsafe void Update()
         {
             ///////////////////////////////
             // Process Serial Data
             ///////////////////////////////
-            serialPortComm.Update(ProcessMessage);
+            commMgr.Update(25);
 
             ///////////////////////////////
             // Process Ethernet Data
@@ -144,7 +154,6 @@ namespace WinEthApp
             // Send read request
             byte[] toSend = new byte[1];
             formMain.SendData(0x61, toSend);
-            SendPing();
         }
 
         public void WriteParams(SParameters p)
@@ -152,7 +161,6 @@ namespace WinEthApp
             // Send
             byte[] toSend = Comm.GetBytes(p);
             formMain.SendData(0x60, toSend);
-            SendPing();
         }
 
         public void StoreToFlashParams()
@@ -177,16 +185,10 @@ namespace WinEthApp
             SendData(0x90, toSend);
         }
 
-        public void SendPing()
-        {            
-            byte[] toSend = new byte[] { 1, 2, 3, 4 }; // dummy
-            formMain.SendData(0x10, toSend);
-        }
-
         ///////////////////////////////
-        // Serial Parser
+        // Serial Parser + Stuff
         ///////////////////////////////
-        private void ProcessMessage(byte type, byte[] data, byte len)
+        public void ProcessMessage(byte type, byte[] data, byte len)
         {
             // data
             if (type == 0x20)
@@ -194,9 +196,6 @@ namespace WinEthApp
                 SCommHopeRFDataA2Avion commDataHopeRF = (SCommHopeRFDataA2Avion)Comm.FromBytes(data, new SCommHopeRFDataA2Avion());
                 
                 RelayedData = commDataHopeRF;
-
-                // data received, send ping
-                SendPing();
 
                 // save to file
                 logStreamRF.Write(data, 0, data.Length);   
@@ -212,6 +211,11 @@ namespace WinEthApp
                 // Display
                 formMain.DisplayParams(parametersDataHopeRF);
             }
+        }
+
+        public void QueueSerial(byte type, byte[] msg)
+        {
+            commMgr.QueueMsg(type, msg);
         }
 
         ///////////////////////////////

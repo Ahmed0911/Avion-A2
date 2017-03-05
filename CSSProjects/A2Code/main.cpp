@@ -424,7 +424,7 @@ void SendPeriodicDataEth(void)
 
 	// Send to Lora
 	//if( MainLoopCounter%4000 == 0 || PingedSendData) // 400hz/4000 = 0.1hz, every 10s OR ping
-	if( MainLoopCounter%200 == 0 || PingedSendData) // 400hz/200 = 2hz, every 500ms OR ping
+	if( PingedSendData )
 	{
 		SCommHopeRFDataA2Avion dataRF;
 		dataRF.LoopCounter = MainLoopCounter;
@@ -463,6 +463,8 @@ void SendPeriodicDataEth(void)
 		// Send to LORA
         int bytesToSend = comm433MHz.GenerateTXPacket(0x20, (BYTE*)&dataRF, sizeof(dataRF), CommBuffer);
         serialU5.Write(CommBuffer, bytesToSend);
+        //serialU5.Write(CommBuffer, 59);
+        //serialU5.Write(CommBuffer, 58);
 
         PingedSendData = false;
 	}
@@ -513,6 +515,11 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 					// ACK
 					ParamsCommandAckCnt++;
 				}
+
+				// Send ACK to LORA
+				BYTE ackCode = 0x60;
+                int bytesToSend = comm433MHz.GenerateTXPacket(0xA0, (BYTE*)&ackCode, 1, CommBuffer);
+                serialU5.Write(CommBuffer, bytesToSend);
 			}
 			break;
 		}
@@ -534,6 +541,10 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 			// Send to LORA
             int bytesToSend = comm433MHz.GenerateTXPacket(0x62, (BYTE*)&params, sizeof(params), CommBuffer);
             serialU5.Write(CommBuffer, bytesToSend);
+            // Send ACK to LORA
+            BYTE ackCode = 0x61;
+            int bytesToSend2 = comm433MHz.GenerateTXPacket(0xA0, (BYTE*)&ackCode, 1, CommBuffer);
+            serialU5.Write(CommBuffer, bytesToSend2);
 			break;
 		}
 
@@ -544,6 +555,11 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 				WriteParamsToFlash();
 				// ACK
 				ParamsCommandAckCnt++;
+
+				// Send ACK to LORA
+                BYTE ackCode = 0x63;
+                int bytesToSend = comm433MHz.GenerateTXPacket(0xA0, (BYTE*)&ackCode, 1, CommBuffer);
+                serialU5.Write(CommBuffer, bytesToSend);
 			}
 			break;
 		}
@@ -630,6 +646,11 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 			if( launchCmd.Command == 1) launch.Arm(launchCmd.Index, launchCmd.CodeTimer);
 			else if( launchCmd.Command == 2  ) launch.Fire(launchCmd.Index, launchCmd.CodeTimer);
 			else if( launchCmd.Command == 3  ) launch.Dearm(launchCmd.Index, launchCmd.CodeTimer);
+
+			// Send ACK to LORA
+            BYTE ackCode = 0x90;
+            int bytesToSend = comm433MHz.GenerateTXPacket(0xA0, (BYTE*)&ackCode, 1, CommBuffer);
+            serialU5.Write(CommBuffer, bytesToSend);
 
 			break;
 		}

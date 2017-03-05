@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using System.Diagnostics;
+using System.IO.Ports;
 
 namespace WinEthApp
 {
@@ -18,7 +19,7 @@ namespace WinEthApp
     {
         MainSystem mainSystem;
         Navigation navigation;
-        SerialPortComm serialPortComm = new SerialPortComm();
+        
 
         // Filtered Data (RPY)
         public double FilteredRoll;
@@ -62,7 +63,7 @@ namespace WinEthApp
             labelParam17.Text = "";
 
             // Serial port stuff
-            comboBoxSerialPorts.Items.AddRange(serialPortComm.EnumeratePorts());
+            comboBoxSerialPorts.Items.AddRange(SerialPort.GetPortNames());
             if (comboBoxSerialPorts.Items.Count > 0) comboBoxSerialPorts.SelectedIndex = 0;
         }
 
@@ -75,17 +76,18 @@ namespace WinEthApp
 
         private void timerCommUpdate_Tick(object sender, EventArgs e)
         {
-            mainSystem.Update(serialPortComm);
+            mainSystem.Update();
             navigation.Update();
             //gateway.Update();
 
             // update
             // update data            
-            if (serialPortComm.comm433MHz != null)
+            if (mainSystem.commMgr.serialPortComm.comm433MHz != null)
             {
-                textBoxCommMsgOK.Text = serialPortComm.comm433MHz.MsgReceivedOK.ToString();
-                textBoxCommCRCErrors.Text = serialPortComm.comm433MHz.CrcErrors.ToString();
-                textBoxCommHeaderErrors.Text = serialPortComm.comm433MHz.HeaderFails.ToString();
+                textBoxCommMsgOK.Text = mainSystem.commMgr.serialPortComm.comm433MHz.MsgReceivedOK.ToString();
+                textBoxCommCRCErrors.Text = mainSystem.commMgr.serialPortComm.comm433MHz.CrcErrors.ToString();
+                textBoxCommHeaderErrors.Text = mainSystem.commMgr.serialPortComm.comm433MHz.HeaderFails.ToString();
+                textBoxTimeoutCnt.Text = mainSystem.commMgr.TimeoutCounter.ToString();
             }
 
             // REMOVE START
@@ -371,7 +373,7 @@ namespace WinEthApp
             }
             if (radioButtonHopeRF.Checked || radioButtonWifiHopeRF.Checked)
             {
-                serialPortComm.Send(type, buffer);
+                mainSystem.QueueSerial(type, buffer);
             }
         }
 
@@ -440,12 +442,6 @@ namespace WinEthApp
             else navigation.SaveWaypoints();
         }
 
-       
-
-       
-
-     
-
         private void trackBarParams_Scroll(object sender, EventArgs e)
         {
             // recalculate slider param values
@@ -486,13 +482,8 @@ namespace WinEthApp
 
         private void buttonSerialOpen_Click(object sender, EventArgs e)
         {
-            serialPortComm.Open((string)comboBoxSerialPorts.SelectedItem, 115200);
+            mainSystem.ConnectToSerial((string)comboBoxSerialPorts.SelectedItem);
             buttonSerialOpen.Enabled = false;
-        }
-
-        private void buttonPing_Click(object sender, EventArgs e)
-        {
-            mainSystem.SendPing();
         }
     }
 }

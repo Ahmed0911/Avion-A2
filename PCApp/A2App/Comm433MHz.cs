@@ -8,7 +8,7 @@ namespace WinEthApp
 {
     class Comm433MHz
     {
-        public delegate void ProcessMessageDelegate(byte type, byte[] data, byte len);
+        public delegate void ReceivedMessageDelegate(byte type, byte[] data, byte len);
 
 
         private enum ERXPhase { HDR_FF, HDR_FE, HDR_A5, HDR_5A, TYPE, LEN, DATA, CRC_A, CRC_B, CRC_C, CRC_D };
@@ -25,7 +25,7 @@ namespace WinEthApp
         public int CrcErrors = 0;
         public int HeaderFails = 0;
 
-        public void NewRXPacket(byte[] data, int dataLen, ProcessMessageDelegate ProcessMessage)
+        public void NewRXPacket(byte[] data, int dataLen, ReceivedMessageDelegate ReceivedMessage)
         {
             // RX Parser
             for (int i = 0; i != dataLen; i++)
@@ -119,7 +119,7 @@ namespace WinEthApp
                             // message OK, process!
                             MsgReceivedOK++;
 
-                            ProcessMessage(Type, Data, Len);
+                            ReceivedMessage(Type, Data, Len);
                         }
                         else
                         {

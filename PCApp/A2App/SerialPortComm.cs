@@ -11,14 +11,9 @@ namespace WinEthApp
     {
         private SerialPort serialPort;
         public  Comm433MHz comm433MHz;
+        private Comm433MHz.ReceivedMessageDelegate ReceivedMessage;
 
-        // Serial Comm helper
-        public string[] EnumeratePorts()
-        {
-            return SerialPort.GetPortNames();
-        }
-
-        public void Open(string portName, int baudRate)
+        public void Open(string portName, int baudRate, Comm433MHz.ReceivedMessageDelegate receivedMessage)
         {
             // close first
             Close();
@@ -29,11 +24,14 @@ namespace WinEthApp
 
             // create new comm433MHz object
             comm433MHz = new Comm433MHz();
+
+            // set callback
+            ReceivedMessage = receivedMessage;
         }
 
-        public void Update(Comm433MHz.ProcessMessageDelegate ProcessMessage)
+        public void Update()
         {
-            if (serialPort == null || !serialPort.IsOpen) return;
+            if (!IsOpen()) return;
 
             // Get data from serial
             int dataLen = serialPort.BytesToRead;
@@ -41,7 +39,7 @@ namespace WinEthApp
             serialPort.Read(buffer, 0, dataLen);
 
             // Process Command
-            comm433MHz.NewRXPacket(buffer, dataLen, ProcessMessage);
+            comm433MHz.NewRXPacket(buffer, dataLen, ReceivedMessage);
         }
 
         public void Send(byte type, byte[] bufferToSend)
@@ -55,6 +53,11 @@ namespace WinEthApp
         public void Close()
         {
             if (serialPort != null) serialPort.Close();
+        }
+
+        public bool IsOpen()
+        {
+            return (serialPort != null && serialPort.IsOpen);
         }
     }
 }

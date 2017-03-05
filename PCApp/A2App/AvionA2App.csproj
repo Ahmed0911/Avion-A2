@@ -52,6 +52,7 @@
     <Compile Include="AssistNow.cs" />
     <Compile Include="Comm.cs" />
     <Compile Include="Comm433MHz.cs" />
+    <Compile Include="CommMgr.cs" />
     <Compile Include="CRC32.cs" />
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
