@@ -2,7 +2,7 @@
 
 #include <winsock2.h>
 
-typedef void(*NewPacketCallbackType)(char, BYTE*, int);
+typedef void(*NewPacketCallbackType)(BYTE, BYTE*, int);
 
 class CEthernetComm
 {

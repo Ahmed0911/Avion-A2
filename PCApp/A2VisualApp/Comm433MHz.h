@@ -1,12 +1,12 @@
 #pragma once
 
-typedef void(*NewPacketCallbackType)(char, BYTE*, int);
+typedef void(*ReceivedMessageCallbackType)(BYTE, BYTE*, BYTE);
 
 class CComm433MHz
 {
 public:
 	void Init();
-	void NewRXPacket(BYTE* data, int dataLen, NewPacketCallbackType callback);
+	void NewRXPacket(BYTE* data, int dataLen, ReceivedMessageCallbackType callback);
 	int GenerateTXPacket(BYTE Type, BYTE* Data, BYTE Len, BYTE* OutputPacket);
 
 	// data

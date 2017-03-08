@@ -72,7 +72,7 @@ namespace WinEthApp
             ///////////////////////////////
             // Process Serial Data
             ///////////////////////////////
-            commMgr.Update(25);
+            commMgr.Update(10);
 
             ///////////////////////////////
             // Process Ethernet Data

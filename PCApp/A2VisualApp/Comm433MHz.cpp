@@ -11,7 +11,7 @@ void CComm433MHz::Init()
 	HeaderFails = 0;
 }
 
-void CComm433MHz::NewRXPacket(BYTE* data, int dataLen, NewPacketCallbackType ProcessMessage)
+void CComm433MHz::NewRXPacket(BYTE* data, int dataLen, ReceivedMessageCallbackType ProcessMessage)
 {
 	// RX Parser
 	for (int i = 0; i != dataLen; i++)

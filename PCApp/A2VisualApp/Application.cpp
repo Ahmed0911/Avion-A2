@@ -10,7 +10,7 @@
 #define SERIAL_PORT_A2 L"\\\\.\\COM7"
 
 // Callback wrapper
-void NewPacketRxWrapper(char type, BYTE* data, int len)
+void NewPacketRxWrapper(BYTE type, BYTE* data, int len)
 {
 	CApplication::getInstance()->NewPacketReceived(type, data, len);
 }
@@ -58,8 +58,7 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	m_ethernetCommA2.Init(8100);
 	m_ethernetCommA2.ConnectTo(ETHERNET_PORT_A2, NewPacketRxWrapper);
 
-	m_serialCommA2.Init();
-	m_serialCommA2.ConnectTo(SERIAL_PORT_A2, NewPacketRxWrapper);
+	m_commMgr.Open(SERIAL_PORT_A2, NewPacketRxWrapper);
 
 	// open log file
 	TCHAR filename[100];
@@ -83,7 +82,7 @@ void CApplication::OnTimer()
 	m_TimerCounter++;
 	
 	// Receive data from network!!!
-	m_serialCommA2.Update();
+	m_commMgr.Update(10);
 	//m_ethernetCommA2.Update();
 
 	// check telemetry timestamps, mark m_NoTelemetry
@@ -104,8 +103,8 @@ void CApplication::OnTimer()
 
 
 
-// RX callback (from Ethernet.NewRXPacket() )
-void CApplication::NewPacketReceived(char type, BYTE* data, int len)
+// RX callback (from Ethernet.NewRXPacket() OR CommMgr.ProcessMessageCallbackType() )
+void CApplication::NewPacketReceived(BYTE type, BYTE* data, int len)
 {
 	switch (type)
 	{
@@ -121,9 +120,6 @@ void CApplication::NewPacketReceived(char type, BYTE* data, int len)
 				// data from Lora Modem (serial)
 				memcpy(&m_RXHopeRFData, data, sizeof(m_RXHopeRFData));
 				m_RXHopeRFPacketCounter++;
-
-				// data received, send ping
-				//SendPing();
 
 				// reset timestamp
 				m_lastTelemetryReceivedTimestamp = CPerformanceTimer::GetCurrentTimestamp();
@@ -144,12 +140,6 @@ void CApplication::NewPacketReceived(char type, BYTE* data, int len)
 			break;
 		}
 	}
-}
-
-void CApplication::SendPing()
-{
-	BYTE toSend[] = { 1, 2, 3, 4 }; // dummy
-	m_serialCommA2.SendData(0x10, toSend, 4);
 }
 
 void CApplication::DownloadWaypoints(SWaypoint* wps, int cnt)

@@ -13,7 +13,7 @@ bool CSerialComm::Init()
 	return true;
 }
 
-void CSerialComm::ConnectTo(TCHAR* serialPort, NewPacketCallbackType callback)
+void CSerialComm::ConnectTo(TCHAR* serialPort, ReceivedMessageCallbackType callback)
 {
 	// close if already opened
 	if (m_Serial.IsOpen()) m_Serial.Close();
@@ -52,4 +52,9 @@ void CSerialComm::SendData(char type, BYTE* buffer, int length)
 
 	// Send Message
 	m_Serial.Write(outputPacket, sizeToSend);
+}
+
+bool CSerialComm::IsOpen()
+{
+	return (m_Serial.IsOpen());
 }

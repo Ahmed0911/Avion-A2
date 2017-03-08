@@ -3,6 +3,7 @@
 #include "Serial.h"
 #include "EthernetComm.h"
 #include "SerialComm.h"
+#include "CommMgr.h"
 #include "Dir2D.h"
 #include "CommData.h"
 #include "AvgFilter.h"
@@ -15,7 +16,7 @@ public:
 	void Init(HWND hWnd, TCHAR* cmdLine);
 	void Shutdown();
 	void OnTimer();
-	void NewPacketReceived(char type, BYTE* data, int len);
+	void NewPacketReceived(BYTE type, BYTE* data, int len);
 	
 	// commands
 	void DownloadWaypoints(SWaypoint* wps, int cnt);
@@ -25,7 +26,6 @@ public:
 	CDir2D m_dir2D;
 
 private:
-	void SendPing();
 	void FillHopeRFData(SUserData& drawData);
 	void FillEthernetData(SUserData& drawData);
 	void GenerateLogBitmaps(std::wstring logFilename, std::wstring destination);
@@ -38,7 +38,7 @@ private:
 private:
 	// Communication
 	CEthernetComm m_ethernetCommA2;
-	CSerialComm m_serialCommA2;
+	CCommMgr m_commMgr;
 	CSerial m_SerialGPS;
 	
 	SCommEthData m_RXGatewayData;

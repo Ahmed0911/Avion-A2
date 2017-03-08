@@ -158,6 +158,7 @@
     <ClInclude Include="CamGrabber.h" />
     <ClInclude Include="Comm433MHz.h" />
     <ClInclude Include="CommData.h" />
+    <ClInclude Include="CommMgr.h" />
     <ClInclude Include="Dir2D.h" />
     <ClInclude Include="EthernetComm.h" />
     <ClInclude Include="Fifo.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="AvgFilter.cpp" />
     <ClCompile Include="CamGrabber.cpp" />
     <ClCompile Include="Comm433MHz.cpp" />
+    <ClCompile Include="CommMgr.cpp" />
     <ClCompile Include="Dir2D.cpp" />
     <ClCompile Include="EthernetComm.cpp" />
     <ClCompile Include="Fifo.cpp" />

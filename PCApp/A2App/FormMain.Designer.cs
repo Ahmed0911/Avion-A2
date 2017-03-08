@@ -158,7 +158,8 @@
             this.labelParam1 = new System.Windows.Forms.Label();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageMainSystem = new System.Windows.Forms.TabPage();
-            this.buttonPing = new System.Windows.Forms.Button();
+            this.textBoxTimeoutCnt = new System.Windows.Forms.TextBox();
+            this.label55 = new System.Windows.Forms.Label();
             this.label47 = new System.Windows.Forms.Label();
             this.textBoxCommMsgOK = new System.Windows.Forms.TextBox();
             this.label53 = new System.Windows.Forms.Label();
@@ -255,8 +256,6 @@
             this.textBoxWaypointsDownloadCnt = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
             this.pictureBoxMap = new System.Windows.Forms.PictureBox();
-            this.label55 = new System.Windows.Forms.Label();
-            this.textBoxTimeoutCnt = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -311,7 +310,7 @@
             // timerCommUpdate
             // 
             this.timerCommUpdate.Enabled = true;
-            this.timerCommUpdate.Interval = 25;
+            this.timerCommUpdate.Interval = 10;
             this.timerCommUpdate.Tick += new System.EventHandler(this.timerCommUpdate_Tick);
             // 
             // textBoxSystemEthFrames
@@ -1576,7 +1575,6 @@
             // 
             this.tabPageMainSystem.Controls.Add(this.textBoxTimeoutCnt);
             this.tabPageMainSystem.Controls.Add(this.label55);
-            this.tabPageMainSystem.Controls.Add(this.buttonPing);
             this.tabPageMainSystem.Controls.Add(this.label47);
             this.tabPageMainSystem.Controls.Add(this.textBoxCommMsgOK);
             this.tabPageMainSystem.Controls.Add(this.label53);
@@ -1604,12 +1602,25 @@
             this.tabPageMainSystem.Text = "System";
             this.tabPageMainSystem.UseVisualStyleBackColor = true;
             // 
-            // buttonPing
+            // textBoxTimeoutCnt
             // 
-            this.buttonPing.Location = new System.Drawing.Point(0, 0);
-            this.buttonPing.Name = "buttonPing";
-            this.buttonPing.Size = new System.Drawing.Size(75, 23);
-            this.buttonPing.TabIndex = 0;
+            this.textBoxTimeoutCnt.Location = new System.Drawing.Point(1268, 928);
+            this.textBoxTimeoutCnt.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.textBoxTimeoutCnt.Name = "textBoxTimeoutCnt";
+            this.textBoxTimeoutCnt.ReadOnly = true;
+            this.textBoxTimeoutCnt.Size = new System.Drawing.Size(84, 26);
+            this.textBoxTimeoutCnt.TabIndex = 51;
+            this.textBoxTimeoutCnt.Text = "0";
+            // 
+            // label55
+            // 
+            this.label55.AutoSize = true;
+            this.label55.Location = new System.Drawing.Point(1152, 930);
+            this.label55.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(95, 20);
+            this.label55.TabIndex = 50;
+            this.label55.Text = "TimeoutCnt:";
             // 
             // label47
             // 
@@ -2645,26 +2656,6 @@
             this.pictureBoxMap.TabStop = false;
             this.pictureBoxMap.Click += new System.EventHandler(this.pictureBoxMap_Click);
             // 
-            // label55
-            // 
-            this.label55.AutoSize = true;
-            this.label55.Location = new System.Drawing.Point(1152, 930);
-            this.label55.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(95, 20);
-            this.label55.TabIndex = 50;
-            this.label55.Text = "TimeoutCnt:";
-            // 
-            // textBoxTimeoutCnt
-            // 
-            this.textBoxTimeoutCnt.Location = new System.Drawing.Point(1268, 928);
-            this.textBoxTimeoutCnt.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.textBoxTimeoutCnt.Name = "textBoxTimeoutCnt";
-            this.textBoxTimeoutCnt.ReadOnly = true;
-            this.textBoxTimeoutCnt.Size = new System.Drawing.Size(84, 26);
-            this.textBoxTimeoutCnt.TabIndex = 51;
-            this.textBoxTimeoutCnt.Text = "0";
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
@@ -2936,7 +2927,6 @@
         private System.Windows.Forms.TextBox textBoxCommHeaderErrors;
         private System.Windows.Forms.Label label54;
         private System.Windows.Forms.TextBox textBoxCommCRCErrors;
-        private System.Windows.Forms.Button buttonPing;
         private System.Windows.Forms.TextBox textBoxTimeoutCnt;
         private System.Windows.Forms.Label label55;
     }
