@@ -206,6 +206,9 @@ void CDir2D::Init(HWND hWnd, TCHAR* mapName)
 	// create map
 	m_Map.LoadMap(mapName, m_d2dContext.Get(), m_DWriteFactory.Get(), hWnd);
 
+	// Init Parameters
+	m_Parameters.Init(m_d2dContext.Get(), m_DWriteFactory.Get(), hWnd);
+
 	m_ActiveDisplay = EActiveDisplay::CAMERA; // TODO: ADD TRANSFORMATION
 }
 
@@ -419,6 +422,11 @@ void CDir2D::DrawHUD(SUserData &data, bool noTelemetry)
 		m_d2dContext->SetTransform(D2D1::Matrix3x2F::Scale(1.7, 1.7) * D2D1::Matrix3x2F::Translation(SCREENX * 0.13F, SCREENY * 0.03F));
 	}
 	m_Map.Draw(m_d2dContext.Get(), data.Longitude*1e-7, data.Latitude*1e-7);
+
+
+	// Draw Parameters
+	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX / 2, SCREENY / 2));
+	m_Parameters.Draw(m_d2dContext.Get());
 
 
 	// draw at center

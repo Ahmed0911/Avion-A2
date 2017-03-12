@@ -509,7 +509,7 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 
 				// check CRC
 				unsigned int crcSum = crc.CalculateCRC32((BYTE*)&params, sizeof(params)-sizeof(params.CRC32));
-				if( crcSum == params.CRC32)
+				//if( crcSum == params.CRC32) // Ignore CRC (LORA has its own CRC check
 				{
 					CopyStr2Params(params);
 					// ACK

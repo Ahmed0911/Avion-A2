@@ -278,18 +278,7 @@ void CApplication::FillHopeRFData(SUserData& drawData)
 
 void CApplication::Keydown(WPARAM wParam)
 {
-	switch (wParam)
-	{
-		case 0x50: // 'P'
-			m_dir2D.m_Parameters.EnableParameters(true);
-			break;
-
-		case 0x4F: // 'O'
-			m_dir2D.m_Parameters.EnableParameters(false);
-			break;
-		
-	}
-
+	m_dir2D.m_Parameters.Keydown(wParam);
 }
 
 // TODO!!!
