@@ -17,8 +17,14 @@ public:
 	void Shutdown();
 	void OnTimer();
 	void NewPacketReceived(BYTE type, BYTE* data, int len);
-	
+	void Keydown(WPARAM wParam);
+
 	// commands
+	void ParamsReadCmd();
+	void ParamsWrite(SParameters params);
+	void ParamsStoreToFlash();
+
+
 	void DownloadWaypoints(SWaypoint* wps, int cnt);
 	void ExecuteTrajectory(float velocity);
 	void ExecuteTarget(SWaypoint target);

@@ -132,14 +132,41 @@ void CApplication::NewPacketReceived(BYTE type, BYTE* data, int len)
 
 		case 0x62:
 		{
-			// Parameters structure
-			//SParameters parametersDataHopeRF = (SParameters)Comm.FromBytes(data, new SParameters());
+			if (len == sizeof(SParameters))
+			{
+				// Parameters structure
+				SParameters parameters;
+				memcpy(&parameters, data, sizeof(parameters));
 
-			// Display
-			//formMain.DisplayParams(parametersDataHopeRF);
+				// copy to parameters struct
+				m_dir2D.m_Parameters.UpdateWithReceivedData(parameters);
+			}
+
 			break;
 		}
 	}
+}
+
+void CApplication::ParamsReadCmd()
+{
+	// Send read request
+	BYTE buff[1];
+	buff[0] = 0x01;
+	m_commMgr.QueueMsg(0x61, buff, 1);
+}
+
+void CApplication::ParamsWrite(SParameters params)
+{
+	// Send
+	m_commMgr.QueueMsg(0x60, (BYTE*)&params, sizeof(SParameters));
+}
+
+void CApplication::ParamsStoreToFlash()
+{
+	//  Send flash store command
+	BYTE buff[1];
+	buff[0] = 0x01;
+	m_commMgr.QueueMsg(0x63, buff, 1);
 }
 
 void CApplication::DownloadWaypoints(SWaypoint* wps, int cnt)
@@ -247,6 +274,22 @@ void CApplication::FillHopeRFData(SUserData& drawData)
 	drawData.RXControlStationRSSI = (int)m_FilterControlStationRSSI.Add((float)m_RXHopeRFData.HopeTXRSSI); // filter RSSI
 
 	drawData.LocalTime = CPerformanceTimer::GetCurrentTimestamp();
+}
+
+void CApplication::Keydown(WPARAM wParam)
+{
+	switch (wParam)
+	{
+		case 0x50: // 'P'
+			m_dir2D.m_Parameters.EnableParameters(true);
+			break;
+
+		case 0x4F: // 'O'
+			m_dir2D.m_Parameters.EnableParameters(false);
+			break;
+		
+	}
+
 }
 
 // TODO!!!

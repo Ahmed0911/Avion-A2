@@ -181,7 +181,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		default:
 			break;
 		}
-		app.m_dir2D.GetMapMgr()->SetMapWpyCommands(wParam);
+		app.Keydown(wParam);
+		//app.m_dir2D.GetMapMgr()->SetMapWpyCommands(wParam);
 		break;
 
 	case WM_LBUTTONDOWN:

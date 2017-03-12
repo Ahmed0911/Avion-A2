@@ -16,6 +16,7 @@ using namespace Microsoft::WRL;
 #include <wincodec.h>
 #include "CamGrabber.h"
 #include "MapManager.h"
+#include "Parameters.h"
 
 struct SUserData
 {
@@ -91,6 +92,9 @@ public:
 public:
 	enum EActiveDisplay { CAMERA, MAP };
 	EActiveDisplay m_ActiveDisplay;
+
+	// Parameters
+	CParameters m_Parameters;
 
 private:
 	void CreateUserResources(void);

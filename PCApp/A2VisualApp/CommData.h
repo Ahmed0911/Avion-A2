@@ -160,4 +160,27 @@ struct STXCommParams
 	float Params[10];
 };
 
+struct SParameters
+{
+	float GyroOffX;
+	float GyroOffY;
+	float GyroOffZ;
+	float MagOffX;
+	float MagOffY;
+	float MagOffZ;
+	float AttOffRoll;
+	float AttOffPitch;
+	float RollMax;
+	float RollKp;
+	float RollKi;
+	float RollKd;
+	float PitchMax;
+	float PitchKp;
+	float PitchKi;
+	float PitchKd;
+
+	// CRC
+	unsigned int CRC32;
+};
+
 #endif /* COMMDATA_H_ */
