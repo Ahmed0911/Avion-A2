@@ -29,7 +29,6 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	m_NoTelemetry = false;
 	m_lastTelemetryReceivedTimestamp = CPerformanceTimer::GetCurrentTimestamp();
 	m_RXHopeRFPacketCounter = 0;
-	m_RXHopeRFCRCErrorCounter = 0;
 
 	// create D2D
 	std::wstring mapName = L"Map\\map-45.7996-15.84655-16-X.jpg";
@@ -269,9 +268,14 @@ void CApplication::FillHopeRFData(SUserData& drawData)
 	// RX/TX. HopeRF Data
 	drawData.RXA2RSSIFrameCount = m_RXHopeRFData.HopeRXFrameCount;
 	drawData.RXControlStationFrameCount = m_RXHopeRFPacketCounter;
-	drawData.RXControlStationFrameErrorCount = m_RXHopeRFCRCErrorCounter;
-	drawData.RXA2RSSI = (int)m_FilterA2RSSI.Add((float)m_RXHopeRFData.HopeRXRSSI); // filter RSSI
+	//drawData.RXA2RSSI = (int)m_FilterA2RSSI.Add((float)m_RXHopeRFData.HopeRXRSSI); // filter RSSI
+	drawData.RXA2RSSI = m_RXHopeRFData.HopeRXRSSI; // filter RSSI
 	drawData.RXControlStationRSSI = (int)m_FilterControlStationRSSI.Add((float)m_RXHopeRFData.HopeTXRSSI); // filter RSSI
+
+	drawData.MsgReceivedOK = m_commMgr.serialPortComm.m_Comm433MHz.MsgReceivedOK;
+	drawData.CrcErrors = m_commMgr.serialPortComm.m_Comm433MHz.CrcErrors;
+	drawData.HeaderFails = m_commMgr.serialPortComm.m_Comm433MHz.HeaderFails;
+	drawData.TimeoutCounter = m_commMgr.TimeoutCounter;
 
 	drawData.LocalTime = CPerformanceTimer::GetCurrentTimestamp();
 }

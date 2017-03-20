@@ -722,13 +722,26 @@ void CDir2D::DrawHUD(SUserData &data, bool noTelemetry)
 	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.58F, SCREENY * 0.97F));
 	swprintf_s(buf, 20, L"LoopCnt: %d", data.LoopCounter);
 	DrawNumber(DNSTYLE_SMALL, 0, 0, 200, 20, 0, 0, buf);
-	swprintf_s(buf, 20, L"CS_Frm: %d (%d)", data.RXControlStationFrameCount, data.RXControlStationFrameErrorCount);
+	swprintf_s(buf, 20, L"CS_Frm: %d", data.RXControlStationFrameCount);
 	DrawNumber(DNSTYLE_SMALL, 200, 0, 200, 20, 0, 0, buf);
-	swprintf_s(buf, 20, L"A2_Frm: %d", data.RXA2RSSIFrameCount);
-	DrawNumber(DNSTYLE_SMALL, 400, 0, 200, 20, 0, 0, buf);	
+	swprintf_s(buf, 20, L"A2_Frm: %d (%d)", data.RXA2RSSIFrameCount, data.RXA2RSSI);
+	DrawNumber(DNSTYLE_SMALL, 370, 0, 300, 20, 0, 0, buf);	
 	swprintf_s(buf, 20, L"%0.1lf s", data.LocalTime);
 	DrawNumber(DNSTYLE_SMALL, 600, 0, 200, 20, 0, 0, buf);
 	
+	// Comm Data
+	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.165F, SCREENY * 0.78F));
+	m_GreenTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+	Yoffset = 0;
+	swprintf_s(buf, 200, L"MsgReceivedOK: %d", data.MsgReceivedOK);
+	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);
+	swprintf_s(buf, 200, L"CRC Errors: %d", data.CrcErrors);
+	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);
+	swprintf_s(buf, 200, L"HeaderFails: %d", data.HeaderFails);
+	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);
+	swprintf_s(buf, 200, L"TimeoutCounter: %d", data.TimeoutCounter);
+	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);
+
 	// Mode
 	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.015F, SCREENY * 0.005F));
 	if (data.ActualMode >= 0 && data.ActualMode <= 5)

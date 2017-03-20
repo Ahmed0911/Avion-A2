@@ -25,6 +25,9 @@ public:
 	// Counters 
 	int TimeoutCounter;
 
+	// Serial Comm
+	CSerialComm serialPortComm;
+
 private:
 	// State Machine Data
 	enum EMgrState { IDLE, WAIT_RESPONSE };
@@ -34,9 +37,6 @@ private:
 	const double COMMANDTIMEOUTMS = 500; // [miliseconds]
 	SMsg MsgInExecution; // Msg in progress, use for retry!
 	bool ValidResponseReceivedFlag;
-
-	// Serial Comm
-	CSerialComm serialPortComm;
 
 	// Callback
 	ProcessMessageCallbackType ProcessMessageCallback;

@@ -16,9 +16,10 @@ public:
 	void Update();
 	void SendData(char type, BYTE* buffer, int length);
 
+public:
+	CComm433MHz m_Comm433MHz;
 
 private:
-	CSerial m_Serial;
-	CComm433MHz m_Comm433MHz;
+	CSerial m_Serial;	
 	ReceivedMessageCallbackType NewPacketCallback; // callback 
 };

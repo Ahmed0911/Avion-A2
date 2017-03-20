@@ -51,9 +51,7 @@ private:
 	SCommEthData m_RXEthData;
 	SCommHopeRFDataA2Avion m_RXHopeRFData;
 	// counters
-	int m_RXRSSI;
 	int m_RXHopeRFPacketCounter;
-	int m_RXHopeRFCRCErrorCounter;
 
 	// no telemetry stuff
 	bool m_NoTelemetry;

@@ -64,9 +64,14 @@ struct SUserData
 	// Comm
 	unsigned int RXA2RSSIFrameCount;
 	unsigned int RXControlStationFrameCount;
-	unsigned int RXControlStationFrameErrorCount;
 	int RXA2RSSI;
 	int RXControlStationRSSI;
+
+	// Comm433MHz/CommMgr
+	int MsgReceivedOK;
+	int CrcErrors;
+	int HeaderFails;
+	int TimeoutCounter;
 
 	double LocalTime;
 };
