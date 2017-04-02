@@ -684,7 +684,7 @@ void InitGPS2(void)
     int toSend = gps2.GenerateMsgCFGPrt(CommBuffer, 57600); // set to 57k
     serialU5.Write(CommBuffer, toSend);
     SysCtlDelay(g_ui32SysClock/10); // 100ms wait, flush
-    serialU5.Init(UART2_BASE, 57600); // open with 57k (115k doesn't work well??? small int FIFO, wrong INT prio?)'
+    serialU5.Init(UART5_BASE, 57600); // open with 57k (115k doesn't work well??? small int FIFO, wrong INT prio?)'
     toSend = gps2.GenerateMsgCFGRate(CommBuffer, 100); // 100ms rate, 10Hz
     serialU5.Write(CommBuffer, toSend);
     toSend = gps2.GenerateMsgCFGMsg(CommBuffer, 0x01, 0x07, 1); // NAV-PVT
