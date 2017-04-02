@@ -55,21 +55,22 @@ ADCDrv adcDrv;
 BaroDrv baroDrv;
 MPU9250Drv mpu9250Drv;
 LSM90DDrv lsm90Drv;
-UBloxGPS gps;
+UBloxGPS gps1; // Dual GPS Mode
+UBloxGPS gps2;
 EtherDriver etherDrv;
 //HopeRF	hopeRF;
 IMU imu;
 LaunchMgr launch;
 EEPROMDrv eeprom;
 CRC32 crc;
-Comm433MHz comm433MHz;
+//Comm433MHz comm433MHz;
 
 // System Objects
 ControllerModelClass ctrl;
 LLConverter llConv;
 
-// GPS Port (serialU2->Internal GPS, serialU5->External GPS on Ext Comm.)
-#define serialGPS serialU2
+// GPS Port (serialU2->Internal GPS, serialU5->External GPS on Ext Comm.) - DUAL GPS MODE!!!
+//#define serialGPS serialU2
 //#define serialGPS serialU5
 
 // Systick
@@ -82,8 +83,8 @@ BYTE CommBuffer[COMMBUFFERSIZE];
 BYTE HopeRFbuffer[255];
 
 // Global Functions
-void InitGPS(void);
-void ProcessGPSData(void);
+void InitGPS1(void);
+void InitGPS2(void);
 void SendPeriodicDataEth(void);
 void ProcessCommand(int cmd, unsigned char* data, int dataSize);
 void ReadParamsFromFlash();
@@ -167,13 +168,14 @@ void main(void)
 	pwmDrv.SetWidthUS(3, 1500);	// Set midpoint PWMs
 	serialU2.Init(UART2_BASE, 9600); // GPS
 	serialU3.Init(UART3_BASE, 100000); // SBUS
-	serialU5.Init(UART5_BASE, 115200); // Ext. Comm
+	serialU5.Init(UART5_BASE, 9600); // GPS2
 	sbusRecv.Init();
 	adcDrv.Init();
 	baroDrv.Init();
 	mpu9250Drv.Init();
     //lsm90Drv.Init();
-	InitGPS(); // init GPS
+	InitGPS1(); // init GPS
+    InitGPS2(); // init GPS
 	etherDrv.Init();
 	//hopeRF.Init();
 	imu.Init();
@@ -231,31 +233,19 @@ void main(void)
 		// IMU2
 		//lsm90Drv.Update();
 
-		// GPS
-		rd = serialGPS.Read(CommBuffer, COMMBUFFERSIZE); // read data from GPS
-		gps.NewRXPacket(CommBuffer, rd); // process data
-		// set home position
-		if( gps.NumSV >= 6)
-		{
-			if( !llConv.IsHomeSet() )
-			{
-				double lat = gps.Latitude * 1e-7;
-				double lon = gps.Longitude * 1e-7;
-				llConv.SetHome(lat, lon);
-			}
-		}
-		float XN = 0, XE = 0;
-		if( llConv.IsHomeSet()) llConv.ConvertLLToM(gps.Latitude*1e-7, gps.Longitude*1e-7, XN, XE);
+		// GPS1
+		rd = serialU2.Read(CommBuffer, COMMBUFFERSIZE); // read data from GPS
+		gps1.NewRXPacket(CommBuffer, rd); // process data
+		// GPS2
+		rd = serialU5.Read(CommBuffer, COMMBUFFERSIZE); // read data from GPS
+        gps2.NewRXPacket(CommBuffer, rd); // process data
+
 
 		// Set Pressure0 on 2 sec
 		if(MainLoopCounter == (SysTickFrequency * 2)) Pressure0 = baroDrv.PressurePa;
 
 		// process ethernet (RX)
 		etherDrv.Process(1000/SysTickFrequency); // 2.5ms tick
-
-        // Read Lora Data
-        int dataReceived = serialU5.Read(CommBuffer, COMMBUFFERSIZE);
-        comm433MHz.NewRXPacket(CommBuffer, dataReceived); // calls ProcessCommand callback!!!
 
 		// set inputs
 		ctrl.rtU.RPY[0] = imu.Roll;
@@ -271,11 +261,11 @@ void main(void)
 		ctrl.rtU.Aileron = sbusRecv.Channels[1];
 		ctrl.rtU.Elevator = sbusRecv.Channels[2];
 		ctrl.rtU.Rudder = sbusRecv.Channels[3];
-		ctrl.rtU.FlatVe[0] = gps.VelN / 1000.0f; // [m/s], Northing - X
-		ctrl.rtU.FlatVe[1] = gps.VelE / 1000.0f; // [m/s], Easting - Y
-		ctrl.rtU.FlatVe[2] = gps.VelD / 1000.0f; // [m/s], Down - Z, -> ignored, gps alt Z vel is not accurate! Probably?!
-		ctrl.rtU.FlatXe[0] = XN;
-		ctrl.rtU.FlatXe[1] = XE;
+		ctrl.rtU.FlatVe[0] = gps1.VelN / 1000.0f; // [m/s], Northing - X
+		ctrl.rtU.FlatVe[1] = gps1.VelE / 1000.0f; // [m/s], Easting - Y
+		ctrl.rtU.FlatVe[2] = gps1.VelD / 1000.0f; // [m/s], Down - Z, -> ignored, gps alt Z vel is not accurate! Probably?!
+		ctrl.rtU.FlatXe[0] = 0;
+		ctrl.rtU.FlatXe[1] = 0;
 
 #if 0
 		// fill waypoint buffer
@@ -446,23 +436,23 @@ void SendPeriodicDataEth(void)
 		dataRF.BatteryCurrentA = BatteryCurrentA;
 		dataRF.BatteryTotalCharge_mAh = BatteryTotalCharge_mAh;
 
-		dataRF.FixType = gps.FixType;
+		dataRF.FixType = gps1.FixType;
 		dataRF.ParamsCommandAckCnt = ParamsCommandAckCnt;
-		dataRF.NumSV = gps.NumSV;
-		dataRF.Longitude = gps.Longitude;
-		dataRF.Latitude = gps.Latitude;
-		dataRF.VelN = gps.VelN;
-		dataRF.VelE = gps.VelE;
-		dataRF.HopeRXFrameCount = comm433MHz.MsgReceivedOK;
-		dataRF.HopeRXRSSI = comm433MHz.HeaderFails; // fail counter, use as RSSI?
+		dataRF.NumSV = gps1.NumSV;
+		dataRF.Longitude = gps1.Longitude;
+		dataRF.Latitude = gps1.Latitude;
+		dataRF.VelN = gps1.VelN;
+		dataRF.VelE = gps1.VelE;
+		//dataRF.HopeRXFrameCount = comm433MHz.MsgReceivedOK;
+		//dataRF.HopeRXRSSI = comm433MHz.HeaderFails; // fail counter, use as RSSI?
 		dataRF.HopeTXRSSI = 0; // will be filled on GW station
 
 		// fill CRC code (not needed, auto generated in GenerateTXPacket()!!!!)
 		dataRF.CRC32 = crc.CalculateCRC32((BYTE*)&dataRF, sizeof(dataRF)-sizeof(dataRF.CRC32));
 
 		// Send to LORA
-        int bytesToSend = comm433MHz.GenerateTXPacket(0x20, (BYTE*)&dataRF, sizeof(dataRF), CommBuffer);
-        serialU5.Write(CommBuffer, bytesToSend);
+        //int bytesToSend = comm433MHz.GenerateTXPacket(0x20, (BYTE*)&dataRF, sizeof(dataRF), CommBuffer);
+        //serialU5.Write(CommBuffer, bytesToSend);
         //serialU5.Write(CommBuffer, 59);
         //serialU5.Write(CommBuffer, 58);
 
@@ -485,7 +475,7 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 		case 0x30: // AssistNow
 		{
 			// send data to GPS
-			serialGPS.Write(data, dataSize );
+			//serialGPS.Write(data, dataSize );
 			AssistNextChunkToSend++;
 			// TODO: Reset AssistNextChunkToSend somewhere!!
 			break;
@@ -517,9 +507,9 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 				}
 
 				// Send ACK to LORA
-				BYTE ackCode = 0x60;
-                int bytesToSend = comm433MHz.GenerateTXPacket(0xA0, (BYTE*)&ackCode, 1, CommBuffer);
-                serialU5.Write(CommBuffer, bytesToSend);
+				//BYTE ackCode = 0x60;
+                //int bytesToSend = comm433MHz.GenerateTXPacket(0xA0, (BYTE*)&ackCode, 1, CommBuffer);
+                //serialU5.Write(CommBuffer, bytesToSend);
 			}
 			break;
 		}
@@ -539,12 +529,12 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 			//hopeRF.Write((BYTE*)&params, sizeof(params));
 
 			// Send to LORA
-            int bytesToSend = comm433MHz.GenerateTXPacket(0x62, (BYTE*)&params, sizeof(params), CommBuffer);
-            serialU5.Write(CommBuffer, bytesToSend);
+            //int bytesToSend = comm433MHz.GenerateTXPacket(0x62, (BYTE*)&params, sizeof(params), CommBuffer);
+            //serialU5.Write(CommBuffer, bytesToSend);
             // Send ACK to LORA
-            BYTE ackCode = 0x61;
-            int bytesToSend2 = comm433MHz.GenerateTXPacket(0xA0, (BYTE*)&ackCode, 1, CommBuffer);
-            serialU5.Write(CommBuffer, bytesToSend2);
+            //BYTE ackCode = 0x61;
+            //int bytesToSend2 = comm433MHz.GenerateTXPacket(0xA0, (BYTE*)&ackCode, 1, CommBuffer);
+            //serialU5.Write(CommBuffer, bytesToSend2);
 			break;
 		}
 
@@ -557,9 +547,9 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 				ParamsCommandAckCnt++;
 
 				// Send ACK to LORA
-                BYTE ackCode = 0x63;
-                int bytesToSend = comm433MHz.GenerateTXPacket(0xA0, (BYTE*)&ackCode, 1, CommBuffer);
-                serialU5.Write(CommBuffer, bytesToSend);
+                //BYTE ackCode = 0x63;
+                //int bytesToSend = comm433MHz.GenerateTXPacket(0xA0, (BYTE*)&ackCode, 1, CommBuffer);
+                //serialU5.Write(CommBuffer, bytesToSend);
 			}
 			break;
 		}
@@ -648,9 +638,9 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 			else if( launchCmd.Command == 3  ) launch.Dearm(launchCmd.Index, launchCmd.CodeTimer);
 
 			// Send ACK to LORA
-            BYTE ackCode = 0x90;
-            int bytesToSend = comm433MHz.GenerateTXPacket(0xA0, (BYTE*)&ackCode, 1, CommBuffer);
-            serialU5.Write(CommBuffer, bytesToSend);
+            //BYTE ackCode = 0x90;
+            //int bytesToSend = comm433MHz.GenerateTXPacket(0xA0, (BYTE*)&ackCode, 1, CommBuffer);
+            //serialU5.Write(CommBuffer, bytesToSend);
 
 			break;
 		}
@@ -659,30 +649,56 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 
 
 
-void InitGPS(void)
+void InitGPS1(void)
 {
 	SysCtlDelay(g_ui32SysClock); // Wait Ext. GPS to boot
 
-	gps.Init();
+	gps1.Init();
 	// send GPS init commands
-	int toSend = gps.GenerateMsgCFGPrt(CommBuffer, 57600); // set to 57k
-	serialGPS.Write(CommBuffer, toSend);
+	int toSend = gps1.GenerateMsgCFGPrt(CommBuffer, 57600); // set to 57k
+	serialU2.Write(CommBuffer, toSend);
 	SysCtlDelay(g_ui32SysClock/10); // 100ms wait, flush
-	serialGPS.Init(UART2_BASE, 57600); // open with 57k (115k doesn't work well??? small int FIFO, wrong INT prio?)'
-	toSend = gps.GenerateMsgCFGRate(CommBuffer, 100); // 100ms rate, 10Hz
-	serialGPS.Write(CommBuffer, toSend);
-	toSend = gps.GenerateMsgCFGMsg(CommBuffer, 0x01, 0x07, 1); // NAV-PVT
-	serialGPS.Write(CommBuffer, toSend);
-	toSend = gps.GenerateMsgCFGMsg(CommBuffer, 0x01, 0x35, 1); // NAV-SAT
-	serialGPS.Write(CommBuffer, toSend);
-	toSend = gps.GenerateMsgNAV5Msg(CommBuffer, 6, 3); // airborne <1g, 2D/3D mode
+	serialU2.Init(UART2_BASE, 57600); // open with 57k (115k doesn't work well??? small int FIFO, wrong INT prio?)'
+	toSend = gps1.GenerateMsgCFGRate(CommBuffer, 100); // 100ms rate, 10Hz
+	serialU2.Write(CommBuffer, toSend);
+	toSend = gps1.GenerateMsgCFGMsg(CommBuffer, 0x01, 0x07, 1); // NAV-PVT
+	serialU2.Write(CommBuffer, toSend);
+	toSend = gps1.GenerateMsgCFGMsg(CommBuffer, 0x01, 0x35, 1); // NAV-SAT
+	serialU2.Write(CommBuffer, toSend);
+	toSend = gps1.GenerateMsgNAV5Msg(CommBuffer, 6, 3); // airborne <1g, 2D/3D mode
 	//toSend = m_GPS.GenerateMsgNAV5Msg(CommBuffer, 7, 2); // airborne <2g, 3D mode only
-	serialGPS.Write(CommBuffer, toSend);
+	serialU2.Write(CommBuffer, toSend);
 
 	// check response
 	SysCtlDelay(g_ui32SysClock/10); // 100ms wait, wait response
-	int rd = serialGPS.Read(CommBuffer, COMMBUFFERSIZE);
-	gps.NewRXPacket(CommBuffer, rd);
+	int rd = serialU2.Read(CommBuffer, COMMBUFFERSIZE);
+	gps1.NewRXPacket(CommBuffer, rd);
+}
+
+void InitGPS2(void)
+{
+    SysCtlDelay(g_ui32SysClock); // Wait Ext. GPS to boot
+
+    gps2.Init();
+    // send GPS init commands
+    int toSend = gps2.GenerateMsgCFGPrt(CommBuffer, 57600); // set to 57k
+    serialU5.Write(CommBuffer, toSend);
+    SysCtlDelay(g_ui32SysClock/10); // 100ms wait, flush
+    serialU5.Init(UART2_BASE, 57600); // open with 57k (115k doesn't work well??? small int FIFO, wrong INT prio?)'
+    toSend = gps2.GenerateMsgCFGRate(CommBuffer, 100); // 100ms rate, 10Hz
+    serialU5.Write(CommBuffer, toSend);
+    toSend = gps2.GenerateMsgCFGMsg(CommBuffer, 0x01, 0x07, 1); // NAV-PVT
+    serialU5.Write(CommBuffer, toSend);
+    toSend = gps2.GenerateMsgCFGMsg(CommBuffer, 0x01, 0x35, 1); // NAV-SAT
+    serialU5.Write(CommBuffer, toSend);
+    toSend = gps2.GenerateMsgNAV5Msg(CommBuffer, 6, 3); // airborne <1g, 2D/3D mode
+    //toSend = m_GPS.GenerateMsgNAV5Msg(CommBuffer, 7, 2); // airborne <2g, 3D mode only
+    serialU5.Write(CommBuffer, toSend);
+
+    // check response
+    SysCtlDelay(g_ui32SysClock/10); // 100ms wait, wait response
+    int rd = serialU5.Read(CommBuffer, COMMBUFFERSIZE);
+    gps2.NewRXPacket(CommBuffer, rd);
 }
 
 
