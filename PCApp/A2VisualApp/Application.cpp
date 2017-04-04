@@ -31,7 +31,7 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	m_RXHopeRFPacketCounter = 0;
 
 	// create D2D
-	std::wstring mapName = L"Map\\map-45.7996-15.84655-16-X.jpg";
+	std::wstring mapName = L"Map\\map-45.74546-15.92244-16-X.jpg";
 	if (cmdLine[0] != 0)
 	{
 		mapName = std::wstring(L"Map\\") + std::wstring(cmdLine);
