@@ -45,7 +45,7 @@ int main(void)
 
 	// Configure SysTick
 	SysTickPeriodSet(SysCtlClockGet()/SYSCLKHZ); // 100 Hz Timer
-	IntPrioritySet(FAULT_SYSTICK, (3 << 5)); // priroty = 3! (0x00000000-lowest, 0x11100000-highest)
+	IntPrioritySet(FAULT_SYSTICK, (3 << 5)); // priority = 3! (0x00000000-lowest, 0x11100000-highest)
 	SysTickIntEnable();
 	SysTickEnable();
 

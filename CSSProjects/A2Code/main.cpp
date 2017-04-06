@@ -335,7 +335,7 @@ void main(void)
 
 void SendPeriodicDataEth(void)
 {
-#if 0
+#if 1
 	// Fill data
 	SCommEthData data;
 	data.LoopCounter = MainLoopCounter;
@@ -385,13 +385,12 @@ void SendPeriodicDataEth(void)
 	// RF Data + Perf
 	data.EthReceivedCount = etherDrv.ReceivedFrames;
 	data.EthSentCount = etherDrv.SentFrames;
-	data.HopeRXFrameCount = hopeRF.ReceivedFrames;
-	data.HopeRXRSSI = hopeRF.PacketRSSI;
+	data.HopeRXFrameCount = comm433MHz.MsgReceivedOK;
+	data.HopeRXRSSI = comm433MHz.HeaderFails; // fail counter, use as RSSI?
 	data.HopeRSSI = HopeRSSI;
 	data.PerfCpuTimeMS = PerfCpuTimeMS;
 	data.PerfCpuTimeMSMAX = PerfCpuTimeMSMAX;
 	data.PerfLoopTimeMS = PerfLoopTimeMS;
-
 	data.AssistNextChunkToSend = AssistNextChunkToSend;
 
 	// Waypoints
