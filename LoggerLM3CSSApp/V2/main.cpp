@@ -32,6 +32,9 @@ EtherDriver etherDrv;
 SDCardDriver sdCard;
 CANDriver canDriver;
 MPU6000Drv mpuDrv;
+bool goFlush = false;
+
+void ProcessCommand(int cmd, unsigned char* data, int dataSize);
 
 int main(void)
 {
@@ -41,7 +44,7 @@ int main(void)
 	// Initialize Drivers
 	timer.Init();
 	ledDrv.Init();
-	//sdCard.Init();
+	sdCard.Init();
 	etherDrv.Init();
 	canDriver.Init();
 	mpuDrv.Init();
@@ -58,6 +61,31 @@ int main(void)
 	while(1)
 	{
 
+	}
+}
+
+// Process commands received from Ethernet
+void ProcessCommand(int cmd, unsigned char* data, int dataSize)
+{
+	switch( cmd )
+	{
+		case 0x20:
+		{
+			// data received
+			if( dataSize == 209) // check length
+			{
+				IntMasterDisable();
+				// write to SDCARD!!!
+				sdCard.WriteData(data, dataSize);
+				if( goFlush )
+				{
+					// FLUSH
+					sdCard.Flush();
+					goFlush = false; // reset flag
+				}
+				IntMasterEnable();
+			}
+		}
 	}
 }
 
@@ -81,7 +109,7 @@ extern "C" void SysTickIntHandler(void)
 		etherDrv.SendPacket(0x10, (char*)&destPort, 2, (ip_addr*)&addr, 12000 );
 	}
 
-    // read MPU-6000
+    // read MPU-6000 (UNUSED!!!)
     mpuDrv.UpdateData();
     mpuDrv.GetGyro(datafile.MPUGyroX, datafile.MPUGyroY, datafile.MPUGyroZ );
     mpuDrv.GetAcc(datafile.MPUAccX, datafile.MPUAccY, datafile.MPUAccZ );
@@ -89,13 +117,23 @@ extern "C" void SysTickIntHandler(void)
 
 
     // periodic flush
-    //if( (datafile.Ticks%100) == 0) sdCard.Flush();
+    if( (datafile.Ticks%100) == 0) goFlush = true;
 
     // Blink LEDs
-    if( (datafile.Ticks%100) < 50) ledDrv.Set(LEDDriver::LEDGREEN);
-    else ledDrv.Reset(LEDDriver::LEDGREEN);
+    if( datafile.SDCardActive && datafile.SDCardFails == 0)
+    {
+		if( (datafile.Ticks%100) < 50) ledDrv.Set(LEDDriver::LEDGREEN);
+		else ledDrv.Reset(LEDDriver::LEDGREEN);
+    }
+    else
+    {
+    	// CARD FAIL
+    	if( (datafile.Ticks%20) < 10) ledDrv.Set(LEDDriver::LEDGREEN);
+    	else ledDrv.Reset(LEDDriver::LEDGREEN);
+    }
 
-    // looptime
+
+    // Loop time
     datafile.LoopTimeMS = timer.GetMS();
     if( datafile.LoopTimeMS > datafile.LoopTimeMSMAX ) datafile.LoopTimeMSMAX = datafile.LoopTimeMS;
 }

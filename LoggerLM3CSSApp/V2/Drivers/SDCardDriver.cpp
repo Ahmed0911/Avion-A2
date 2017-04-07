@@ -27,7 +27,7 @@ bool SDCardDriver::Init()
 	for(int i=0; i!=1000; i++)
 	{
 		char filename[100];
-		sprintf(filename, "0:file-%d.bin", i);
+		sprintf(filename, "file-%d.bin", i);
 		FRESULT res = f_open(&m_sFileObject, filename, FA_CREATE_NEW | FA_WRITE );
 		if( res == FR_OK)
 		{
@@ -50,7 +50,7 @@ bool SDCardDriver::WriteData(BYTE* data, int len)
 
 	// write file
 	WORD bWr;
-	FRESULT res =f_write(&m_sFileObject,data,len,&bWr);
+	FRESULT res = f_write(&m_sFileObject,data,len,&bWr);
 	if( res != FR_OK)
 	{
 		datafile.SDCardFails++;

@@ -19,6 +19,8 @@
 
 extern SDataFile datafile;
 
+extern void ProcessCommand(int cmd, unsigned char* data, int dataSize);
+
 void EtherUDPRecv(void *arg, struct udp_pcb *pcb, struct pbuf *p, struct ip_addr *addr, u16_t port)
 {
 	if (p != NULL)
@@ -98,15 +100,9 @@ void EtherDriver::DataReceived(pbuf *p, ip_addr *addr, u16_t port)
 				break;
 			}
 
-			case 0x20:
-			{
-				// data received
-				if( p->len == 50) // check length
-				{
-					// write to SDCARD!!!
-
-				}
-			}
+			default:
+				ProcessCommand(data[2], &data[3], dataSize);
+				break;
 		}
 	}
 }
