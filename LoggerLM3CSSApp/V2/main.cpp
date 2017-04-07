@@ -18,6 +18,7 @@
 #include "Drivers/LEDDriver.h"
 #include "Drivers/EtherDriver.h"
 #include "Drivers/CANDriver.h"
+#include "Drivers/SDCardDriver.h"
 #include "Drivers/MPU6000Drv.h"
 #include "Datafile.h"
 #include "Timer.h"
@@ -28,6 +29,7 @@ SDataFile datafile;
 LEDDriver ledDrv;
 Timer timer;
 EtherDriver etherDrv;
+SDCardDriver sdCard;
 CANDriver canDriver;
 MPU6000Drv mpuDrv;
 
@@ -39,6 +41,7 @@ int main(void)
 	// Initialize Drivers
 	timer.Init();
 	ledDrv.Init();
+	//sdCard.Init();
 	etherDrv.Init();
 	canDriver.Init();
 	mpuDrv.Init();
@@ -54,7 +57,7 @@ int main(void)
 
 	while(1)
 	{
-		// add meX
+
 	}
 }
 
@@ -67,15 +70,30 @@ extern "C" void SysTickIntHandler(void)
     // process ethernet (RX)
     etherDrv.Process(10);
 
+	if( (datafile.Ticks%100) == 0)
+	{
+		// send ping to A2 Controller every second
+		// MAX: 10, 20, 30, 00, 00, 7A
+		// IP: 10.0.1.121, 255.255.255.0
+		// PORT: 12000
+		unsigned short destPort = ETHPORT;
+		unsigned int addr = inet_addr("10.0.1.121");
+		etherDrv.SendPacket(0x10, (char*)&destPort, 2, (ip_addr*)&addr, 12000 );
+	}
+
     // read MPU-6000
     mpuDrv.UpdateData();
     mpuDrv.GetGyro(datafile.MPUGyroX, datafile.MPUGyroY, datafile.MPUGyroZ );
     mpuDrv.GetAcc(datafile.MPUAccX, datafile.MPUAccY, datafile.MPUAccZ );
     mpuDrv.GetTemperature(datafile.MPUTemperature);
 
+
+    // periodic flush
+    //if( (datafile.Ticks%100) == 0) sdCard.Flush();
+
     // Blink LEDs
-    //if( (datafile.Ticks%100) < 50) ledDrv.Set(LEDDriver::LEDGREEN);
-    //else ledDrv.Reset(LEDDriver::LEDGREEN);
+    if( (datafile.Ticks%100) < 50) ledDrv.Set(LEDDriver::LEDGREEN);
+    else ledDrv.Reset(LEDDriver::LEDGREEN);
 
     // looptime
     datafile.LoopTimeMS = timer.GetMS();

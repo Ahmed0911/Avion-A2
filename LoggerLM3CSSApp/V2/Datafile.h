@@ -24,6 +24,12 @@ struct SDataFile
 	unsigned int TXOverrun;
 	unsigned int TXSent;
 
+	// SDCard
+	bool SDCardActive;
+	unsigned int SDCardBytesWritten;
+	unsigned int SDCardFails;
+
+
 	float64 MissionTime;
 	float LoopTimeMS;
 	float LoopTimeMSMAX;

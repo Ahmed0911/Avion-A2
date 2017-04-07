@@ -12,11 +12,11 @@ public:
 	void Init();
 	void Process(int ms);
 	void DataReceived(pbuf *p, ip_addr *addr, u16_t port);
-	bool SendPacket(char* txBuff, int size);
+	bool SendPacket(char type, char* txBuff,  int size);
+	void SendPacket(char type, char* txBuff, int size, ip_addr *destination, u16_t destinationPort);
 
 private:
 	udp_pcb* m_udpPcb;
-	void SendPacket(char* txBuff, int size, ip_addr *destination, u16_t destinationPort);
 	bool IsPacketValid(pbuf* p);
 
 	// destination copy

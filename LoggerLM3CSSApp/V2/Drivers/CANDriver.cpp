@@ -138,22 +138,17 @@ extern "C" void CANDriverINTHandler(void)
 			CANMessageGet(CAN1_BASE, i, &sCANMessage, 1);
 			if( sCANMessage.ulFlags & MSG_OBJ_NEW_DATA )
 			{
-				// process data from this message object
-				int nrMsgs = 1; // hardcoded
 				int ID = sCANMessage.ulMsgID;
-				int len = sCANMessage.ulMsgLen;
 
-				char respTX[50];
-				int index = 10;
-				respTX[5] = 0x02; // CAN recv
-				memcpy(&respTX[index], &nrMsgs, 4); index+=4;
-				memcpy(&respTX[index], &ID, 4); index+=4;
-				memcpy(&respTX[index], data, 8); index+=8;
-				memcpy(&respTX[index], &len, 4); index+=4;
+				// convert to float
+				float64 dataDbl;
+				float dataFlt;
+				memcpy(&dataFlt, data, sizeof(float));
+				memcpy(&dataDbl, data, sizeof(float64));
 
-				IntMasterDisable();
-				etherDrv.SendPacket(respTX, 30); // TODO: Add to buffer and send from SysTickIntHandler()!!!
-				IntMasterEnable();
+				// IO
+				if( ID == 0x10120 ) datafile.Ticks = dataDbl;
+
 			}
 		}
 	}
