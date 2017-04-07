@@ -60,7 +60,21 @@ int main(void)
 
 	while(1)
 	{
+		timer.Start();
 
+		// write to card + flush
+		sdCard.WriteChunks();
+
+		if( goFlush )
+		{
+			// FLUSH
+			sdCard.Flush();
+			goFlush = false; // reset flag
+		}
+
+		// Loop time
+		datafile.LoopTimeMS = timer.GetMS();
+		if( datafile.LoopTimeMS > datafile.LoopTimeMSMAX ) datafile.LoopTimeMSMAX = datafile.LoopTimeMS;
 	}
 }
 
@@ -72,18 +86,12 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 		case 0x20:
 		{
 			// data received
-			if( dataSize == 209) // check length
+			if( dataSize == sizeof(SCommEthData)) // check length
 			{
-				IntMasterDisable();
-				// write to SDCARD!!!
-				sdCard.WriteData(data, dataSize);
-				if( goFlush )
-				{
-					// FLUSH
-					sdCard.Flush();
-					goFlush = false; // reset flag
-				}
-				IntMasterEnable();
+				// Chunk data
+				SCommEthData ethData;
+				memcpy(&ethData, data, sizeof(ethData) );
+				sdCard.ChunkData(ethData);
 			}
 		}
 	}
@@ -92,7 +100,6 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 extern "C" void SysTickIntHandler(void)
 {
 	datafile.MissionTime += (timer.GetMS()/1000); // sec
-	timer.Start();
     datafile.Ticks++; // tick counter
 
     // process ethernet (RX)
@@ -110,10 +117,10 @@ extern "C" void SysTickIntHandler(void)
 	}
 
     // read MPU-6000 (UNUSED!!!)
-    mpuDrv.UpdateData();
-    mpuDrv.GetGyro(datafile.MPUGyroX, datafile.MPUGyroY, datafile.MPUGyroZ );
-    mpuDrv.GetAcc(datafile.MPUAccX, datafile.MPUAccY, datafile.MPUAccZ );
-    mpuDrv.GetTemperature(datafile.MPUTemperature);
+    //mpuDrv.UpdateData();
+    //mpuDrv.GetGyro(datafile.MPUGyroX, datafile.MPUGyroY, datafile.MPUGyroZ );
+    //mpuDrv.GetAcc(datafile.MPUAccX, datafile.MPUAccY, datafile.MPUAccZ );
+    //mpuDrv.GetTemperature(datafile.MPUTemperature);
 
 
     // periodic flush
@@ -131,9 +138,4 @@ extern "C" void SysTickIntHandler(void)
     	if( (datafile.Ticks%20) < 10) ledDrv.Set(LEDDriver::LEDGREEN);
     	else ledDrv.Reset(LEDDriver::LEDGREEN);
     }
-
-
-    // Loop time
-    datafile.LoopTimeMS = timer.GetMS();
-    if( datafile.LoopTimeMS > datafile.LoopTimeMSMAX ) datafile.LoopTimeMSMAX = datafile.LoopTimeMS;
 }

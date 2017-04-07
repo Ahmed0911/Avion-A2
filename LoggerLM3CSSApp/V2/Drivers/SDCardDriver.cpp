@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define QUEUESIZE 50
+
 extern SDataFile datafile;
 
 bool SDCardDriver::Init()
@@ -41,6 +43,8 @@ bool SDCardDriver::Init()
 		if( res != FR_EXIST) return false; // unknown error!!!
 	}
 
+	m_DataQueue.clear();
+
 	return false; // ERROR
 }
 
@@ -71,3 +75,36 @@ bool SDCardDriver::Flush()
 	return true;
 }
 
+bool SDCardDriver::ChunkData(SCommEthData data)
+{
+	datafile.QueueSize = m_DataQueue.size();
+
+	if( m_DataQueue.size() >= QUEUESIZE)
+	{
+		datafile.FailedQueues++;
+		return false; // no more space
+	}
+
+	IntMasterDisable();
+	m_DataQueue.push_back(data);
+	IntMasterEnable();
+
+	return true;
+}
+
+bool SDCardDriver::WriteChunks()
+{
+	// write all chunks
+	while( !m_DataQueue.empty() )
+	{
+		// get chunk
+		IntMasterDisable();
+		SCommEthData data = m_DataQueue.front();
+		m_DataQueue.pop_front();
+		IntMasterEnable();
+
+		WriteData((BYTE*)&data, sizeof(data)); // write to card
+	}
+
+	return true;
+}
