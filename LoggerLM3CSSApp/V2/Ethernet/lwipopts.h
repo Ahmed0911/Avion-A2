@@ -236,7 +236,7 @@
 //
 //*****************************************************************************
 #define PBUF_LINK_HLEN                  16          // default is 14
-#define PBUF_POOL_BUFSIZE               1024
+#define PBUF_POOL_BUFSIZE               512
                                                     // default is LWIP_MEM_ALIGN_SIZE(TCP_MSS+40+PBUF_LINK_HLEN)
 #define ETH_PAD_SIZE                    2           // default is 0
 

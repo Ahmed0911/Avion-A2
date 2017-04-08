@@ -103,6 +103,9 @@ extern "C" void SysTickIntHandler(void)
     // process ethernet (RX)
     etherDrv.Process(10);
 
+    // Process SDCARD
+    disk_timerproc();
+
 	if( (datafile.Ticks%100) == 0)
 	{
 		// send ping to A2 Controller every second

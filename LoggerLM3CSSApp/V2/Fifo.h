@@ -1,7 +1,7 @@
 #pragma once
 typedef unsigned char BYTE;
 
-#define FIFOSIZE 30000
+#define FIFOSIZE (1024*32)
 
 class Fifo
 {

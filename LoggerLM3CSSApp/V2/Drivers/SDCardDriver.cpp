@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define BLOCK_SIZE 2048
+#define BLOCK_SIZE 512
 
 extern SDataFile datafile;
 
@@ -83,13 +83,11 @@ bool SDCardDriver::ChunkData(BYTE* data, int size)
 		return false; // no more space
 	}
 
-	IntMasterDisable();
 	for(int i=0; i!=size; i++)
 	{
 		m_Fifo.Push(*data);
 		data++;
 	}
-	IntMasterEnable();
 
 	return true;
 }
