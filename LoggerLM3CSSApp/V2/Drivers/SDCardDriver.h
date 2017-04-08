@@ -2,8 +2,8 @@
 #ifndef SDCARDDRIVER_H_
 #define SDCARDDRIVER_H_
 
-#include <deque>
 #include "../Datafile.h"
+#include "../Fifo.h"
 
 extern "C"
 {
@@ -15,7 +15,7 @@ class SDCardDriver
 {
 public:
 	bool Init();
-	bool ChunkData(SCommEthData data); // call from interrupt
+	bool ChunkData(BYTE* data, int size); // call from interrupt
 	bool WriteChunks(); // call from main loop
 
 	bool Flush(); // call from main loop every second or more
@@ -27,7 +27,7 @@ private:
 	bool m_FileValid;
 
 	// data to queue
-	std::deque<SCommEthData> m_DataQueue;
+	Fifo m_Fifo;
 };
 
 #endif /* SDCARDDRIVER_H_ */

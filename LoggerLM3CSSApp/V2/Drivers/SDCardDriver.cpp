@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define QUEUESIZE 50
+#define BLOCK_SIZE 2048
 
 extern SDataFile datafile;
 
@@ -43,8 +43,6 @@ bool SDCardDriver::Init()
 		if( res != FR_EXIST) return false; // unknown error!!!
 	}
 
-	m_DataQueue.clear();
-
 	return false; // ERROR
 }
 
@@ -75,18 +73,22 @@ bool SDCardDriver::Flush()
 	return true;
 }
 
-bool SDCardDriver::ChunkData(SCommEthData data)
+bool SDCardDriver::ChunkData(BYTE* data, int size)
 {
-	datafile.QueueSize = m_DataQueue.size();
+	datafile.QueueSize = m_Fifo.Count();
 
-	if( m_DataQueue.size() >= QUEUESIZE)
+	if( !m_Fifo.HasSpace(size) )
 	{
 		datafile.FailedQueues++;
 		return false; // no more space
 	}
 
 	IntMasterDisable();
-	m_DataQueue.push_back(data);
+	for(int i=0; i!=size; i++)
+	{
+		m_Fifo.Push(*data);
+		data++;
+	}
 	IntMasterEnable();
 
 	return true;
@@ -95,15 +97,22 @@ bool SDCardDriver::ChunkData(SCommEthData data)
 bool SDCardDriver::WriteChunks()
 {
 	// write all chunks
-	while( !m_DataQueue.empty() )
-	{
-		// get chunk
-		IntMasterDisable();
-		SCommEthData data = m_DataQueue.front();
-		m_DataQueue.pop_front();
-		IntMasterEnable();
+	IntMasterDisable();
+	int count = m_Fifo.Count();
+	IntMasterEnable();
 
-		WriteData((BYTE*)&data, sizeof(data)); // write to card
+	if( count >= BLOCK_SIZE )
+	{
+		// write block
+		BYTE buf[BLOCK_SIZE];
+		IntMasterDisable();
+		for(int i=0; i!=BLOCK_SIZE; i++)
+		{
+			m_Fifo.Pop(buf[i]);
+		}
+		IntMasterEnable();
+		WriteData((BYTE*)&buf, BLOCK_SIZE); // write to card
+
 	}
 
 	return true;

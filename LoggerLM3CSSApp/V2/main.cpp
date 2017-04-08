@@ -89,9 +89,7 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 			if( dataSize == sizeof(SCommEthData)) // check length
 			{
 				// Chunk data
-				SCommEthData ethData;
-				memcpy(&ethData, data, sizeof(ethData) );
-				sdCard.ChunkData(ethData);
+				sdCard.ChunkData(data, dataSize);
 			}
 		}
 	}
