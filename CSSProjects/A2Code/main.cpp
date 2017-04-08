@@ -341,91 +341,95 @@ void main(void)
 
 void SendPeriodicDataEth(void)
 {
-#if 1
-	// Fill data
-	SCommEthData data;
-	data.LoopCounter = MainLoopCounter;
-	data.ActualMode = ctrl.rtY.ActualMode;
-	data.Roll = imu.Roll;
-	data.Pitch = imu.Pitch;
-	data.Yaw = imu.Yaw;
-	data.dRoll = Gyro[0];
-	data.dPitch = Gyro[1];
-	data.dYaw = Gyro[2];
-	data.AccX = Acc[0];
-	data.AccY = Acc[1];
-	data.AccZ = Acc[2];
-	data.MagX = Mag[0];
-	data.MagY = Mag[1];
-	data.MagZ = Mag[2];
 
-	data.Pressure = baroDrv.PressurePa;
-	data.Temperature = baroDrv.TemperatureC;
-	data.Altitude = ctrl.rtY.Altitude;
-	data.Vertspeed = ctrl.rtY.VertSpeed;
-	data.FuelLevel = 0;
-	data.BatteryVoltage = adcDrv.BATTVoltage();
-	data.BatteryCurrentA = BatteryCurrentA;
-	data.BatteryTotalCharge_mAh = BatteryTotalCharge_mAh;
-	data.MotorThrusts[0] = (unsigned char)(100*(ctrl.rtY.PWM1-1000)/1000);
-	data.MotorThrusts[1] = (unsigned char)(100*(ctrl.rtY.PWM2-1000)/1000);
-	data.MotorThrusts[2] = (unsigned char)(100*(ctrl.rtY.PWM3-1000)/1000);
-	data.MotorThrusts[3] = (unsigned char)(100*(ctrl.rtY.PWM4-1000)/1000);
+    if( (MainLoopCounter % 2) == 0 )
+    {
+        // Send data to Logger
+        // Fill data
+        SCommEthData data;
+        data.LoopCounter = MainLoopCounter;
+        data.ActualMode = ctrl.rtY.ActualMode;
+        data.Roll = imu.Roll;
+        data.Pitch = imu.Pitch;
+        data.Yaw = imu.Yaw;
+        data.dRoll = Gyro[0];
+        data.dPitch = Gyro[1];
+        data.dYaw = Gyro[2];
+        data.AccX = Acc[0];
+        data.AccY = Acc[1];
+        data.AccZ = Acc[2];
+        data.MagX = Mag[0];
+        data.MagY = Mag[1];
+        data.MagZ = Mag[2];
 
-	// gps
-	data.GPSTime = gps.GPSTime;
-	data.FixType = gps.FixType;
-	data.FixFlags = gps.FixFlags;
-	data.NumSV = gps.NumSV;
-	data.Longitude = gps.Longitude;
-	data.Latitude = gps.Latitude;
-	data.HeightMSL = gps.HeightMSL;
-	data.HorizontalAccuracy = gps.HorizontalAccuracy;
-	data.VerticalAccuracy = gps.VerticalAccuracy;
-	data.VelN = gps.VelN;
-	data.VelE = gps.VelE;
-	data.VelD = gps.VelD;
-	data.SpeedAcc = gps.SpeedAcc;
-	memcpy(data.SatCNOs, gps.SatCNOs, sizeof(data.SatCNOs));
+        data.Pressure = baroDrv.PressurePa;
+        data.Temperature = baroDrv.TemperatureC;
+        data.Altitude = ctrl.rtY.Altitude;
+        data.Vertspeed = ctrl.rtY.VertSpeed;
+        data.FuelLevel = 0;
+        data.BatteryVoltage = adcDrv.BATTVoltage();
+        data.BatteryCurrentA = BatteryCurrentA;
+        data.BatteryTotalCharge_mAh = BatteryTotalCharge_mAh;
+        data.MotorThrusts[0] = (unsigned char)(100*(ctrl.rtY.PWM1-1000)/1000);
+        data.MotorThrusts[1] = (unsigned char)(100*(ctrl.rtY.PWM2-1000)/1000);
+        data.MotorThrusts[2] = (unsigned char)(100*(ctrl.rtY.PWM3-1000)/1000);
+        data.MotorThrusts[3] = (unsigned char)(100*(ctrl.rtY.PWM4-1000)/1000);
 
-	// RF Data + Perf
-	data.EthReceivedCount = etherDrv.ReceivedFrames;
-	data.EthSentCount = etherDrv.SentFrames;
-	data.HopeRXFrameCount = comm433MHz.MsgReceivedOK;
-	data.HopeRXRSSI = comm433MHz.HeaderFails; // fail counter, use as RSSI?
-	data.HopeRSSI = HopeRSSI;
-	data.PerfCpuTimeMS = PerfCpuTimeMS;
-	data.PerfCpuTimeMSMAX = PerfCpuTimeMSMAX;
-	data.PerfLoopTimeMS = PerfLoopTimeMS;
-	data.AssistNextChunkToSend = AssistNextChunkToSend;
+        // gps
+        data.GPSTime = gps.GPSTime;
+        data.FixType = gps.FixType;
+        data.FixFlags = gps.FixFlags;
+        data.NumSV = gps.NumSV;
+        data.Longitude = gps.Longitude;
+        data.Latitude = gps.Latitude;
+        data.HeightMSL = gps.HeightMSL;
+        data.HorizontalAccuracy = gps.HorizontalAccuracy;
+        data.VerticalAccuracy = gps.VerticalAccuracy;
+        data.VelN = gps.VelN;
+        data.VelE = gps.VelE;
+        data.VelD = gps.VelD;
+        data.SpeedAcc = gps.SpeedAcc;
+        memcpy(data.SatCNOs, gps.SatCNOs, sizeof(data.SatCNOs));
 
-	// Waypoints
-	data.WaypointCnt = WayCnt;
-	data.WaypointDownloadCounter = WayDownloadCnt;
-	double hLat, hLong;
-	llConv.GetHome(hLat, hLong);
-	data.HomeLatitude = hLat*1e7;
-	data.HomeLongitude = hLong*1e7;
+        // RF Data + Perf
+        data.EthReceivedCount = etherDrv.ReceivedFrames;
+        data.EthSentCount = etherDrv.SentFrames;
+        data.HopeRXFrameCount = comm433MHz.MsgReceivedOK;
+        data.HopeRXRSSI = comm433MHz.HeaderFails; // fail counter, use as RSSI?
+        data.HopeRSSI = HopeRSSI;
+        data.PerfCpuTimeMS = PerfCpuTimeMS;
+        data.PerfCpuTimeMSMAX = PerfCpuTimeMSMAX;
+        data.PerfLoopTimeMS = PerfLoopTimeMS;
+        data.AssistNextChunkToSend = AssistNextChunkToSend;
 
-	// Launch Mgr
-	data.LaunchStatus1 = launch.WpnState[0];
-	data.LaunchStatus2 = launch.WpnState[1];
+        // Waypoints
+        data.WaypointCnt = WayCnt;
+        data.WaypointDownloadCounter = WayDownloadCnt;
+        double hLat, hLong;
+        llConv.GetHome(hLat, hLong);
+        data.HomeLatitude = hLat*1e7;
+        data.HomeLongitude = hLong*1e7;
 
-	// Tuning data
-	data.TuningData[0] = sbusRecv.Channels[0]; // thr
-	data.TuningData[1] = sbusRecv.Channels[1]; // aileron
-	data.TuningData[2] = sbusRecv.Channels[2]; // elevation
-	data.TuningData[3] = sbusRecv.Channels[3]; // rudder
-	data.TuningData[4] = sbusRecv.Channels[4]; // mode
-	data.TuningData[5] = sbusRecv.Channels[5]; // ch5
-	data.TuningData[6] = sbusRecv.Channels[6]; // ch6
-	data.TuningData[7] = sbusRecv.SystemByte; // systemByte
-	data.TuningData[8] = 0;
-	data.TuningData[9] = 0;
+        // Launch Mgr
+        data.LaunchStatus1 = launch.WpnState[0];
+        data.LaunchStatus2 = launch.WpnState[1];
 
-	// send packet (type 0x20 - data)
-	etherDrv.SendPacket(0x20, (char*)&data, sizeof(data));
-#endif
+        // Tuning data
+        data.TuningData[0] = sbusRecv.Channels[0]; // thr
+        data.TuningData[1] = sbusRecv.Channels[1]; // aileron
+        data.TuningData[2] = sbusRecv.Channels[2]; // elevation
+        data.TuningData[3] = sbusRecv.Channels[3]; // rudder
+        data.TuningData[4] = sbusRecv.Channels[4]; // mode
+        data.TuningData[5] = sbusRecv.Channels[5]; // ch5
+        data.TuningData[6] = sbusRecv.Channels[6]; // ch6
+        data.TuningData[7] = sbusRecv.SystemByte; // systemByte
+        data.TuningData[8] = 0;
+        data.TuningData[9] = 0;
+
+        // send packet (type 0x20 - data)
+        etherDrv.SendPacket(0x20, (char*)&data, sizeof(data));
+    }
+
 
 	// Send to Lora
 	//if( MainLoopCounter%4000 == 0 || PingedSendData) // 400hz/4000 = 0.1hz, every 10s OR ping
@@ -458,6 +462,11 @@ void SendPeriodicDataEth(void)
 		dataRF.Latitude = gps.Latitude;
 		dataRF.VelN = gps.VelN;
 		dataRF.VelE = gps.VelE;
+		dataRF.HorizontalAccuracy = gps.HorizontalAccuracy;
+		dataRF.SDCardBytesWritten = SDCardBytesWritten;
+		dataRF.SDCardFails = SDCardFails;
+		dataRF.FailedQueues = FailedQueues;
+
 		dataRF.HopeRXFrameCount = comm433MHz.MsgReceivedOK;
 		dataRF.HopeRXRSSI = comm433MHz.HeaderFails; // fail counter, use as RSSI?
 		dataRF.HopeTXRSSI = 0; // will be filled on GW station
