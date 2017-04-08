@@ -112,9 +112,14 @@ extern "C" void SysTickIntHandler(void)
 		// MAX: 10, 20, 30, 00, 00, 7A
 		// IP: 10.0.1.121, 255.255.255.0
 		// PORT: 12000
-		unsigned short destPort = ETHPORT;
+		SPingLoggerData pingData;
+		pingData.DestinationPort = ETHPORT;
+		pingData.SDCardActive = datafile.SDCardActive;
+		pingData.SDCardBytesWritten = datafile.SDCardBytesWritten;
+		pingData.SDCardFails = datafile.SDCardFails;
+		pingData.FailedQueues = datafile.FailedQueues;
 		unsigned int addr = inet_addr("10.0.1.121");
-		etherDrv.SendPacket(0x10, (char*)&destPort, 2, (ip_addr*)&addr, 12000 );
+		etherDrv.SendPacket(0x11, (char*)&pingData, sizeof(pingData), (ip_addr*)&addr, 12000 );
 	}
 
     // read MPU-6000 (UNUSED!!!)

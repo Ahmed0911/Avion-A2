@@ -39,6 +39,15 @@ struct SDataFile
 	float SendPacketTimeMS;
 };
 
+struct SPingLoggerData
+{
+	unsigned short DestinationPort;
+	unsigned short SDCardActive;
+	unsigned int SDCardBytesWritten;
+	unsigned int SDCardFails;
+	unsigned int FailedQueues;
+};
+
 struct SCommEthData
 {
 	unsigned int LoopCounter;

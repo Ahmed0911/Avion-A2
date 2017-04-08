@@ -105,6 +105,12 @@ float Pressure0 = 101300;
 
 bool PingedSendData = false;
 
+// SD Card stuff
+unsigned short SDCardActive;
+unsigned int SDCardBytesWritten;
+unsigned int SDCardFails;
+unsigned int FailedQueues;
+
 // Battery State
 float BatteryCurrentA = 0;
 double BatteryTotalCharge_mAh = 0;
@@ -478,6 +484,20 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
         {
             // Schedule data transfer
             PingedSendData = true;
+            break;
+        }
+
+	    case 0x11: // Logger Ping
+        {
+            SPingLoggerData pingLogger;
+            if( dataSize == sizeof(pingLogger))
+            {
+                memcpy(&pingLogger, data, sizeof(pingLogger));
+                SDCardActive = pingLogger.SDCardActive;
+                SDCardBytesWritten = pingLogger.SDCardBytesWritten;
+                SDCardFails = pingLogger.SDCardFails;
+                FailedQueues = pingLogger.FailedQueues;
+            }
             break;
         }
 

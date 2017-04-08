@@ -19,6 +19,7 @@
 #include <lwip/inet.h>
 #include "SerialDriver.h"
 #include "HopeRF.h"
+#include "../CommData.h"
 
 extern uint32_t g_ui32SysClock;
 extern void ProcessCommand(int cmd, unsigned char* data, int dataSize);
@@ -112,6 +113,21 @@ void EtherDriver::DataReceived(pbuf *p, ip_addr *addr, u16_t port)
 				DestinationPort = destPort;
 				DestinationAddr = *addr;
 				break;
+			}
+
+			case 0x11: // Logger Ping
+			{
+			    SPingLoggerData pingLogger;
+                if( dataSize == sizeof(pingLogger))
+                {
+                    memcpy(&pingLogger, &data[3], sizeof(pingLogger));
+                    DestinationPort = pingLogger.DestinationPort;
+                    DestinationAddr = *addr;
+                }
+
+                // do further processing in main.cpp
+                ProcessCommand(data[2], &data[3], dataSize);
+                break;
 			}
 
 			default:

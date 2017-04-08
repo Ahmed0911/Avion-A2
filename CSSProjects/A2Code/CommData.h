@@ -165,6 +165,15 @@ struct SCommHopeRFDataA2Avion
 	unsigned int CRC32;
 };
 
+struct SPingLoggerData
+{
+    unsigned short DestinationPort;
+    unsigned short SDCardActive;
+    unsigned int SDCardBytesWritten;
+    unsigned int SDCardFails;
+    unsigned int FailedQueues;
+};
+
 struct SWpt
 {
 	float Altitude;
