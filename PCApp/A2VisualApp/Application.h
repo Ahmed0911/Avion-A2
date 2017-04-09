@@ -36,6 +36,7 @@ private:
 	void FillEthernetData(SUserData& drawData);
 	void GenerateLogBitmaps(std::wstring logFilename, std::wstring destination);
 	void GenerateLogBitmapsHopeRF(std::wstring logFilename, std::wstring destination);
+	void GenerateLogBitmapsLogger(std::wstring logFilename, std::wstring destination);
 	void GenerateLogFile(std::wstring logFilename, std::wstring destination);
 
 private:

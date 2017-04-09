@@ -46,7 +46,8 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	m_FilterSpeed.Init(30);
 
 #if 0
-	GenerateLogBitmapsHopeRF(L"Log\\LogHopeRF-15-15-13.bin", L"Bitmaps");
+	GenerateLogBitmapsLogger(L"C:\\Users\\Ivan\\Desktop\\logs\\file-12.bin", L"Bitmaps");
+	//GenerateLogBitmapsHopeRF(L"Log\\LogHopeRF-15-15-13.bin", L"Bitmaps");
 	//GenerateLogBitmaps(L"Log\\LogFileDraw-4118.log", L"Bitmaps");
 	//GenerateLogFile(L"Log\\LogFileDraw-233.log", L"mat1.txt");
 	PostQuitMessage(0);
@@ -292,30 +293,38 @@ void CApplication::Keydown(WPARAM wParam)
 	m_dir2D.m_Parameters.Keydown(wParam);
 }
 
-// TODO!!!
+// Used for Logged Data!
 void CApplication::FillEthernetData(SUserData& drawData)
 {
 	drawData.LoopCounter = m_RXEthData.LoopCounter;
-	drawData.ActualMode = m_RXEthData.ActualMode;
+	
+	// IMU
 	drawData.Roll = m_RXEthData.Roll;
 	drawData.Pitch = m_RXEthData.Pitch;
 	drawData.Yaw = m_RXEthData.Yaw;
-
 	drawData.dRoll = m_RXEthData.dRoll;
 	drawData.dPitch = m_RXEthData.dPitch;
 	drawData.dYaw = m_RXEthData.dYaw;
 
+	// alt/speed
 	drawData.Pressure = m_RXEthData.Pressure;
 	drawData.Altitude = m_RXEthData.Altitude;
-	drawData.Vertspeed = m_RXEthData.Vertspeed;
+	//drawData.Vertspeed = m_RXEthData.Vertspeed;
 	drawData.Vertspeed = m_FilterVertSpeed.Add(m_RXEthData.Vertspeed);
-	drawData.FuelLevel = m_RXEthData.FuelLevel;
-	drawData.FuelLevel = m_FilterFuelPercent.Add(m_RXEthData.BatteryVoltage);
+
+	// engines
 	memcpy(drawData.MotorThrusts, m_RXEthData.MotorThrusts, 4);
+
+	// Voltage/Current
+	drawData.BatteryVoltage = m_RXEthData.BatteryVoltage;
+	drawData.BatteryCurrentA = m_RXEthData.BatteryCurrentA;
+	drawData.BatteryTotalCharge_mAh = m_RXEthData.BatteryTotalCharge_mAh;
+	drawData.FuelLevel = (2000 - m_RXEthData.BatteryTotalCharge_mAh) / 2000 * 100;
 
 	// gps
 	drawData.GPSTime = m_RXEthData.GPSTime;
 	drawData.FixType = m_RXEthData.FixType;
+	drawData.ActualMode = m_RXEthData.ActualMode;
 	drawData.FixFlags = m_RXEthData.FixFlags;
 	drawData.NumSV = m_RXEthData.NumSV;
 	drawData.Longitude = m_RXEthData.Longitude;
@@ -327,13 +336,24 @@ void CApplication::FillEthernetData(SUserData& drawData)
 	drawData.VelE = m_RXEthData.VelE;
 	drawData.VelD = m_RXEthData.VelD;
 	drawData.SpeedAcc = m_RXEthData.SpeedAcc;
-	drawData.Speed = (float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f; // [km/h!!!]
+	//drawData.Speed = (float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f; // [km/h!!!]
 	drawData.Speed = m_FilterSpeed.Add((float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f); // [km/h!!!]
 
+	// RX/TX. HopeRF Data
 	drawData.RXA2RSSIFrameCount = m_RXEthData.HopeRXFrameCount;
 	drawData.RXControlStationFrameCount = m_RXHopeRFPacketCounter;
-	drawData.RXA2RSSI = (int)m_FilterA2RSSI.Add((float)m_RXEthData.HopeRXRSSI); // filter RSSI
+	drawData.RXA2RSSI = m_RXEthData.HopeRXRSSI; // filter RSSI
 	drawData.RXControlStationRSSI = (int)m_FilterControlStationRSSI.Add((float)m_RXEthData.HopeRXRSSI); // filter RSSI
+
+	// SD Card
+	//drawData.SDCardBytesWritten = m_RXEthData.SDCardBytesWritten;
+	//drawData.SDCardFails = m_RXEthData.SDCardFails;
+	//drawData.FailedQueues = m_RXEthData.FailedQueues;
+
+	drawData.MsgReceivedOK = m_commMgr.serialPortComm.m_Comm433MHz.MsgReceivedOK;
+	drawData.CrcErrors = m_commMgr.serialPortComm.m_Comm433MHz.CrcErrors;
+	drawData.HeaderFails = m_commMgr.serialPortComm.m_Comm433MHz.HeaderFails;
+	drawData.TimeoutCounter = m_commMgr.TimeoutCounter;
 
 	drawData.LocalTime = CPerformanceTimer::GetCurrentTimestamp();
 }
@@ -377,6 +397,49 @@ void CApplication::GenerateLogBitmaps(std::wstring logFilename, std::wstring des
 	file.close();
 }
 
+// Special Logger generator (used for A2Avion SDCard logged data )
+void CApplication::GenerateLogBitmapsLogger(std::wstring logFilename, std::wstring destination)
+{
+	std::ifstream file(logFilename, std::ios::binary);
+
+	file.read((char*)&m_RXEthData, sizeof(SCommEthData)); // read first chunk
+	SUserData data;
+	memset(&data, 0, sizeof(SUserData));
+	FillEthernetData(data); // convert
+
+	double timestamp = data.LoopCounter*0.0025; // start time
+	double frameTime = 1 / 30.00; // 30.00 frames per second (Mobius)
+	int index = 0;
+
+	while (!file.eof())
+	{
+		file.read((char*)&m_RXEthData, sizeof(SCommEthData)); // read first chunk
+		SUserData nextData;
+		memset(&nextData, 0, sizeof(SUserData));
+		FillEthernetData(nextData); // convert
+		double dataTime = nextData.LoopCounter*0.0025;
+
+		while (timestamp < dataTime)
+		{
+			//if (data.LoopCounter > 110000) // Ignore begining
+			{
+				double delta = dataTime - timestamp; // check this for no data display
+				bool noData = false;
+				if (delta > 1) noData = true; // NODATA
+
+				m_dir2D.Draw(data, noData); // display! (data)
+				TCHAR filename[100];
+				swprintf_s(filename, 100, L"%s//image-%d.png", destination.c_str(), index++);
+				//m_dir2D.DrawToBitmap(data, filename, noData);
+			}
+			timestamp += frameTime;
+		}
+		data = nextData;
+	};
+
+	file.close();
+}
+
 // Special HopeRF log generator (used for A2Avion app log data)
 void CApplication::GenerateLogBitmapsHopeRF(std::wstring logFilename, std::wstring destination)
 {
@@ -401,7 +464,7 @@ void CApplication::GenerateLogBitmapsHopeRF(std::wstring logFilename, std::wstri
 
 		while (timestamp < dataTime)
 		{
-			if (data.LoopCounter > 110000) // Ignore begining
+			//if (data.LoopCounter > 110000) // Ignore begining
 			{
 				double delta = dataTime - timestamp; // check this for no data display
 				bool noData = false;
@@ -410,7 +473,7 @@ void CApplication::GenerateLogBitmapsHopeRF(std::wstring logFilename, std::wstri
 				m_dir2D.Draw(data, noData); // display! (data)
 				TCHAR filename[100];
 				swprintf_s(filename, 100, L"%s//image-%d.png", destination.c_str(), index++);
-				m_dir2D.DrawToBitmap(data, filename, noData);
+				//m_dir2D.DrawToBitmap(data, filename, noData);
 			}
 			timestamp += frameTime;
 		}

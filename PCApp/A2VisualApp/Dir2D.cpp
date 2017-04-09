@@ -625,6 +625,8 @@ void CDir2D::DrawHUD(SUserData &data, bool noTelemetry)
 	}
 
 	// draw Comm signal
+	TCHAR buf[200];
+#if 0
 	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.87F, SCREENY * 0.04F));
 	float percentRX = (100.0F + rxRSSI) / (100 - 36);
 	if (percentRX > 1) percentRX = 1;
@@ -632,7 +634,6 @@ void CDir2D::DrawHUD(SUserData &data, bool noTelemetry)
 	m_d2dContext->FillRectangle(D2D1::RectF(0, 0, percentRX * 150, 20), m_pLinearGradientRYGBrush.Get());
 	m_d2dContext->DrawRectangle(D2D1::RectF(0, 0, 150, 20), m_GreenBrush.Get(), 2);
 	DrawNumber(DNSTYLE_SMALL, -40, 0, 40, 20, 0, 0, L"RX");
-	TCHAR buf[200];
 	swprintf_s(buf, 20, L"%d dB", rxRSSI);
 	DrawNumber(DNSTYLE_SMALL, 150, 0, 80, 20, 0, 0, buf);
 
@@ -645,7 +646,7 @@ void CDir2D::DrawHUD(SUserData &data, bool noTelemetry)
 	DrawNumber(DNSTYLE_SMALL, -40, 0, 40, 20, 0, 0, L"TX");
 	swprintf_s(buf, 20, L"%d dB", txRSSI);
 	DrawNumber(DNSTYLE_SMALL, 150, 0, 80, 20, 0, 0, buf);
-
+#endif
 	// draw battery indicator
 	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.80F, SCREENY * 0.92F));
 	if (fuelLevel < 0) fuelLevel = 0;
