@@ -688,6 +688,9 @@ void CDir2D::DrawHUD(SUserData &data, bool noTelemetry)
 	int psmIndex = (data.FixFlags >> 3) && 0x07;
 	fixStr += psmState[(psmIndex)];
 	//DrawNumber(DNSTYLE_SMALL, 0, 25*Yoffset++, 350, 25, 0, 0, (TCHAR*)fixStr.c_str());
+	// Horizntal Acc
+	swprintf_s(buf, 200, L"Horizontal Acc: %0.2f m", data.HorizontalAccuracy / 1000.0);
+	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 450, 25, 0, 0, buf);
 	// speeds
 	swprintf_s(buf, 200, L"N:%0.1f m/s E:%0.1f m/s", data.VelN / 1000.0, data.VelE / 1000.0);
 	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);
@@ -730,7 +733,7 @@ void CDir2D::DrawHUD(SUserData &data, bool noTelemetry)
 	DrawNumber(DNSTYLE_SMALL, 600, 0, 200, 20, 0, 0, buf);
 	
 	// Comm Data
-	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.165F, SCREENY * 0.78F));
+	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.165F, SCREENY * 0.74F));
 	m_GreenTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 	Yoffset = 0;
 	swprintf_s(buf, 200, L"MsgReceivedOK: %d", data.MsgReceivedOK);
@@ -741,6 +744,12 @@ void CDir2D::DrawHUD(SUserData &data, bool noTelemetry)
 	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);
 	swprintf_s(buf, 200, L"TimeoutCounter: %d", data.TimeoutCounter);
 	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);
+
+	// SD Card Data
+	swprintf_s(buf, 200, L"Log Written: %d", data.SDCardBytesWritten);
+	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 450, 25, 0, 0, buf);
+	swprintf_s(buf, 200, L"WRFails: %d, QFail: %d", data.SDCardFails, data.FailedQueues);
+	DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 450, 25, 0, 0, buf);
 
 	// Mode
 	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.015F, SCREENY * 0.005F));

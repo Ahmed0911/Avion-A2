@@ -34,7 +34,7 @@ private:
 	EMgrState State;
 
 	double CommandTimoutTimerMS;
-	const double COMMANDTIMEOUTMS = 500; // [miliseconds]
+	const double COMMANDTIMEOUTMS = 1000; // [miliseconds]
 	SMsg MsgInExecution; // Msg in progress, use for retry!
 	bool ValidResponseReceivedFlag;
 

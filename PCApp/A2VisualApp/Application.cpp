@@ -260,6 +260,7 @@ void CApplication::FillHopeRFData(SUserData& drawData)
 	drawData.ActualMode = m_RXHopeRFData.ActualMode;
 	drawData.Longitude = m_RXHopeRFData.Longitude;
 	drawData.Latitude = m_RXHopeRFData.Latitude;
+	drawData.HorizontalAccuracy = m_RXEthData.HorizontalAccuracy;
 	drawData.VelN = m_RXHopeRFData.VelN;
 	drawData.VelE = m_RXHopeRFData.VelE;
 	//drawData.Speed = (float)sqrt(drawData.VelN*drawData.VelN / 1000000.0 + drawData.VelE*drawData.VelE / 1000000.0) * 3.6f; // [km/h!!!]
@@ -271,6 +272,12 @@ void CApplication::FillHopeRFData(SUserData& drawData)
 	//drawData.RXA2RSSI = (int)m_FilterA2RSSI.Add((float)m_RXHopeRFData.HopeRXRSSI); // filter RSSI
 	drawData.RXA2RSSI = m_RXHopeRFData.HopeRXRSSI; // filter RSSI
 	drawData.RXControlStationRSSI = (int)m_FilterControlStationRSSI.Add((float)m_RXHopeRFData.HopeTXRSSI); // filter RSSI
+
+	// SD Card
+	drawData.SDCardBytesWritten = m_RXHopeRFData.SDCardBytesWritten;
+	drawData.SDCardFails = m_RXHopeRFData.SDCardFails;
+	drawData.FailedQueues = m_RXHopeRFData.FailedQueues;
+
 
 	drawData.MsgReceivedOK = m_commMgr.serialPortComm.m_Comm433MHz.MsgReceivedOK;
 	drawData.CrcErrors = m_commMgr.serialPortComm.m_Comm433MHz.CrcErrors;

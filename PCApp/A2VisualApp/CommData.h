@@ -125,6 +125,12 @@ struct SCommHopeRFDataA2Avion
 	int Latitude; // 1e-7 [deg]
 	int VelN; // Speed North [mm/s]
 	int VelE; // Speed East [mm/s]
+	unsigned int HorizontalAccuracy; // [mm]
+
+	// SDCard
+    unsigned int SDCardBytesWritten;
+    unsigned int SDCardFails;
+    unsigned int FailedQueues;
 
 	// Comm HopeRF
 	unsigned int HopeRXFrameCount;
@@ -133,6 +139,15 @@ struct SCommHopeRFDataA2Avion
 
 	// CRC
 	unsigned int CRC32;
+};
+
+struct SPingLoggerData
+{
+    unsigned short DestinationPort;
+    unsigned short SDCardActive;
+    unsigned int SDCardBytesWritten;
+    unsigned int SDCardFails;
+    unsigned int FailedQueues;
 };
 
 struct SWpt

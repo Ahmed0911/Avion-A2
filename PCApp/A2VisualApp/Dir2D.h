@@ -61,6 +61,11 @@ struct SUserData
 	int VelD; // Speed Down [mm/s]
 	unsigned int SpeedAcc; // Speed accuracy [mm/s]
 
+	// SDCard
+    unsigned int SDCardBytesWritten;
+    unsigned int SDCardFails;
+    unsigned int FailedQueues;
+
 	// Comm
 	unsigned int RXA2RSSIFrameCount;
 	unsigned int RXControlStationFrameCount;
