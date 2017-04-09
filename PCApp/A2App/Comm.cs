@@ -154,6 +154,12 @@ namespace WinEthApp
         public int Latitude; // 1e-7 [deg]
         public int VelN; // Speed North [mm/s]
         public int VelE; // Speed East [mm/s]
+        public uint HorizontalAccuracy; // [mm]
+
+        // SDCard
+        public uint SDCardBytesWritten;
+        public uint SDCardFails;
+        public uint FailedQueues;
 
         // Comm HopeRF
         public uint HopeRXFrameCount;
