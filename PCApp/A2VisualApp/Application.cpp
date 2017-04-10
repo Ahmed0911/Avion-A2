@@ -518,7 +518,7 @@ void CApplication::GenerateLogLoggerFile(std::wstring logFilename, std::wstring 
 	std::ifstream file(logFilename, std::ios::binary);
 	std::ofstream logFile(destination, std::ios::binary);
 
-	logFile << "Loop " << "Mode " << "NumSV " << "FuelLevel " << "Roll " << "Pitch " << "Yaw " << "dRoll " << "dPitch " << "dYaw " << "MagX " << "MagY " << "MagZ " << "T1 " << "T2 " << "T3 " << "T4 " << "Altitude " << "VertSpeed " << "Pressure " << "MSL " << "VelN " << "VelE " << "VelD " << "HorAcc " << "CurrentA " << "TotalChargemAh " << "Voltage " << std::endl;
+	logFile << "Loop " << "Mode " << "NumSV " << "FuelLevel " << "AccX " << "AccY " << "AccZ " << "Roll " << "Pitch " << "Yaw " << "dRoll " << "dPitch " << "dYaw " << "MagX " << "MagY " << "MagZ " << "T1 " << "T2 " << "T3 " << "T4 " << "Altitude " << "VertSpeed " << "Pressure " << "MSL " << "VelN " << "VelE " << "VelD " << "HorAcc " << "CurrentA " << "TotalChargemAh " << "Voltage " << std::endl;
 
 	do
 	{
@@ -528,6 +528,7 @@ void CApplication::GenerateLogLoggerFile(std::wstring logFilename, std::wstring 
 		// dump to file
 		CHAR buf[500];
 		sprintf_s(buf, 500, "%d %d %d %0.2f", data.LoopCounter, data.ActualMode, data.NumSV, data.FuelLevel);
+		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f", buf, data.AccX, data.AccY, data.AccZ);
 		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f", buf, data.Roll, data.Pitch, data.Yaw);
 		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f", buf, data.dRoll, data.dPitch, data.dYaw);
 		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f", buf, data.MagX, data.MagY, data.MagZ);
