@@ -31,6 +31,7 @@
 #include "Drivers/HopeRF.h"
 #include "Drivers/IMU.h"
 #include "Drivers/EEPROMDrv.h"
+#include "Drivers/CANDrv.h"
 
 #include "Ctrl/Controller.h"
 #include "CommData.h"
@@ -63,6 +64,7 @@ LaunchMgr launch;
 EEPROMDrv eeprom;
 CRC32 crc;
 Comm433MHz comm433MHz;
+CANDrv canDrv;
 
 // System Objects
 ControllerModelClass ctrl;
@@ -184,6 +186,7 @@ void main(void)
 	//hopeRF.Init();
 	imu.Init();
 	launch.Init();
+	canDrv.Init();
 	ctrl.initialize();
 
 
@@ -258,6 +261,9 @@ void main(void)
 
 		// process ethernet (RX)
 		etherDrv.Process(1000/SysTickFrequency); // 2.5ms tick
+
+		// CAN
+		canDrv.Update();
 
         // Read Lora Data
         int dataReceived = serialU5.Read(CommBuffer, COMMBUFFERSIZE);
@@ -428,6 +434,8 @@ void SendPeriodicDataEth(void)
 
         // send packet (type 0x20 - data)
         etherDrv.SendPacket(0x20, (char*)&data, sizeof(data));
+
+        // TODO: Send all this crap to CAN
     }
 
 
@@ -483,6 +491,47 @@ void SendPeriodicDataEth(void)
         PingedSendData = false;
 	}
 }
+
+#if 0
+// Process CAN Data
+#define CANBASEADR 0x200
+void ProcessCANData()
+{
+    int id, len;
+    unsigned char msg[8];
+    while( canDrv.GetMessage(id, msg, len) == true )
+    {
+        // process message
+        if( id == (CANBASEADR + 0x10))
+        {
+            // posref cmd
+            int enabled;
+            int positionRefCnt;
+            memcpy(&enabled, &msg[0], 4);
+            memcpy(&positionRefCnt, &msg[4], 4);
+            REFPositionCNT = positionRefCnt;
+            if( enabled ) OperationMode = 4;
+            else OperationMode = 0;
+        }
+    };
+}
+
+void SendPeriodicDataCAN(void)
+{
+    if( (MainLoopCounter%10) == 0 ) // 10 msec period
+    {
+        unsigned char dataToSend[8];
+        memcpy(&dataToSend[0], &OperationMode, 4);
+        int indexHit = IndexHit;
+        memcpy(&dataToSend[4], &indexHit, 4);
+        canDrv.SendMessage(CANBASEADR + 0x0, dataToSend, 8); // status
+        memcpy(&dataToSend[0], &PositionCNT, 4);
+        canDrv.SendMessage(CANBASEADR + 0x1, dataToSend, 4); // Position
+        memcpy(&dataToSend[0], &CurrentIq, 4);
+        canDrv.SendMessage(CANBASEADR + 0x2, dataToSend, 4); // Current
+    }
+}
+#endif
 
 // Process commands received from Ethernet and HopeRF
 void ProcessCommand(int cmd, unsigned char* data, int dataSize)
