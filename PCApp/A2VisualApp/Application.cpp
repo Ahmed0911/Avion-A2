@@ -46,7 +46,8 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	m_FilterSpeed.Init(30);
 
 #if 0
-	GenerateLogBitmapsLogger(L"C:\\Users\\Ivan\\Desktop\\logs\\file-12.bin", L"Bitmaps");
+	//GenerateLogBitmapsLogger(L"C:\\Users\\Ivan\\Videos\\A2-Sava-2\\file-8.bin", L"Bitmaps");
+	//GenerateLogLoggerFile(L"C:\\Users\\Ivan\\Videos\\A2-Sava-2\\file-8.bin", L"mat1.txt");
 	//GenerateLogBitmapsHopeRF(L"Log\\LogHopeRF-15-15-13.bin", L"Bitmaps");
 	//GenerateLogBitmaps(L"Log\\LogFileDraw-4118.log", L"Bitmaps");
 	//GenerateLogFile(L"Log\\LogFileDraw-233.log", L"mat1.txt");
@@ -430,7 +431,7 @@ void CApplication::GenerateLogBitmapsLogger(std::wstring logFilename, std::wstri
 				m_dir2D.Draw(data, noData); // display! (data)
 				TCHAR filename[100];
 				swprintf_s(filename, 100, L"%s//image-%d.png", destination.c_str(), index++);
-				//m_dir2D.DrawToBitmap(data, filename, noData);
+				m_dir2D.DrawToBitmap(data, filename, noData);
 			}
 			timestamp += frameTime;
 		}
@@ -506,6 +507,35 @@ void CApplication::GenerateLogFile(std::wstring logFilename, std::wstring destin
 		logFile << buf << std::endl;
 
 
+	} while ((!file.eof()));
+
+	file.close();
+	logFile.close();
+}
+
+void CApplication::GenerateLogLoggerFile(std::wstring logFilename, std::wstring destination)
+{
+	std::ifstream file(logFilename, std::ios::binary);
+	std::ofstream logFile(destination, std::ios::binary);
+
+	logFile << "Loop " << "Mode " << "NumSV " << "FuelLevel " << "Roll " << "Pitch " << "Yaw " << "dRoll " << "dPitch " << "dYaw " << "MagX " << "MagY " << "MagZ " << "T1 " << "T2 " << "T3 " << "T4 " << "Altitude " << "VertSpeed " << "Pressure " << "MSL " << "VelN " << "VelE " << "VelD " << "HorAcc " << "CurrentA " << "TotalChargemAh " << "Voltage " << std::endl;
+
+	do
+	{
+		SCommEthData data;
+		file.read((char*)&data, sizeof(SCommEthData));
+
+		// dump to file
+		CHAR buf[500];
+		sprintf_s(buf, 500, "%d %d %d %0.2f", data.LoopCounter, data.ActualMode, data.NumSV, data.FuelLevel);
+		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f", buf, data.Roll, data.Pitch, data.Yaw);
+		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f", buf, data.dRoll, data.dPitch, data.dYaw);
+		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f", buf, data.MagX, data.MagY, data.MagZ);
+		sprintf_s(buf, 500, "%s %d %d %d %d", buf, data.MotorThrusts[0], data.MotorThrusts[1], data.MotorThrusts[2], data.MotorThrusts[3]);
+		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f %0.2f", buf, data.Altitude, data.Vertspeed, data.Pressure, data.HeightMSL / 1000.0);
+		sprintf_s(buf, 500, "%s %0.3f %0.3f %0.3f %0.3f", buf, data.VelN / 1000.0, data.VelE / 1000.0, data.VelD / 1000.0, data.HorizontalAccuracy / 1000.0);
+		sprintf_s(buf, 500, "%s %0.2f %0.2f %0.2f", buf, data.BatteryCurrentA, data.BatteryTotalCharge_mAh, data.BatteryVoltage);
+		logFile << buf << std::endl;
 	} while ((!file.eof()));
 
 	file.close();

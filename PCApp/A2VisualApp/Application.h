@@ -38,6 +38,7 @@ private:
 	void GenerateLogBitmapsHopeRF(std::wstring logFilename, std::wstring destination);
 	void GenerateLogBitmapsLogger(std::wstring logFilename, std::wstring destination);
 	void GenerateLogFile(std::wstring logFilename, std::wstring destination);
+	void GenerateLogLoggerFile(std::wstring logFilename, std::wstring destination);
 
 private:
 	static CApplication* instance;
