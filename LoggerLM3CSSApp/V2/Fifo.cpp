@@ -16,7 +16,7 @@ Fifo::~Fifo()
 
 bool Fifo::Push(BYTE ch)
 {
-	if (IsFull() ) return false; // fifo full!
+	//if (IsFull() ) return false; // fifo full!
 	
 	m_Fifo[m_IdxPush] = ch;
 	m_IdxPush = FixIndex(++m_IdxPush);
@@ -26,7 +26,7 @@ bool Fifo::Push(BYTE ch)
 
 bool Fifo::Pop(BYTE& ch)
 {
-	if (IsEmpty()) return false; // fifo empty
+	//if (IsEmpty()) return false; // fifo empty
 	
 	ch = m_Fifo[m_IdxPop];
 	m_IdxPop = FixIndex(++m_IdxPop);
