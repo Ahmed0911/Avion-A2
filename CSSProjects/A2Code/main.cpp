@@ -57,7 +57,7 @@ BaroDrv baroDrv;
 MPU9250Drv mpu9250Drv;
 LSM90DDrv lsm90Drv;
 UBloxGPS gps;
-EtherDriver etherDrv;
+//EtherDriver etherDrv;
 //HopeRF	hopeRF;
 IMU imu;
 LaunchMgr launch;
@@ -86,6 +86,7 @@ BYTE HopeRFbuffer[255];
 // Global Functions
 void InitGPS(void);
 void ProcessGPSData(void);
+void ProcessCANData(void);
 void SendPeriodicDataEth(void);
 void ProcessCommand(int cmd, unsigned char* data, int dataSize);
 void ReadParamsFromFlash();
@@ -108,7 +109,7 @@ float Pressure0 = 101300;
 bool PingedSendData = false;
 
 // SD Card stuff
-unsigned short SDCardActive;
+unsigned int SDCardActive;
 unsigned int SDCardBytesWritten;
 unsigned int SDCardFails;
 unsigned int FailedQueues;
@@ -182,7 +183,7 @@ void main(void)
 	mpu9250Drv.Init();
     //lsm90Drv.Init();
 	InitGPS(); // init GPS
-	etherDrv.Init();
+	//etherDrv.Init();
 	//hopeRF.Init();
 	imu.Init();
 	launch.Init();
@@ -260,10 +261,11 @@ void main(void)
 		if(MainLoopCounter == (SysTickFrequency * 2)) Pressure0 = baroDrv.PressurePa;
 
 		// process ethernet (RX)
-		etherDrv.Process(1000/SysTickFrequency); // 2.5ms tick
+		//etherDrv.Process(1000/SysTickFrequency); // 2.5ms tick
 
 		// CAN
 		canDrv.Update();
+		ProcessCANData(); // Receive CAN data
 
         // Read Lora Data
         int dataReceived = serialU5.Read(CommBuffer, COMMBUFFERSIZE);
@@ -347,7 +349,6 @@ void main(void)
 
 void SendPeriodicDataEth(void)
 {
-
     if( (MainLoopCounter % 2) == 0 )
     {
         // Send data to Logger
@@ -398,8 +399,8 @@ void SendPeriodicDataEth(void)
         memcpy(data.SatCNOs, gps.SatCNOs, sizeof(data.SatCNOs));
 
         // RF Data + Perf
-        data.EthReceivedCount = etherDrv.ReceivedFrames;
-        data.EthSentCount = etherDrv.SentFrames;
+        data.EthReceivedCount = 0;//etherDrv.ReceivedFrames;
+        data.EthSentCount = 0;//etherDrv.SentFrames;
         data.HopeRXFrameCount = comm433MHz.MsgReceivedOK;
         data.HopeRXRSSI = comm433MHz.HeaderFails; // fail counter, use as RSSI?
         data.HopeRSSI = HopeRSSI;
@@ -433,9 +434,15 @@ void SendPeriodicDataEth(void)
         data.TuningData[9] = 0;
 
         // send packet (type 0x20 - data)
-        etherDrv.SendPacket(0x20, (char*)&data, sizeof(data));
+        //etherDrv.SendPacket(0x20, (char*)&data, sizeof(data));
 
         // TODO: Send all this crap to CAN
+        for(int i=0; i!=30; i++)
+        {
+            // pack and go
+            BYTE* ptr = (BYTE*)&data;
+            canDrv.SendMessage(0x100 + i, &(ptr[i*8]), 8); // status
+        }
     }
 
 
@@ -492,9 +499,7 @@ void SendPeriodicDataEth(void)
 	}
 }
 
-#if 0
 // Process CAN Data
-#define CANBASEADR 0x200
 void ProcessCANData()
 {
     int id, len;
@@ -502,36 +507,20 @@ void ProcessCANData()
     while( canDrv.GetMessage(id, msg, len) == true )
     {
         // process message
-        if( id == (CANBASEADR + 0x10))
+        if( id == (0x200))
         {
-            // posref cmd
-            int enabled;
-            int positionRefCnt;
-            memcpy(&enabled, &msg[0], 4);
-            memcpy(&positionRefCnt, &msg[4], 4);
-            REFPositionCNT = positionRefCnt;
-            if( enabled ) OperationMode = 4;
-            else OperationMode = 0;
+            // card active and bytes written
+            memcpy(&SDCardActive, &msg[0], 4);
+            memcpy(&SDCardBytesWritten, &msg[4], 4);
+        }
+        if( id == (0x201))
+        {
+            // card fails, failed queues
+            memcpy(&SDCardFails, &msg[0], 4);
+            memcpy(&FailedQueues, &msg[4], 4);
         }
     };
 }
-
-void SendPeriodicDataCAN(void)
-{
-    if( (MainLoopCounter%10) == 0 ) // 10 msec period
-    {
-        unsigned char dataToSend[8];
-        memcpy(&dataToSend[0], &OperationMode, 4);
-        int indexHit = IndexHit;
-        memcpy(&dataToSend[4], &indexHit, 4);
-        canDrv.SendMessage(CANBASEADR + 0x0, dataToSend, 8); // status
-        memcpy(&dataToSend[0], &PositionCNT, 4);
-        canDrv.SendMessage(CANBASEADR + 0x1, dataToSend, 4); // Position
-        memcpy(&dataToSend[0], &CurrentIq, 4);
-        canDrv.SendMessage(CANBASEADR + 0x2, dataToSend, 4); // Current
-    }
-}
-#endif
 
 // Process commands received from Ethernet and HopeRF
 void ProcessCommand(int cmd, unsigned char* data, int dataSize)
@@ -610,7 +599,7 @@ void ProcessCommand(int cmd, unsigned char* data, int dataSize)
 			params.CRC32 = crc.CalculateCRC32((BYTE*)&params, sizeof(params)-sizeof(params.CRC32)); // fill CRC code
 
 			// send packet (type 0x62 - parameters)
-			etherDrv.SendPacket(0x62, (char*)&params, sizeof(params));
+			//etherDrv.SendPacket(0x62, (char*)&params, sizeof(params));
 
 			// send to RF
 			//hopeRF.Write((BYTE*)&params, sizeof(params));

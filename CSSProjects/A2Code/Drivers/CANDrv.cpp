@@ -20,8 +20,10 @@
 
 extern uint32_t g_ui32SysClock;
 
-// TX Objects: CH1....CH16
-// RX Objects: CH17...CH32
+#define TXBUFFS 30
+
+// TX Objects: CH1....CH30
+// RX Objects: CH31...CH32
 void CANDrv::Init()
 {
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
@@ -51,7 +53,7 @@ void CANDrv::Init()
 	sCANMessage.ui32MsgIDMask = 0;
 	sCANMessage.ui32Flags = MSG_OBJ_USE_ID_FILTER | MSG_OBJ_FIFO;
 	sCANMessage.ui32MsgLen = 8;
-	for(int i=17; i!=32; i++)
+	for(int i=TXBUFFS+1; i<=32; i++)
 	{
 		CANMessageSet(CAN1_BASE, i, &sCANMessage, MSG_OBJ_TYPE_RX);
 	}
@@ -76,7 +78,7 @@ bool CANDrv::SendMessage(int id, unsigned char* data, int len)
 
 	// find free CAN object
 	unsigned int txStatus = CANStatusGet(CAN1_BASE, CAN_STS_TXREQUEST);
-	for(int i=1; i<=16; i++)
+	for(int i=1; i<=TXBUFFS; i++)
 	{
 		unsigned int bitX = 1 << (i-1);
 		if( (txStatus & bitX) == 0)
@@ -100,7 +102,7 @@ bool CANDrv::GetMessage(int& id, unsigned char* data, int& len)
 	tCANMsgObject sCANMessage;
 
 	unsigned int rxStatus = CANStatusGet(CAN1_BASE, CAN_STS_NEWDAT);
-	for(int i=17; i<=32; i++)
+	for(int i=TXBUFFS+1; i<=32; i++)
 	{
 		// data available?
 		unsigned int bitX = 1 << (i-1);
