@@ -248,11 +248,11 @@ void CMapManager::Draw(ID2D1DeviceContext* d2dDeviceContext, double longitude, d
 	if (m_SelectedWaypoint == 0) swprintf_s(str, 100, L"Immediate");
 	else if (m_SelectedWaypoint == 9) swprintf_s(str, 100, L"Orbit");
 	else swprintf_s(str, 100, L"Index: %d", m_SelectedWaypoint);
-	d2dDeviceContext->DrawText(str, (UINT32)_tcslen(str), m_HomeTextFormat.Get(), &D2D1::RectF(200, 550, 350, 600), m_HomeBrush.Get());
+	//d2dDeviceContext->DrawText(str, (UINT32)_tcslen(str), m_HomeTextFormat.Get(), &D2D1::RectF(200, 550, 350, 600), m_HomeBrush.Get());
 	swprintf_s(str, 100, L"Altitude: %d", (int)m_SelectedAltitude);
-	d2dDeviceContext->DrawText(str, (UINT32)_tcslen(str), m_HomeTextFormat.Get(), &D2D1::RectF(350, 550, 500, 600), m_HomeBrush.Get());
+	//d2dDeviceContext->DrawText(str, (UINT32)_tcslen(str), m_HomeTextFormat.Get(), &D2D1::RectF(350, 550, 500, 600), m_HomeBrush.Get());
 	swprintf_s(str, 100, L"Velocity: %0.1f", m_SelectedVelocity);
-	d2dDeviceContext->DrawText(str, (UINT32)_tcslen(str), m_HomeTextFormat.Get(), &D2D1::RectF(500, 550, 650, 600), m_HomeBrush.Get());
+	//d2dDeviceContext->DrawText(str, (UINT32)_tcslen(str), m_HomeTextFormat.Get(), &D2D1::RectF(500, 550, 650, 600), m_HomeBrush.Get());
 }
 
 void CMapManager::SetMapWpyCommands(WPARAM param)

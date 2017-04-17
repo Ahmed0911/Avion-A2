@@ -668,8 +668,8 @@ void CDir2D::DrawHUD(SUserData &data, bool noTelemetry)
 	DrawNumber(DNSTYLE_SMALL, -10 + 230, -30, 150, 20, 0, 0, buf);
 
 	// GPS
-	float Yoffset = 5;
-	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.165F, SCREENY * 0.78F));
+	float Yoffset = 6;
+	m_d2dContext->SetTransform(D2D1::Matrix3x2F::Translation(SCREENX * 0.165F, SCREENY * 0.74F));
 	m_GreenTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 	swprintf_s(buf, 200, L"GPS Time: %0.2f", data.GPSTime / 1000.0f);
 	//DrawNumber(DNSTYLE_SMALL, 0, 25 * Yoffset++, 350, 25, 0, 0, buf);

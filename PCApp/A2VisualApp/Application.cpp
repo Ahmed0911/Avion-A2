@@ -31,7 +31,7 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	m_RXHopeRFPacketCounter = 0;
 
 	// create D2D
-	std::wstring mapName = L"Map\\map-45.74546-15.92244-16-X.jpg";
+	std::wstring mapName = L"Map\\map-45.7475-15.9195-17-X.jpg";
 	if (cmdLine[0] != 0)
 	{
 		mapName = std::wstring(L"Map\\") + std::wstring(cmdLine);
@@ -46,8 +46,8 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 	m_FilterSpeed.Init(30);
 
 #if 0
-	//GenerateLogBitmapsLogger(L"C:\\Users\\Ivan\\Videos\\A2-Sava-2\\file-8.bin", L"Bitmaps");
-	//GenerateLogLoggerFile(L"C:\\Users\\Ivan\\Videos\\A2-Sava-2\\file-8.bin", L"mat1.txt");
+	//GenerateLogBitmapsLogger(L"C:\\Users\\Ivan\\Videos\\A2-Sava-4\\file-1.bin", L"C:\\Users\\Ivan\\Videos\\A2-Sava-4\\Bitmaps2");
+	//GenerateLogLoggerFile(L"C:\\Users\\Ivan\\Videos\\A2-Sava-4\\file-1.bin", L"C:\\Users\\Ivan\\Videos\\A2-Sava-4\\mat1.txt");
 	//GenerateLogBitmapsHopeRF(L"Log\\LogHopeRF-15-15-13.bin", L"Bitmaps");
 	//GenerateLogBitmaps(L"Log\\LogFileDraw-4118.log", L"Bitmaps");
 	//GenerateLogFile(L"Log\\LogFileDraw-233.log", L"mat1.txt");
@@ -474,7 +474,7 @@ void CApplication::GenerateLogBitmapsHopeRF(std::wstring logFilename, std::wstri
 				m_dir2D.Draw(data, noData); // display! (data)
 				TCHAR filename[100];
 				swprintf_s(filename, 100, L"%s//image-%d.png", destination.c_str(), index++);
-				//m_dir2D.DrawToBitmap(data, filename, noData);
+				m_dir2D.DrawToBitmap(data, filename, noData);
 			}
 			timestamp += frameTime;
 		}
