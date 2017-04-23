@@ -322,6 +322,10 @@ namespace WinEthApp
                 textBoxdPitch.Text = RelayedData.dPitch.ToString("0.0 °/s");
                 textBoxdYaw.Text = RelayedData.dYaw.ToString("0.0 °/s");
 
+                textBoxdRollFiltered.Text = FilteredRoll.ToString("0.000 °/s");
+                textBoxdPitchFiltered.Text = FilteredPitch.ToString("0.000 °/s");
+                textBoxdYawFiltered.Text = FilteredYaw.ToString("0.000 °/s");
+
                 // System
                 textBoxSystemLoop.Text = RelayedData.LoopCounter.ToString();
                 textBoxSystemBattery.Text = RelayedData.BatteryVoltage.ToString("0.00 V");

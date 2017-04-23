@@ -198,7 +198,12 @@ namespace WinEthApp
                 RelayedData = commDataHopeRF;
 
                 // save to file
-                logStreamRF.Write(data, 0, data.Length);   
+                logStreamRF.Write(data, 0, data.Length);
+
+                // filter data
+                formMain.FilteredRoll = 0.99 * formMain.FilteredRoll + 0.01 * RelayedData.dRoll;
+                formMain.FilteredPitch = 0.99 * formMain.FilteredPitch + 0.01 * RelayedData.dPitch;
+                formMain.FilteredYaw = 0.99 * formMain.FilteredYaw + 0.01 * RelayedData.dYaw;
 
                 formMain.DisplayRelayedData(RelayedData);
             }

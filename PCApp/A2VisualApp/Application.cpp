@@ -47,7 +47,7 @@ void CApplication::Init(HWND hWnd, TCHAR* cmdLine)
 
 #if 0
 	//GenerateLogBitmapsLogger(L"C:\\Users\\Ivan\\Videos\\A2-Sava-4\\file-1.bin", L"C:\\Users\\Ivan\\Videos\\A2-Sava-4\\Bitmaps2");
-	//GenerateLogLoggerFile(L"C:\\Users\\Ivan\\Videos\\A2-Sava-4\\file-1.bin", L"C:\\Users\\Ivan\\Videos\\A2-Sava-4\\mat1.txt");
+	//GenerateLogLoggerFile(L"C:\\Users\\Ivan\\Videos\\AIM120-Sava-1\\file-1.bin", L"C:\\Users\\Ivan\\Videos\\AIM120-Sava-1\\mat1.txt");
 	//GenerateLogBitmapsHopeRF(L"Log\\LogHopeRF-15-15-13.bin", L"Bitmaps");
 	//GenerateLogBitmaps(L"Log\\LogFileDraw-4118.log", L"Bitmaps");
 	//GenerateLogFile(L"Log\\LogFileDraw-233.log", L"mat1.txt");
